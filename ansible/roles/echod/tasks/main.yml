@@ -1,0 +1,12 @@
+---
+# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
+  - name: Create /home/echod
+    file:
+      path: /home/echod
+      state: directory
+      mode: 0755
+
+  - name: Upload echod's docker-compose.yml
+    copy:
+      src: docker-compose.yml
+      dest: /home/echod/docker-compose.yml.template

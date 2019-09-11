@@ -1,0 +1,18 @@
+version: '2.1'
+services:
+  testd:
+    image: alpine
+    command: tail -f /dev/null
+    networks:
+      testd_network:
+        ipv6_address: fd00:1337:TEAMID:7357::1
+    restart: unless-stopped
+
+networks:
+  testd_network:
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: fd00:1337:TEAMID:7357::/64
+          gateway: fd00:1337:TEAMID:7357::ffff

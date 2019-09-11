@@ -1,0 +1,29 @@
+---
+  - hosts: gameengine
+    become: yes
+    become_method: sudo
+
+    roles:
+      - pre_configs
+      - programs
+      - dotnetsdk
+      - dockered_services
+      - journalbeat
+      - networktest
+      - metricbeat
+
+    vars:
+      program_list:
+        - vim
+        - htop
+        - tmux
+        - curl
+        - wget
+        - net-tools
+        - tcpdump
+        - socat
+
+      dockered_services:
+        EnoEngine: ssh://git@git.eno.host:7999/eno/enoengine.git
+        EnoScoreboard: ssh://git@git.eno.host:7999/eno/enoscoreboard.git
+        EnoELK: ssh://git@git.eno.host:7999/eno/enoelk.git

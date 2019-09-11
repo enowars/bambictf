@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+  aptly:
+    build: .
+    volumes:
+      - type: volume
+        source: snapshots
+        target: /home/.aptly
+        read_only: false
+  webserver:
+    image: nginx:1.15-alpine
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target:  /etc/nginx/conf.d/default.conf
+        read_only: true
+      - type: volume
+        source: snapshots
+        target: /home/.aptly
+        read_only: true
+    depends_on:
+      - aptly
+    ports:
+      - "9090:8080"
+
+volumes:
+  snapshots:

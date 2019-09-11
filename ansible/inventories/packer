@@ -1,0 +1,2 @@
+[vulnbox]
+localhost hostname=vulnbox aptrepo_ip=fd00:1337::4477

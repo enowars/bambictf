@@ -1,0 +1,28 @@
+remote {{gamerouter}} 1337
+proto udp
+dev game_internal
+dev-type tap
+nobind
+client
+
+persist-key
+persist-tun
+
+route-ipv6 fd00:1337::/32
+
+script-security 2
+up "/etc/openvpn/client/setup-iface.sh"
+
+user nobody
+group nogroup
+
+remote-cert-tls server
+ca /etc/openvpn/client/router-ca.crt
+cert /etc/openvpn/client/router.crt
+key /etc/openvpn/client/router.key
+tls-auth /etc/openvpn/client/router-ta.key 1
+key-direction 1
+cipher AES-256-CBC
+auth SHA256
+
+verb 3

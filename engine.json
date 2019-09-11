@@ -1,0 +1,74 @@
+{
+    "variables": {
+        "debian_version": "9.9.0",
+        "password": "root",
+        "vm_description": "ENOWARS Engine",
+        "vm_version": "1.0.0"
+    },
+    "provisioners": [{
+            "type": "shell",
+            "inline": [
+                "echo '{{user `password`}}' | sudo -S apt -y update",
+                "sudo apt -y upgrade",
+                "sudo apt -y install python-dev python-pip",
+                "sudo pip install ansible"
+            ]
+        },
+        {
+            "type": "ansible-local",
+            "playbook_file": "ansible/gameengine.yml",
+            "playbook_dir": "ansible",
+            "extra_arguments": ["--extra-vars \"ansible_sudo_pass={{user `password`}}\""]
+        }
+    ],
+    "builders": [{
+        "type": "virtualbox-iso",
+        "boot_command": [
+            "<esc><wait>",
+            "install <wait>",
+            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+            "debian-installer=en_US.UTF-8 <wait>",
+            "auto <wait>",
+            "locale=en_US.UTF-8 <wait>",
+            "kbd-chooser/method=us <wait>",
+            "keyboard-configuration/xkb-keymap=us <wait>",
+            "netcfg/get_hostname={{ .Name }} <wait>",
+            "netcfg/get_domain=enowars.de <wait>",
+            "passwd/root-password=\"{{user `password`}}\"",
+            "passwd/root-password-again=\"{{user `password`}}\"",
+            "fb=false <wait>",
+            "debconf/frontend=noninteractive <wait>",
+            "console-setup/ask_detect=false <wait>",
+            "console-keymaps-at/keymap=us <wait>",
+            "grub-installer/bootdev=/dev/sda <wait>",
+            "<enter><wait>"
+        ],
+        "boot_wait": "10s",
+        "disk_size": 32768,
+        "guest_os_type": "Debian_64",
+        "headless": true,
+        "http_directory": "http",
+        "iso_checksum_type": "sha512",
+        "iso_checksum_url": "https://cdimage.debian.org/debian-cd/{{user `debian_version`}}/amd64/iso-cd/SHA512SUMS",
+        "iso_url": "https://cdimage.debian.org/debian-cd/{{user `debian_version`}}/amd64/iso-cd/debian-{{user `debian_version`}}-amd64-netinst.iso",
+        "ssh_username": "root",
+        "ssh_password": "{{user `password`}}",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "10000s",
+        "shutdown_command": "echo '{{user `password`}}'|sudo -S /sbin/shutdown -hP now",
+        "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+        "virtualbox_version_file": ".vbox_version",
+        "vm_name": "enginevm",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "1024"],
+            ["modifyvm", "{{.Name}}", "--cpus", "2"]
+        ],
+        "format": "ova",
+        "export_opts": [
+            "--manifest",
+            "--vsys", "0",
+            "--description", "{{user `vm_description`}}",
+            "--version", "{{user `vm_version`}}"
+        ]
+    }]
+}

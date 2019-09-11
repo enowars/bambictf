@@ -1,0 +1,10 @@
+---
+  - hosts: mainvm
+    become: yes
+    become_user: "root"
+    become_method: "sudo"
+
+    roles:
+      - docker
+      - swarm_vpn
+      - join_swarm

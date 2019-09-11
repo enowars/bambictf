@@ -1,0 +1,8 @@
+---
+# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
+# And modified by Julian Beier (@JB_Liikt) also for ENOWARS3
+  - name: Set the hostname
+    hostname:
+      name: "{{ hostname }}"
+    when:
+      hostname is defined

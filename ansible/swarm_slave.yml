@@ -1,0 +1,14 @@
+---
+  - hosts: swarm_slave
+    become: yes
+    become_user: "root"
+    become_method: "sudo"
+
+    roles:
+      - pre_configs
+      - hostname
+      - journalbeat
+      - metricbeat
+      - docker
+      - traefik
+      - join_swarm

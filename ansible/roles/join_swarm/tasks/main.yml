@@ -1,0 +1,16 @@
+---
+  - name: Install pip
+    apt:
+      name: ['python-dev', 'python-pip']
+      state: present
+
+  - name: Install python docker package
+    pip:
+      name: docker
+
+  - name: Join swarm
+    docker_swarm:
+      advertise_addr: "{{ interface }}"
+      state: join
+      join_token: "{{ swarm_token }}"
+      remote_addrs: [ '10.13.37.7:2377' ]

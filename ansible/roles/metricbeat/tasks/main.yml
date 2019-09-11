@@ -1,0 +1,32 @@
+---
+- name: Check if Metricbeat is installed
+  command: dpkg-query -W metricbeat
+  register: metricbeat_check_deb
+  failed_when: metricbeat_check_deb.rc > 1
+  changed_when: metricbeat_check_deb.rc == 1
+
+- name: Download Metricbeat
+  get_url:
+    url="https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.1.1-amd64.deb"
+    dest="/tmp/metricbeat.deb"
+  when: metricbeat_check_deb.rc == 1
+
+- name: Install Metricbeat
+  apt: deb="/tmp/metricbeat.deb"
+  become: yes
+  when: metricbeat_check_deb.rc == 1
+
+- name: Sync Metricbeat config
+  copy:
+    src: metricbeat.yml
+    dest: /etc/metricbeat/metricbeat.yml
+    # XXX: Documentation suggests that "no" might not be the value we are
+    # looking for:
+    # https://docs.ansible.com/ansible/latest/modules/copy_module.html
+    # owner: no
+
+- name: Enable and start Metricbeat
+  service:
+    name: metricbeat
+    state: restarted
+    enabled: yes

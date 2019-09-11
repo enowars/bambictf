@@ -1,0 +1,20 @@
+---
+  - name: Install openvpn
+    apt:
+      name: openvpn
+
+  - name: Copy certs and stuff
+    copy:
+      src: "{{ item }}"
+      dest: /etc/openvpn/
+    with_items:
+      - ta.key
+      - ca.crt
+      - client.crt
+      - client.key
+      - client.conf
+
+  - name: Start openvpn
+    service:
+      name: openvpn@client.service
+      state: started

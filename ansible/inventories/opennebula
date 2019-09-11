@@ -1,0 +1,27 @@
+[aptrepo]
+192.168.234.3 hostname=aptrepo internal_ip=fd00:1337::4477 gamerouter=192.168.234.120 ansible_ssh_user=root ansible_ssh_pass=root
+
+[gameengine]
+engine.enowars.com ansible_ssh_user=ctf ansible_ssh_pass=123456 ansible_become_pass=123456 hostname=gameengine
+
+[elk]
+192.168.234.8 ansible_ssh_user=root ansible_ssh_pass=root hostname=enoelk
+
+[vulnbox]
+192.168.234.20 hostname=vulnbox1 teamid=1
+192.168.234.21 hostname=vulnbox2 teamid=2
+192.168.234.22 hostname=vulnbox3 teamid=3
+192.168.234.23 hostname=vulnbox4 teamid=4
+192.168.234.25 hostname=vulnbox5 teamid=5
+192.168.234.26 hostname=vulnbox6 teamid=6
+192.168.234.27 hostname=vulnbox7 teamid=7
+192.168.234.28 hostname=vulnbox8 teamid=8
+192.168.234.29 hostname=vulnbox9 teamid=9
+192.168.234.30 hostname=vulnbox10 teamid=10
+192.168.234.31 hostname=vulnbox11 teamid=11
+192.168.234.32 hostname=vulnbox12 teamid=12
+
+[vulnbox:vars]
+ansible_ssh_user=root
+ansible_ssh_pass=root
+aptrepo_ip=fd00:1337::4477

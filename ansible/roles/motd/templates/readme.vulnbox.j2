@@ -1,0 +1,23 @@
+# General Setup
+
+In order to enable your Vulnbox to work properly you need to run the script at `/usr/bin/network-setup` 
+and supply it your `teamdid` and the network interface `enp0s8`.
+Until you have done this your services won't be able to work properly.
+
+
+# Docker
+
+All services that you are supposed to work on run in their own container and are started via docker-compose. 
+In order to increase user friendliness we've included a systemd file for docker that lets you monitor and control the services.
+Use `systemctl {start|stop|restart|status} dc@<servicename>` to start/stop/restart/inspect a given service respectively.
+
+# Team ID File
+
+There needs to be a file `/etc/teamid` that contains your team ID. This file is used to configure your services properly. 
+The file is created once you run the network script.
+
+# APT
+
+All services are shipped as debian package and managed through apt. They can be installed and updated through our apt repository.
+If you have run the network script before installing services they will be started automatically. 
+If you didn't you will have to start them manually.

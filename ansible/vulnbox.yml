@@ -1,0 +1,34 @@
+---
+  - hosts: vulnbox
+    become: yes
+    become_user: "root"
+    become_method: "sudo"
+    gather_facts: yes
+
+    roles:
+      - pre_configs
+      - programs
+      - timezone
+      - locales 
+      - hostname
+      - motd
+      - ndppd-vm
+      - networkscript-vm
+      - docker
+      - apt-repo
+
+
+    vars:
+      program_list:
+        - vim
+        - htop
+        - iotop
+        - iftop
+        - tmux
+        - vnstat
+        - tcpdump
+        - dnsutils
+        - openvpn
+        - rsync
+        - netcat-openbsd
+        - traceroute

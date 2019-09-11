@@ -1,0 +1,6 @@
+---
+# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
+  - name: Ensure a locale exists
+    locale_gen:
+      name: en_US.UTF-8
+      state: present

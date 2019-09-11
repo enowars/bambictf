@@ -1,0 +1,12 @@
+---
+  - name: Upload networktest.service
+    copy:
+      src: networktest.service
+      dest: /etc/systemd/system/networktest.service
+
+  - name: Enabled and restart
+    systemd:
+      daemon_reload: yes
+      enabled: yes
+      name: networktest
+      state: restarted

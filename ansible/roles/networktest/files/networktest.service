@@ -1,0 +1,12 @@
+[Unit]
+Description=Simple networktest echo service
+Requires=network.target
+After=network.target
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/usr/bin/socat -v TCP6-LISTEN:4242,fork exec:'echo enowars!'
+
+[Install]
+WantedBy=multi-user.target

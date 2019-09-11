@@ -1,0 +1,41 @@
+{
+    "variables": {
+        "debian_version": "9.9.0",
+        "password": "root",
+        "vm_description": "ENOWARS vulnbox",
+        "vm_version": "1.0.0"
+    },
+    "provisioners": [{
+        "type": "ansible-local",
+        "playbook_file": "ansible/vulnbox.yml",
+        "playbook_dir": "ansible",
+        "inventory_file": "ansible/inventory.vulnbox.packer",
+        "extra_arguments": ["--extra-vars \"ansible_sudo_pass={{user `password`}}\""]
+    }],
+    "builders": [{
+        "type": "virtualbox-ovf",
+        "source_path": "output/baseimage/baseimage.ova",
+        "checksum_type": "none",
+        "headless": true,
+        "ssh_username": "root",
+        "ssh_password": "{{user `password`}}",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "10000s",
+        "shutdown_command": "/sbin/shutdown -hP now",
+        "vm_name": "vulnbox",
+        "output_directory": "output/vulnbox",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "4096"],
+            ["modifyvm", "{{.Name}}", "--cpus", "2"],
+            ["modifyvm", "{{.Name}}", "--nic2", "intnet"],
+            ["modifyvm", "{{.Name}}", "--intnet1", "enowars"]
+        ],
+        "format": "ova",
+        "export_opts": [
+            "--manifest",
+            "--vsys", "0",
+            "--description", "{{user `vm_description`}}",
+            "--version", "{{user `vm_version`}}"
+        ]
+    }]
+}

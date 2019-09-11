@@ -1,0 +1,20 @@
+---
+# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
+  - name: Install nddp
+    apt:
+      name: ndppd
+      state: present
+
+  - name: Create NDP config
+    template:
+      src: ndppd.conf.j2
+      dest: /etc/ndppd.conf.orig
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Stop nddp
+    systemd:
+      name: ndppd
+      state: stopped
+      enabled: true

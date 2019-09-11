@@ -1,0 +1,13 @@
+---
+  - name: Install all the needed programs and do an update
+    apt:
+      name: "{{ program_list }}"
+      force_apt_get: yes
+      autoremove: yes
+      cache_valid_time: 3000
+      state: present
+
+  - name: Uninstall rpcbind
+    apt: 
+      name: rpcbind
+      state: absent

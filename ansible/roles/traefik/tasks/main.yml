@@ -1,0 +1,17 @@
+---
+  - name: Create the traefik directory
+    file:
+      path: /opt/enotraefik/
+      state: directory
+
+  - name: Copy the files to the traefik directory
+    copy:
+      src: "{{ item }}"
+      dest: /opt/enotraefik/
+    with_items:
+      - docker-compose.yml
+      - traefik.toml
+
+  - name: Start traefik
+    docker_compose:
+      project_src: /opt/enotraefik/

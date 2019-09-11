@@ -1,0 +1,23 @@
+---
+  - hosts: elk
+    become: yes
+    become_user: "root"
+    become_method: "sudo"
+
+    pre_tasks:
+      - name: Set the virtual memory limit
+        sysctl:
+          name: vm.max_map_count
+          value: "262144"
+          sysctl_set: yes
+
+    roles:
+      - pre_configs
+      - hostname
+      - dockered_services
+      - journalbeat
+      - metricbeat
+
+    vars:
+      dockered_services:
+        EnoELK: ssh://git@git.eno.host:7999/eno/enoelk.git

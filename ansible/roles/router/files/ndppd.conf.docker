@@ -1,0 +1,5 @@
+proxy game_internal {
+   rule SUBNET {
+      auto
+   }
+}

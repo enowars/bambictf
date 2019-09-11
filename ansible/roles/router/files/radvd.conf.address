@@ -1,0 +1,9 @@
+interface game_internal {
+    IgnoreIfMissing on;
+    AdvSendAdvert on;
+    AdvDefaultLifetime 0;
+    MaxRtrAdvInterval 10;
+    route ADDRESS/128 {
+        RemoveRoute on;
+    };
+};

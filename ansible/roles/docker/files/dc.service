@@ -1,0 +1,19 @@
+[Unit]
+Description=%i service powered by docker compose
+Requires=docker.service
+After=docker.service containerd.service
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+WorkingDirectory=/services/%i
+
+ExecStartPre=/usr/local/bin/docker-compose kill
+ExecStartPre=/usr/local/bin/docker-compose pull
+
+ExecStart=/usr/local/bin/docker-compose up --build --no-color
+
+ExecStop=/usr/local/bin/docker-compose kill
+
+[Install]
+WantedBy=multi-user.target

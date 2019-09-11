@@ -1,0 +1,5 @@
+---
+# Created by Niklas Jacob for ENOWARS3
+  - hosts: vulnbox
+    roles:
+      - run-networkscript

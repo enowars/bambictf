@@ -1,0 +1,17 @@
+---
+# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
+  - name: Copy motd
+    template:
+      src: "motd.{{ group_names[0] }}.j2"
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: 0644
+  # The website will include all relevant information. It will be easier to supply correct information if we only have one place to provide it.
+  # - name: Copy README
+  #   template:
+  #     src: "readme.vulnbox.j2"
+  #     dest: /root/README
+  #     owner: root
+  #     group: root
+  #     mode: 0644
