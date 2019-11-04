@@ -7,6 +7,6 @@
 
   - name: Install dotnet sdk
     apt:
-      name: "dotnet-sdk-2.2"
+      name: "dotnet-sdk-3.0"
       state: present
       update_cache: yes

@@ -1,0 +1,17 @@
+---
+  - name: Install openvpn
+    apt: name={{item}} state=present
+    with_items:
+      - openvpn
+      - easy-rsa
+
+  - name: Create config file
+    template:
+      src: client.conf.j2
+      dest: "/etc/openvpn/gw{{ id }}.conf"
+
+  - name: Enable and restart openvpn@gwX service
+    systemd:
+      name: openvpn@gw{{ id }}
+      enabled: yes
+      state: restarted

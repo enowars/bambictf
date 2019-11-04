@@ -1,0 +1,17 @@
+---
+  - name: Disable and stop EnoScoreboard
+    service:
+      name: dc@EnoScoreboard
+      state: stopped
+      enabled: no
+
+  - name: Clone EnoScoreboard
+    git:
+      repo: "https://github.com/enowars/EnoScoreboard.git"
+      dest: /services/EnoScoreboard
+
+  - name: Enable and start EnoScoreboard
+    service:
+      name: dc@EnoScoreboard
+      state: restarted
+      enabled: yes

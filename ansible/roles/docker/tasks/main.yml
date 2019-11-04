@@ -1,109 +1,57 @@
 ---
-  - name: Install docker via dockers apt repo
-    block:
-    - name: Get release name
-      command: lsb_release -cs
-      register: release
-      changed_when: false
+  - name: Get release name
+    command: lsb_release -cs
+    register: release
+    changed_when: false
 
-    - name: Get OS name
-      command: uname -s
-      register: uns
-      changed_when: false
+  - name: Get OS name
+    command: uname -s
+    register: uns
+    changed_when: false
 
-    - name: Get OS arch
-      command: uname -m
-      register: unm
-      changed_when: false
+  - name: Get OS arch
+    command: uname -m
+    register: unm
+    changed_when: false
 
-    - name: Install docker dependencies
-      apt: 
-        name: ["apt-transport-https", "ca-certificates", "gnupg2", "software-properties-common"]
-        state: present
-
-    - name: Copy over the docker gpg key
-      copy:
-        src: docker.gpg
-        dest: /tmp/
-      changed_when: false
-
-    - name: Import Docker GPG key
-      apt_key: 
-        file: /tmp/docker.gpg
-        state: present
-
-    - name: Delete the docker key
-      file:
-        path: /tmp/docker.gpg
-        state: absent
-      changed_when: false
-
-    - name: Add docker repository
-      apt_repository: 
-        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ release.stdout }} stable"
-        state: present
-
-    - name: Update and install docker
-      apt: 
-        name: docker-ce
-        state: present 
-        update_cache: yes
-
-    - name: Install docker-compose
-      get_url: 
-        url: "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}" 
-        dest: /usr/local/bin/docker-compose
-        mode: 0755
-
-    when:
-      ansible_distribution_release != "disco" and ansible_distribution_release != "bionic"
-
-  - name: Install docker via native apt repos
-    apt:
-      name: ["docker.io", "docker-compose"]
+  - name: Install docker dependencies
+    apt: 
+      name: ["apt-transport-https", "ca-certificates", "gnupg2", "software-properties-common"]
       state: present
-    when:
-      ansible_distribution_release == "disco"
 
-  - name: Set the ELK config as default
-    set_fact:
-      daemon_template: elk.json.j2
-      template_target: daemon.json
+  - name: Copy over the docker gpg key
+    copy:
+      src: docker.gpg
+      dest: /tmp/
+    changed_when: false
 
-  # CAUTION: There are conditionals here !!!!!
-  - name: Choose the vulnbox template instead
-    set_fact:
-      daemon_template: vulnbox.json.j2
-      template_target: daemon.json.template
-    when:
-      group_names[0] == "vulnbox"
+  - name: Import Docker GPG key
+    apt_key: 
+      file: /tmp/docker.gpg
+      state: present
 
-  - name: Chose the swarm template instead
-    set_fact:
-      daemon_template: swarm.json.j2
-      template_target: daemon.json
-    when:
-      group_names[0] == "swarm_slave"
+  - name: Delete the docker key
+    file:
+      path: /tmp/docker.gpg
+      state: absent
+    changed_when: false
 
-  - name: Chose the swarm template instead
-    set_fact:
-      daemon_template: mainvm.json.j2
-      template_target: daemon.json
-    when:
-      group_names[0] == "mainvm"
+  - name: Add docker repository
+    apt_repository: 
+      repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ release.stdout }} stable"
+      state: present
 
-  - name: Copy daemon.json
-    template:
-      src: "{{ daemon_template }}"
-      dest: "/etc/docker/{{ template_target }}"
-      owner: root
-      group: root
-      mode: 0600
+  - name: Update and install docker
+    apt: 
+      name: docker-ce
+      state: present 
+      update_cache: yes
 
-  - name: Restart docker
-    service:
-      name: docker
-      state: restarted
+  - name: Install docker-compose
+    get_url: 
+      url: "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}" 
+      dest: /usr/local/bin/docker-compose
+      mode: 0755
 
   - name: Copy over the docker-compose unit
     copy:
@@ -111,6 +59,23 @@
       dest: /etc/systemd/system/dc@.service
     changed_when: false
 
+  - name: Create /services
+    file:
+      path: /services
+      state: directory
+
+  - name: Copy daemon.json
+    copy:
+      src: daemon.json
+      dest: /etc/docker/daemon.json
+
+  - name: Restart docker
+    service:
+      name: docker
+      state: restarted
+      enabled: yes
+
   - name: Reload system daemon
     systemd:
+      name: "docker" # ansible <2.4 always requires 'name'
       daemon_reload: yes

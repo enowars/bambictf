@@ -1,0 +1,66 @@
+---
+  - name: Increase max_map_count
+    sysctl:
+      name: vm.max_map_count
+      value: 262144
+      sysctl_set: yes
+
+  - name: Disable and stop EnoMoloch
+    service:
+      name: dc@EnoMoloch
+      state: stopped
+      enabled: no
+
+  - name: Clean local EnoMoloch cache
+    become: no
+    local_action:
+      module: file
+      path: ./services/{{ inventory_hostname }}/EnoMoloch/
+      state: absent
+
+  - name: Clone EnoMoloch locally
+    become: no
+    local_action:
+      module: git
+      repo: "git@github.com:ENOFLAG/EnoMoloch.git"
+      dest: ./services/{{ inventory_hostname }}/EnoMoloch/
+      accept_hostkey: yes
+
+  - name: Copy EnoMoloch to vulnbox
+    synchronize:
+      src: ./services/{{ inventory_hostname }}/EnoMoloch/
+      dest: /services/EnoMoloch/
+
+#  - name: Enable and start EnoMoloch
+#    service:
+#      name: dc@EnoMoloch
+#      state: restarted
+#      enabled: yes
+
+  - name: Install tcpdump
+    apt: 
+      name: tcpdump
+      state: present 
+      update_cache: yes
+
+  - name: Copy over the enodump unit
+    copy:
+      src: enodump.service
+      dest: /etc/systemd/system/enodump.service
+    changed_when: false
+
+  - name: Reload system daemon
+    systemd:
+      name: "enodump" # ansible <2.4 always requires 'name'
+      daemon_reload: yes
+
+  - name: Ensure /pcaps exists
+    file:
+      path: /pcaps
+      state: directory
+
+  - name: Enable and start enodump
+    service:
+      name: enodump
+      state: restarted
+      enabled: yes

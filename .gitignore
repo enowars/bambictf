@@ -2,3 +2,4 @@ packer_cache
 output-virtualbox-iso
 ansible/services
 output/
+config*.yml

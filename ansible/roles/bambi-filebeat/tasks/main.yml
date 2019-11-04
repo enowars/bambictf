@@ -1,0 +1,28 @@
+---
+  - name: Check if Filebeat is installed
+    command: dpkg-query -W filebeat
+    register: filebeat_check_deb
+    failed_when: filebeat_check_deb.rc > 1
+    changed_when: filebeat_check_deb.rc == 1
+
+  - name: Download Filebeat
+    get_url:
+      url="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.4.0-amd64.deb"
+      dest="/tmp/filebeat.deb"
+    when: filebeat_check_deb.rc == 1
+
+  - name: Install Filebeat
+    apt: deb="/tmp/filebeat.deb"
+    sudo: true
+    when: filebeat_check_deb.rc == 1
+
+  - name: Copy filebeat.yml to host
+    copy:
+      src: filebeat.yml
+      dest: /etc/filebeat/filebeat.yml
+
+  - name: Enable and start Filebeat
+    service:
+      name: filebeat
+      state: restarted
+      enabled: yes

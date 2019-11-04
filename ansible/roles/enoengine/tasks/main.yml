@@ -1,0 +1,17 @@
+---
+  - name: Disable and stop EnoEngine DB
+    service:
+      name: dc@EnoEngine
+      state: stopped
+      enabled: no
+
+  - name: Clone EnoEngine
+    git:
+      repo: "https://github.com/enowars/EnoEngine.git"
+      dest: /services/EnoEngine
+
+  - name: Enable and start EnoEngine DB
+    service:
+      name: dc@EnoEngine
+      state: restarted
+      enabled: yes

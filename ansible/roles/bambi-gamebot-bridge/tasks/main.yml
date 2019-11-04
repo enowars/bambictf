@@ -1,0 +1,16 @@
+---
+  - name: Install bridge-utils
+    apt: 
+      name: ["bridge-utils"]
+      state: present
+  
+  - name: Copy gamebot bridge
+    copy:
+      src: gamebotbridge
+      dest: /etc/network/interfaces.d/gamebotbridge
+    changed_when: false
+
+  - name: Restart networking
+    systemd:
+      name: networking
+      state: restarted

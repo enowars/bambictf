@@ -1,0 +1,17 @@
+---
+  - name: Increase max_map_count
+    sysctl:
+      name: vm.max_map_count
+      value: 262144
+      sysctl_set: yes
+
+  - name: Clone EnoELK
+    git:
+      repo: "https://github.com/enowars/EnoELK.git"
+      dest: /services/EnoELK
+
+  - name: Start EnoELK
+    service:
+      name: dc@EnoELK
+      state: restarted
+      enabled: yes

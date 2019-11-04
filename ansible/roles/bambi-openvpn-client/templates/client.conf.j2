@@ -1,0 +1,19 @@
+status /etc/openvpn/client/openvpn-status-gw{{ id }}.log
+log /etc/openvpn/client/openvpn-gw{{ id }}.log
+verb 3
+
+mode p2p
+dev game
+dev-type tun
+proto tcp-client
+remote {{ gameserver_address }} {{30000 + id}}
+keepalive 10 30
+nobind
+verb 3
+
+resolv-retry infinite
+persist-key
+persist-tun
+
+ifconfig 10.10.1.{{ id }} 10.10.0.{{ id }}
+route 10.10.0.0 255.255.0.0

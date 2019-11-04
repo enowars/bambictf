@@ -1,0 +1,69 @@
+---
+  - name: Install aptitude
+    apt:
+      name: aptitude
+      state: present
+
+  - name: Update and upgrade apt packages
+    become: true
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400 #One day
+
+  - name: Reboot
+    shell: sleep 2 && /sbin/shutdown -r now
+    async: 1
+    poll: 0
+
+  - name: This pause is mandatory, otherwise the existing control connection gets reused!
+    pause: seconds=30
+
+  - name: Now we will run a local 'ansible -m ping' on this host until it returns.
+    # This works with the existing ansible hosts inventory and so any custom ansible_ssh_hosts definitions are being used
+    local_action: shell ansible -u {{ ansible_user_id }} -m ping {{ inventory_hostname }}
+    register: result
+    until: result.rc == 0
+    retries: 30
+    delay: 10
+
+  - name: And finally, execute 'uptime' when the host is back.
+    shell: uptime
+
+  - name: Install linux headers
+    apt: 
+      name: linux-headers-amd64
+      state: present
+
+  - name: Ensure wg directory exists
+    file:
+      path: /etc/wireguard
+      state: directory
+
+  - name: Create wg config on vulnbox
+    template:
+      src: wg.conf.j2
+      dest: /etc/wireguard/wg.conf
+
+  - name: Add wg repository
+    apt_repository: 
+      repo: "deb http://deb.debian.org/debian unstable main"
+      state: present
+
+  - name: Configure wireguard repo (Debian)
+    blockinfile:
+      dest: /etc/apt/preferences.d/limit-unstable
+      create: yes
+      block: |-
+        Package: *
+        Pin: release a=unstable
+        Pin-Priority: 150
+
+  - name: Install wg
+    apt:
+      name: wireguard
+      state: present
+      update_cache: yes
+
+  - name: Enable WG device
+    shell: wg-quick up wg

@@ -1,0 +1,36 @@
+---
+  - name: Disable and stop vuln services
+    service:
+      name: dc@{{ item.key }}
+      state: stopped
+      enabled: no
+    with_dict: "{{ vulnerable_services }}"
+
+  - name: Clean local services cache
+    become: no
+    local_action:
+      module: file
+      path: ./services/{{ inventory_hostname }}/dockered_vulnerable_services
+      state: absent
+
+  - name: Clone services locally
+    become: no
+    local_action:
+      module: git
+      repo: "{{ item.value }}"
+      dest: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}
+      accept_hostkey: yes
+    with_dict: "{{ vulnerable_services }}"
+
+  - name: Copy services to vulnbox
+    synchronize:
+      src: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}/service/
+      dest: /services/{{ item.key }}
+    with_dict: "{{ vulnerable_services }}"
+
+  - name: Enable and start services
+    service:
+      name: dc@{{ item.key }}
+      state: restarted
+      enabled: yes
+    with_dict: "{{ vulnerable_services }}"

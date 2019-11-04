@@ -1,0 +1,10 @@
+[Interface]
+Address = 172.16.1.1
+PrivateKey = {{ vulnbox_privkey }}
+ListenPort = 1194
+PostUp   = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o game -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o game -j MASQUERADE
+
+[Peer]
+PublicKey = {{ ap_pubkey }}
+AllowedIps = 172.16.1.2/32,192.168.42.0/24
