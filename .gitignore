@@ -3,3 +3,7 @@ output-virtualbox-iso
 ansible/services
 output/
 config*.yml
+*.tfvars
+.terraform
+*.tfstate
+*.backup
