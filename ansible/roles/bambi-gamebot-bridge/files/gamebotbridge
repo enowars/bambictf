@@ -1,5 +1,0 @@
-auto gamebotbridge
-iface gamebotbridge inet static
-    address 10.10.10.10
-    netmask 255.255.255.255
-    bridge_ports none

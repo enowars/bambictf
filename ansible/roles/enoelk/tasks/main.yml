@@ -13,5 +13,4 @@
   - name: Start EnoELK
     service:
       name: dc@EnoELK
-      state: restarted
       enabled: yes

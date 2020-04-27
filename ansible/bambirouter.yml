@@ -6,5 +6,19 @@
       - config_bambi.yml
 
     roles:
-      - bambi-filebeat
+      - hetzner-base
+      - role: filebeat
+        vars:
+          elk: 192.168.1.0
+      - role: journalbeat
+        vars:
+          elk: 192.168.1.0
+      - role: metricbeat
+        vars:
+          elk: 192.168.1.0
       - bambi-ssh-keys
+      - firewall
+      - bambi-wireguard-router
+      - role: programs
+        vars:
+          program_list: "tmux"

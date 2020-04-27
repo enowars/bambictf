@@ -1,0 +1,22 @@
+{
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "../ansible/bambichecker.yml",
+            "host_alias": "packer-checker"
+        }
+    ],
+    "builders": [
+        {
+            "type": "hcloud",
+            "image": "debian-10",
+            "location": "fsn1",
+            "server_type": "cx11",
+            "ssh_username": "root",
+            "snapshot_name": "bambichecker-{{timestamp}}",
+            "snapshot_labels": {
+                "type": "bambichecker"
+            }
+        }
+    ]
+}

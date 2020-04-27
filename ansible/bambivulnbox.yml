@@ -1,14 +1,20 @@
 ---
-  - hosts: vulnbox*
+  - hosts: all
     become: yes
     become_method: sudo
     vars_files:
       - config_bambi.yml
 
     roles:
+      - hetzner-base
       - docker
-      - bambi-openvpn-client
-      - bambi-wireguard-server
-      - bambi-services-vuln
+      - vuln_services
       - bambi-ssh-keys
+      - firewall
+      - docker-block-external
+      - wireguard
       - EnoMoloch
+      - role: programs
+        vars:
+          program_list: "tmux"
+      - bambi-openvpn-team-server

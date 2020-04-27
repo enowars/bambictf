@@ -1,0 +1,11 @@
+---
+  - name: "Add interface config to /etc/network/interfaces.d"
+    copy:
+      src: ens10.cfg
+      dest: /etc/network/interfaces.d/ens10.cfg
+
+  - name: "Add script to add internal routes to /opt/add-routes.sh"
+    template:
+      src: add-routes.sh.j2
+      dest: /opt/add-routes.sh
+      mode: "755"

@@ -1,0 +1,22 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - '/services/data/*.log'
+
+- type: container
+  paths:
+    - '/var/lib/docker/containers/*/*.log'
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+output.logstash:
+  hosts: ["{{elk}}:5045"]
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~

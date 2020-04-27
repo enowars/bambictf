@@ -1,0 +1,5 @@
+---
+  - name: "Create 75-rename-ifaces.rules"
+    copy:
+      src: 75-rename-ifaces.rules
+      dest: /etc/udev/rules.d/75-rename-ifaces.rules

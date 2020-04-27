@@ -7,7 +7,7 @@
 
   - name: Download journalbeat
     get_url: 
-      url="https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-6.7.1-amd64.deb"
+      url="https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.6.2-amd64.deb"
       dest="/tmp/journalbeat.deb"
     when: journalbeat_check_deb.rc == 1
 
@@ -17,8 +17,8 @@
     when: journalbeat_check_deb.rc == 1
 
   - name: Sync journalbeat config
-    copy:
-      src: journalbeat.yml
+    template:
+      src: journalbeat.yml.j2
       dest: /etc/journalbeat/journalbeat.yml
   
   - name: Enable and start journalbeat

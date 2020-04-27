@@ -1,0 +1,76 @@
+---
+  - copy:
+      src: "{{ role_path }}/../../../config/wireguard_router/router.conf"
+      dest: /etc/wireguard/router.conf
+
+  - name: start and enable wg-quick@cloud.service
+    service:
+      name: wg-quick@router
+      enabled: yes
+
+  - name: "Enable ipv4 forward"
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      sysctl_set: yes
+
+  - name: allow related/established forward traffic
+    iptables:
+      chain: FORWARD
+      ctstate: [RELATED, ESTABLISHED]
+      jump: ACCEPT
+
+  - name: "Enable ipv4 forward"
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      sysctl_set: yes
+
+  - name: allow related/established forward traffic
+    iptables:
+      chain: FORWARD
+      ctstate: [RELATED, ESTABLISHED]
+      jump: ACCEPT
+
+  - name: masquerade outgoing traffic on the router interface
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      out_interface: router
+      jump: MASQUERADE
+
+  - name: DNAT the flag submission IP to the engine
+    iptables:
+      table: nat
+      chain: PREROUTING
+      destination: 10.0.13.37
+      jump: DNAT
+      to_destination: 192.168.1.0
+  
+  - name: allow flag submission traffic
+    iptables:
+      chain: FORWARD
+      in_interface: router
+      out_interface: ens10
+      destination: 192.168.1.0
+      protocol: tcp
+      destination_port: "1337"
+      jump: ACCEPT
+
+  - name: allow traffic from the internal network to teams
+    iptables:
+      chain: FORWARD
+      in_interface: ens10
+      out_interface: router
+      jump: ACCEPT
+
+  - name: allow wireguard input traffic
+    iptables:
+      chain: INPUT
+      in_interface: eth0
+      destination_port: "51820"
+      protocol: udp
+      jump: ACCEPT
+
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"

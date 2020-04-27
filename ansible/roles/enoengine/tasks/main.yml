@@ -5,6 +5,11 @@
       state: stopped
       enabled: no
 
+  - name: Install docker dependencies
+    apt: 
+      name: ["git"]
+      state: present
+
   - name: Clone EnoEngine
     git:
       repo: "https://github.com/enowars/EnoEngine.git"
@@ -13,5 +18,15 @@
   - name: Enable and start EnoEngine DB
     service:
       name: dc@EnoEngine
-      state: restarted
       enabled: yes
+
+  - name: Allow flag submission traffic
+    iptables:
+      chain: INPUT
+      in_interface: ens10
+      protocol: tcp
+      destination_port: "1337"
+      jump: ACCEPT
+
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"
