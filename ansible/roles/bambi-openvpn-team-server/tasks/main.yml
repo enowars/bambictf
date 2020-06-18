@@ -11,16 +11,6 @@
       dest: /opt/setup-team-openvpn.sh
       mode: "755"
 
-  - name: "Add systemd setup-team-openvpn.service"
-    copy:
-      src: setup-team-openvpn.service
-      dest: /etc/systemd/system/setup-team-openvpn.service
-
-  - name: "Enable systemd setup-team-openvpn.service"
-    service:
-      name: setup-team-openvpn
-      enabled: yes
-
   - name: "Enable ipv4 forward"
     sysctl:
       name: net.ipv4.ip_forward

@@ -1,8 +1,0 @@
-[Unit]
-Description=Setup OpenVPN team server
-
-[Service]
-ExecStart=/opt/setup-team-openvpn.sh
-
-[Install]
-WantedBy=multi-user.target

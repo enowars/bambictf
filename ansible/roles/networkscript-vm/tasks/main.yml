@@ -1,9 +1,0 @@
----
-# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
-  - name: Copy network-setup.sh
-    template:
-      src: network-setup.sh.j2
-      dest: /usr/bin/network-setup
-      owner: root
-      group: root
-      mode: 750

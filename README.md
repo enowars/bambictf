@@ -1,19 +1,9 @@
-Generate all the VMs
+# Bambi CTF Infrastructure
 
-Currently Gutenberged together from: [here](https://github.com/deimosfr/packer-debian) and [here](https://github.com/geerlingguy/packer-debian-9)
+This is the setup used for our Bambi CTF training competitions.
 
+It uses ansible and packer to prepare images for Hetzner Cloud and terraform to create the infrastructure.
 
-# Create a new vulnbox
+The Vagrantfile in the `ansible/` folder is used for local testing only (to ensure your ansible playbook does not contain any syntax errors before running them with packer on a paid VM).
 
-Needs to have `ansible` and `packer` installed on host.
-
-* `packer build vulnbox.json`  
-* Wait until done.
-* Import into VBox and start
-* Enable portforwarding
-* `ansible-playbook ansible/vulnbox.yml`
-* Wait
-* ssh into vulnbox
-* `network-script <teamid> <interface>`
-
-If you use Virtualbox execute the `prep_manual_vulnbox.sh` after `packer` is done and continue with `ansible`.
+To be continued...

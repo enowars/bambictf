@@ -1,11 +1,6 @@
 ---
-  - name: "Add interface config to /etc/network/interfaces.d"
-    copy:
-      src: ens10.cfg
-      dest: /etc/network/interfaces.d/ens10.cfg
-
-  - name: "Add script to add internal routes to /opt/add-routes.sh"
+  - name: "Add netplan config for internal routes"
     template:
-      src: add-routes.sh.j2
-      dest: /opt/add-routes.sh
+      src: 90-internal-routes.yaml.j2
+      dest: /etc/netplan/90-internal-routes.yaml
       mode: "755"

@@ -1,0 +1,66 @@
+---
+  - name: Increase max_map_count
+    sysctl:
+      name: vm.max_map_count
+      value: 262144
+      sysctl_set: yes
+
+  - name: Disable and stop EnoMoloch
+    service:
+      name: dc@EnoMoloch
+      state: stopped
+      enabled: no
+
+  - name: Install tcpdump
+    apt:
+      name: tcpdump
+      state: present
+      update_cache: yes
+
+  - name: Copy over the enodump unit
+    copy:
+      src: enodump.service
+      dest: /etc/systemd/system/enodump.service
+    changed_when: false
+
+  - name: Ensure /services/EnoMoloch exists
+    file:
+      path: /services/EnoMoloch
+      state: directory
+
+  - name: Copy over the EnoMoloch docker-compose file
+    copy:
+      src: docker-compose.yml
+      dest: /services/EnoMoloch/docker-compose.yml
+    changed_when: false
+
+  - name: Reload system daemon
+    systemd:
+      name: "enodump" # ansible <2.4 always requires 'name'
+      daemon_reload: yes
+
+  - name: Ensure /pcaps exists
+    file:
+      path: /pcaps
+      state: directory
+
+  - name: Enable and start enodump
+    service:
+      name: enodump
+      enabled: yes
+
+  - name: Enable and start EnoMoloch
+    service:
+      name: dc@EnoMoloch
+      enabled: yes
+
+  - name: "Block access to moloch from game interface"
+    iptables:
+      chain: DOCKER-USER
+      in_interface: game
+      protocol: tcp
+      destination_port: "8005"
+      jump: DROP
+
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"

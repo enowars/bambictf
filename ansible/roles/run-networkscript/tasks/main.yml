@@ -1,4 +1,0 @@
----
-# Created by Niklas Jacob for ENOWARS3
-  - name: Run network-setup (teamid)
-    command: /usr/bin/network-setup {{teamid}} eth1

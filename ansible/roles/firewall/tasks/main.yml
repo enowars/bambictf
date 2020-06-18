@@ -64,6 +64,33 @@
       jump: ACCEPT
       ip_version: ipv6
 
+  - name: permit needed ICMPv6 packet types (IPv6)
+    iptables:
+      chain: INPUT
+      protocol: ipv6-icmp
+      icmp_type: "{{ item }}"
+      jump: ACCEPT
+      ip_version: ipv6
+    loop: ["1", "2", "3", "4", "133", "134", "135", "136", "137", "141", "142", "148", "149"]
+
+  - name: permit needed ICMPv6 packet types from local addresses (IPv6)
+    iptables:
+      chain: INPUT
+      protocol: ipv6-icmp
+      icmp_type: "{{ item }}"
+      source: fe80::/10
+      jump: ACCEPT
+      ip_version: ipv6
+    loop: ["130", "131", "132", "143", "151", "152", "153"]
+
+  - name: allow ICMPv6 ping requests (IPv6)
+    iptables:
+      chain: INPUT
+      protocol: ipv6-icmp
+      icmp_type: "128"
+      jump: ACCEPT
+      ip_version: ipv6
+
   - name: disable IPv6 input
     iptables:
       chain: INPUT

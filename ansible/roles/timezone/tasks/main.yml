@@ -1,5 +1,0 @@
----
-# Created by Sebastian Neef (@gehaxelt) for ENOWARS3
-  - name: Set Europe/Berlin timezone
-    timezone:
-      name: Europe/Berlin

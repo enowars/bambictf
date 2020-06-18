@@ -15,7 +15,7 @@
     changed_when: false
 
   - name: Install docker dependencies
-    apt: 
+    apt:
       name: ["apt-transport-https", "ca-certificates", "gnupg2", "software-properties-common"]
       state: present
 
@@ -26,7 +26,7 @@
     changed_when: false
 
   - name: Import Docker GPG key
-    apt_key: 
+    apt_key:
       file: /tmp/docker.gpg
       state: present
 
@@ -37,19 +37,19 @@
     changed_when: false
 
   - name: Add docker repository
-    apt_repository: 
-      repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ release.stdout }} stable"
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ release.stdout }} stable"
       state: present
 
   - name: Update and install docker
-    apt: 
+    apt:
       name: docker-ce
-      state: present 
+      state: present
       update_cache: yes
 
   - name: Install docker-compose
-    get_url: 
-      url: "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}" 
+    get_url:
+      url: "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}"
       dest: /usr/local/bin/docker-compose
       mode: 0755
 

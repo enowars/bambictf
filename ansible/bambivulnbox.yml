@@ -13,7 +13,7 @@
       - firewall
       - docker-block-external
       - wireguard
-      - EnoMoloch
+      - enomoloch
       - role: programs
         vars:
           program_list: "tmux"

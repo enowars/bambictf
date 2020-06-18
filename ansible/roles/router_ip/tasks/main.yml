@@ -1,3 +1,0 @@
----
-  - name: Run network-setup with IP
-    shell: "/usr/bin/network-setup address {{internal_ip}}"

@@ -6,7 +6,7 @@
       enabled: no
 
   - name: Install docker dependencies
-    apt: 
+    apt:
       name: ["git"]
       state: present
 
@@ -23,7 +23,7 @@
   - name: Allow flag submission traffic
     iptables:
       chain: INPUT
-      in_interface: ens10
+      in_interface: int1
       protocol: tcp
       destination_port: "1337"
       jump: ACCEPT

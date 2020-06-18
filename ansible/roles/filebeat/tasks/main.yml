@@ -13,7 +13,7 @@
 
   - name: Install Filebeat
     apt: deb="/tmp/filebeat.deb"
-    sudo: true
+    become: yes
     when: filebeat_check_deb.rc == 1
 
   - name: Copy filebeat.yml to host

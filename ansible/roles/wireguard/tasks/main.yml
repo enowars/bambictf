@@ -3,29 +3,17 @@
     apt:
       upgrade: yes
       update_cache: yes
-      cache_valid_time: 86400 #One day
 
-  - name: Install linux headers
+  - name: Install wg
     apt:
-      name: linux-headers-amd64
+      name: wireguard
+      state: present
 
   - name: Ensure wg directory exists
     file:
       path: /etc/wireguard
       state: directory
       mode: "700"
-
-  - name: Add wg repository
-    apt_repository:
-      repo: "deb http://deb.debian.org/debian buster-backports main"
-      state: present
-
-  - name: Install wg
-    apt:
-      name: wireguard
-      state: present
-      update_cache: yes
-      default_release: buster-backports
 
   - name: allow wireguard input traffic
     iptables:

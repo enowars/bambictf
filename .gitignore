@@ -11,3 +11,5 @@ config*.yml
 .retry
 /config
 *.retry
+.trash/
+.env

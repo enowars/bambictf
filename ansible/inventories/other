@@ -1,6 +1,0 @@
-[mainvm]
-ec2-18-185-220-92.eu-central-1.compute.amazonaws.com ansible_ssh_user=ubuntu hostname=mainvm ansible_ssh_private_key_file=Enoflag.pem
-
-[mainvm:vars]
-swarm_token=SWMTKN-1-5qkz1h0qzeplxsrieeanyrubwaplp28o71qsjxmdfr98vhqvqj-2op0b7tuxvuhetau0mwkskv9r
-interface=tun1
