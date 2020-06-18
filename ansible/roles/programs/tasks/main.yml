@@ -7,11 +7,6 @@
       cache_valid_time: 3000
       state: present
 
-  - name: Uninstall rpcbind
-    apt: 
-      name: rpcbind
-      state: absent
-
   - name: Copy tmux conf
     copy:
       src: .tmux.conf

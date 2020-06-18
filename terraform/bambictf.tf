@@ -11,10 +11,10 @@ locals {
   vulnbox_count = 2
   checker_count = 1
   engine_count  = 1 # must be 0 or 1
-  vulnbox_type  = "cpx21"
+  vulnbox_type  = "cpx11"
   router_type   = "cpx11"
   checker_type  = "cpx11"
-  engine_type   = "cpx31"
+  engine_type   = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
@@ -53,7 +53,7 @@ resource "hcloud_server" "router" {
   location    = "fsn1"
   server_type = local.router_type
 
-  ssh_keys = data.hcloud_ssh_keys.all_keys.*.name
+  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
@@ -67,7 +67,7 @@ resource "hcloud_server" "vulnbox" {
   server_type = local.vulnbox_type
   count       = local.vulnbox_count
 
-  ssh_keys = data.hcloud_ssh_keys.all_keys.*.name
+  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.ext.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
@@ -95,7 +95,7 @@ resource "hcloud_server" "checker" {
   server_type = local.checker_type
   count       = local.checker_count
 
-  ssh_keys = data.hcloud_ssh_keys.all_keys.*.name
+  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
@@ -109,7 +109,7 @@ resource "hcloud_server" "engine" {
   server_type = local.engine_type
   count       = local.engine_count
 
-  ssh_keys = data.hcloud_ssh_keys.all_keys.*.name
+  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
@@ -126,19 +126,12 @@ resource "hcloud_network_subnet" "infrasubnet" {
   type         = "server"
   network_zone = "eu-central"
   ip_range     = "192.168.0.0/20"
-  depends_on = [
-    hcloud_network.infra
-  ]
 }
 
 resource "hcloud_server_network" "router" {
   server_id  = hcloud_server.router.id
   network_id = hcloud_network.infra.id
   ip         = "192.168.0.2"
-  depends_on = [
-    hcloud_server.router,
-    hcloud_network_subnet.infrasubnet
-  ]
 }
 
 // attach the checkers to the c network
@@ -146,10 +139,6 @@ resource "hcloud_server_network" "checker" {
   server_id  = hcloud_server.checker[count.index].id
   network_id = hcloud_network.infra.id
   ip         = "192.168.1.${count.index + 1}"
-  depends_on = [
-    hcloud_server.checker,
-    hcloud_network_subnet.infrasubnet
-  ]
   count = local.checker_count
 }
 
@@ -158,10 +147,6 @@ resource "hcloud_server_network" "engine" {
   server_id  = hcloud_server.engine[count.index].id
   network_id = hcloud_network.infra.id
   ip         = "192.168.1.0"
-  depends_on = [
-    hcloud_server.engine[0],
-    hcloud_network_subnet.infrasubnet
-  ]
   count = local.engine_count
 }
 
@@ -171,7 +156,4 @@ resource "hcloud_network_route" "internal_gw_route" {
   // i.e., run "ip r add 10.0.0.0/8 via 192.168.0.1" on the VM to route only the 10.0.0.0/8 network via the router
   destination = "0.0.0.0/0"
   gateway     = "192.168.0.2"
-  depends_on = [
-    hcloud_network.infra
-  ]
 }

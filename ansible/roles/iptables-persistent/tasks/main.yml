@@ -3,3 +3,4 @@
     apt:
       name: iptables-persistent
       state: present
+      update_cache: yes
