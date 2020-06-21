@@ -6,7 +6,6 @@
       - config_bambi.yml
 
     roles:
-      - hetzner-base
       - role: filebeat
         vars:
           elk: 192.168.1.0

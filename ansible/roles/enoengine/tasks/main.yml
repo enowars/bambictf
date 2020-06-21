@@ -23,9 +23,17 @@
   - name: Allow flag submission traffic
     iptables:
       chain: INPUT
-      in_interface: int1
+      in_interface: internal
       protocol: tcp
       destination_port: "1337"
+      jump: ACCEPT
+
+  - name: allow wireguard input traffic (internal)
+    iptables:
+      chain: INPUT
+      in_interface: eth0
+      destination_port: "51821"
+      protocol: udp
       jump: ACCEPT
 
   - name: persist iptables config

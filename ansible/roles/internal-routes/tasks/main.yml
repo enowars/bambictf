@@ -1,6 +1,0 @@
----
-  - name: "Add netplan config for internal routes"
-    template:
-      src: 90-internal-routes.yaml.j2
-      dest: /etc/netplan/90-internal-routes.yaml
-      mode: "755"

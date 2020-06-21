@@ -1,0 +1,23 @@
+---
+  - name: Disable and stop bambi-scoreboard
+    service:
+      name: dc@bambi-scoreboard
+      state: stopped
+      enabled: no
+
+  - name: Clone bambi-scoreboard
+    git:
+      repo: "https://github.com/enowars/bambi-scoreboard.git"
+      dest: /services/bambi-scoreboard
+
+  - name: allow scoreboard input traffic
+    iptables:
+      action: insert
+      chain: DOCKER-USER
+      in_interface: eth0
+      protocol: tcp
+      destination_port: "80"
+      jump: ACCEPT
+
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"

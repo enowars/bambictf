@@ -14,11 +14,3 @@
       path: /etc/wireguard
       state: directory
       mode: "700"
-
-  - name: allow wireguard input traffic
-    iptables:
-      chain: INPUT
-      in_interface: eth0
-      destination_port: "51820"
-      protocol: udp
-      jump: ACCEPT

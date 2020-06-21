@@ -1,12 +1,19 @@
 ---
-  - copy:
-      src: "{{ role_path }}/../../../config/wireguard_router/router.conf"
-      dest: /etc/wireguard/router.conf
+  - name: allow wireguard input traffic (game)
+    iptables:
+      chain: INPUT
+      in_interface: eth0
+      destination_port: "51820"
+      protocol: udp
+      jump: ACCEPT
 
-  - name: start and enable wg-quick@cloud.service
-    service:
-      name: wg-quick@router
-      enabled: yes
+  - name: allow wireguard input traffic (internal)
+    iptables:
+      chain: INPUT
+      in_interface: eth0
+      destination_port: "51821"
+      protocol: udp
+      jump: ACCEPT
 
   - name: "Enable ipv4 forward"
     sysctl:
@@ -30,6 +37,13 @@
     iptables:
       chain: FORWARD
       ctstate: [RELATED, ESTABLISHED]
+      jump: ACCEPT
+
+  - name: allow all internal traffic
+    iptables:
+      chain: FORWARD
+      in_interface: internal
+      out_interface: internal
       jump: ACCEPT
 
   - name: masquerade outgoing traffic on the router interface
@@ -51,7 +65,7 @@
     iptables:
       chain: FORWARD
       in_interface: router
-      out_interface: int1
+      out_interface: internal
       destination: 192.168.1.0
       protocol: tcp
       destination_port: "1337"
@@ -60,16 +74,8 @@
   - name: allow traffic from the internal network to teams
     iptables:
       chain: FORWARD
-      in_interface: int1
+      in_interface: internal
       out_interface: router
-      jump: ACCEPT
-
-  - name: allow wireguard input traffic
-    iptables:
-      chain: INPUT
-      in_interface: eth0
-      destination_port: "51820"
-      protocol: udp
       jump: ACCEPT
 
   - name: persist iptables config

@@ -49,10 +49,11 @@
       name: enodump
       enabled: yes
 
-  - name: Enable and start EnoMoloch
-    service:
-      name: dc@EnoMoloch
-      enabled: yes
+# Start it with docker-compose up -d during cloud-init instead
+#  - name: Enable and start EnoMoloch
+#    service:
+#      name: dc@EnoMoloch
+#      enabled: yes
 
   - name: "Block access to moloch from game interface"
     iptables:

@@ -8,12 +8,12 @@ provider "hcloud" {
 }
 
 locals {
-  vulnbox_count = 2
+  vulnbox_count = 1
   checker_count = 1
   engine_count  = 1 # must be 0 or 1
-  vulnbox_type  = "cpx11"
+  vulnbox_type  = "cpx21"
   router_type   = "cpx11"
-  checker_type  = "cpx11"
+  checker_type  = "cpx21"
   engine_type   = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
@@ -22,6 +22,7 @@ locals {
 }
 
 data "hcloud_ssh_keys" "all_keys" {
+  with_selector = "admin=true"
 }
 
 data "hcloud_image" "bambirouter" {
@@ -47,6 +48,10 @@ data "hcloud_image" "bambiengine" {
   most_recent   = true
 }
 
+data "hcloud_floating_ip" "vpn" {
+  with_selector = "type=vpn"
+}
+
 resource "hcloud_server" "router" {
   name        = "router"
   image       = data.hcloud_image.bambirouter.id
@@ -58,6 +63,39 @@ resource "hcloud_server" "router" {
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
+
+  user_data = <<TERRAFORMEOF
+#!/bin/bash
+
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${data.hcloud_floating_ip.vpn.ip_address}/32
+EOF
+ip addr add ${data.hcloud_floating_ip.vpn.ip_address}/32 dev eth0
+
+#!/bin/sh
+cat <<EOF >> /etc/wireguard/internal.conf
+${file("../config/internal_router/router.conf")}
+EOF
+systemctl enable wg-quick@internal
+systemctl start wg-quick@internal
+
+#!/bin/sh
+cat <<EOF >> /etc/wireguard/router.conf
+${file("../config/wireguard_router/router.conf")}
+EOF
+systemctl enable wg-quick@router
+systemctl start wg-quick@router
+TERRAFORMEOF
+}
+
+resource "hcloud_floating_ip_assignment" "vpn" {
+  floating_ip_id = data.hcloud_floating_ip.vpn.id
+  server_id      = hcloud_server.router.id
 }
 
 resource "hcloud_server" "vulnbox" {
@@ -85,6 +123,15 @@ systemctl enable wg-quick@game
 systemctl start wg-quick@game
 # provision OpenVPN server for team access
 /opt/setup-team-openvpn.sh
+
+for service in $(ls /services/); do
+cd "/services/$service" && docker-compose up -d &
+done
+
+cat <<EOF | passwd
+${trimspace(file("../config/passwords/team${count.index + 1}.txt"))}
+${trimspace(file("../config/passwords/team${count.index + 1}.txt"))}
+EOF
 TERRAFORMEOF
 }
 
@@ -100,6 +147,20 @@ resource "hcloud_server" "checker" {
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
+
+  # ensure that the wireguard endpoint is resolved correctly on boot
+  depends_on = [
+    hcloud_floating_ip.engine_vpn
+  ]
+
+  user_data = <<TERRAFORMEOF
+#!/bin/sh
+cat <<EOF >> /etc/wireguard/internal.conf
+${file("../config/internal_router/clients/team${count.index + 1}.conf")}
+EOF
+systemctl enable wg-quick@internal
+systemctl start wg-quick@internal
+TERRAFORMEOF
 }
 
 resource "hcloud_server" "engine" {
@@ -114,46 +175,38 @@ resource "hcloud_server" "engine" {
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
+
+  user_data = <<TERRAFORMEOF
+#!/bin/sh
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${hcloud_floating_ip.engine_vpn.ip_address}/32
+EOF
+ip addr add ${hcloud_floating_ip.engine_vpn.ip_address}/32 dev eth0
+
+cat <<EOF >> /etc/wireguard/internal.conf
+${file("../config/internal_router/engine.conf")}
+EOF
+systemctl enable wg-quick@internal
+systemctl start wg-quick@internal
+TERRAFORMEOF
 }
 
-resource "hcloud_network" "infra" {
-  name     = "infra"
-  ip_range = "192.168.0.0/20"
+resource "hcloud_floating_ip" "engine_vpn" {
+  name          = "engine-vpn"
+  type          = "ipv4"
+  home_location = "fsn1"
+
+  provisioner "local-exec" {
+    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ip_address}\""
+  }
 }
 
-resource "hcloud_network_subnet" "infrasubnet" {
-  network_id   = hcloud_network.infra.id
-  type         = "server"
-  network_zone = "eu-central"
-  ip_range     = "192.168.0.0/20"
-}
-
-resource "hcloud_server_network" "router" {
-  server_id  = hcloud_server.router.id
-  network_id = hcloud_network.infra.id
-  ip         = "192.168.0.2"
-}
-
-// attach the checkers to the c network
-resource "hcloud_server_network" "checker" {
-  server_id  = hcloud_server.checker[count.index].id
-  network_id = hcloud_network.infra.id
-  ip         = "192.168.1.${count.index + 1}"
-  count = local.checker_count
-}
-
-// attach the engine to the infra network
-resource "hcloud_server_network" "engine" {
-  server_id  = hcloud_server.engine[count.index].id
-  network_id = hcloud_network.infra.id
-  ip         = "192.168.1.0"
-  count = local.engine_count
-}
-
-resource "hcloud_network_route" "internal_gw_route" {
-  network_id = hcloud_network.infra.id
-  // you still need to set a route on the VMs itself, so the gateway only sees traffic explicitly sent to it,
-  // i.e., run "ip r add 10.0.0.0/8 via 192.168.0.1" on the VM to route only the 10.0.0.0/8 network via the router
-  destination = "0.0.0.0/0"
-  gateway     = "192.168.0.2"
+resource "hcloud_floating_ip_assignment" "engine_vpn" {
+  floating_ip_id = hcloud_floating_ip.engine_vpn.id
+  server_id      = hcloud_server.engine[0].id
 }

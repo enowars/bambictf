@@ -1,5 +1,0 @@
----
-  - name: "Create netplan 60-bridges.yaml"
-    copy:
-      src: 60-bridges.yaml
-      dest: /etc/netplan/60-bridges.yaml

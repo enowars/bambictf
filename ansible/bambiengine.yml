@@ -6,15 +6,12 @@
       - config_bambi.yml
 
     roles:
-      - hetzner-base
       - bambi-ssh-keys
       - firewall
-      - role: internal-routes
-        vars:
-          gateway: 192.168.0.1
+      - wireguard
       - enoengine
       - enoelk
-      - enoscoreboard
+      - bambi-scoreboard
       - role: filebeat
         vars:
           elk: 192.168.1.0
