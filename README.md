@@ -40,7 +40,11 @@ ovh_dyndns_password = "..."
 ```sh
 (cd ./config/wireguard_router; ./gen_keys.sh $TEAMS_COUNT)
 ```
-6. Build images
+6. Generate passwords for the vulnboxes:
+```sh
+(cd ./config/passwords; ./gen_passwords.sh $TEAMS_COUNT)
+```
+7. Build images
 ```sh
 HCLOUD_TOKEN="..." (cd packer; packer build bambichecker.json)
 ```
