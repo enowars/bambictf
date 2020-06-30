@@ -3,7 +3,11 @@
         {
             "type": "ansible",
             "playbook_file": "../ansible/bambiengine.yml",
-            "host_alias": "packer-engine"
+            "host_alias": "packer-engine",
+            "extra_arguments": [
+                "--extra-vars",
+                "ansible_python_interpreter=/usr/bin/python3"
+            ]
         }
     ],
     "builders": [
