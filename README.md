@@ -42,5 +42,5 @@ ovh_dyndns_password = "..."
 ```
 6. Build images
 ```sh
-HCLOUD_TOKEN="..." packer build packer/bambichecker.json
+HCLOUD_TOKEN="..." (cd packer; packer build bambichecker.json)
 ```
