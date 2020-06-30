@@ -46,8 +46,9 @@ ovh_dyndns_password = "..."
 ```
 7. Build images
 ```sh
-HCLOUD_TOKEN="..." (cd packer; packer build bambichecker.json)
-HCLOUD_TOKEN="..." (cd packer; packer build bambiengine.json)
-HCLOUD_TOKEN="..." (cd packer; packer build bambirouter.json)
-HCLOUD_TOKEN="..." (cd packer; packer build bambivulnbox.json)
+export HCLOUD_TOKEN="..."
+(cd packer; packer build bambichecker.json)
+(cd packer; packer build bambiengine.json)
+(cd packer; packer build bambirouter.json)
+(cd packer; packer build bambivulnbox.json)
 ```
