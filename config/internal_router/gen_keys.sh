@@ -14,7 +14,7 @@ if ! command -v wg; then
 fi
 
 if [ "$#" -ne 1 ]; then
-    echo "Please specify a number of checker configs. Usage: $0 <no of teams>"
+    echo "Please specify a number of checker configs. Usage: $0 <no of checkers>"
     exit 1;
 fi
 
