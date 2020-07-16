@@ -4,7 +4,7 @@
     become_method: sudo
     vars_files:
       - config_bambi.yml
-  
+      - enomoloch-get-pcaps
     roles:
         - bambi-ssh-keys
         - firewall

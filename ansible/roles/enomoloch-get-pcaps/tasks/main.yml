@@ -1,0 +1,33 @@
+---
+  - name: Install tcpdump
+    apt: 
+      name: tcpdump
+      state: present 
+      update_cache: yes
+
+  - name: Copy over the get_messages unit
+    copy:
+      src: get_tcpdump_messages.service
+      dest: /etc/systemd/system/get_tcpdump_messages.service
+    changed_when: false
+  
+  - name: Ensure /services exists
+    file:
+      path: /services
+      state: directory
+  
+  - name: Ensure /pcaps exists
+    file:
+      path: /pcaps
+      state: directory
+  
+  - name: Copy over the get_messages script
+    copy:
+      src: get_messages.sh
+      dest: /services/get_messages.sh
+    changed_when: false
+
+  - name: Reload system daemon
+    systemd:
+      name: "get_tcpdump_messages" # ansible <2.4 always requires 'name'
+      daemon_reload: yes

@@ -1,0 +1,11 @@
+[Unit]
+Description=getting enodump
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+ExecStart=/services/sh get_messages.sh
+
+[Install]
+WantedBy=multi-user.targe

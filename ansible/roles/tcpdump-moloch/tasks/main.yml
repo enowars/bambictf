@@ -1,0 +1,32 @@
+---
+  - name: Install tcpdump
+    apt: 
+      name: tcpdump
+      state: present 
+      update_cache: yes
+
+  - name: Copy over the enodump unit
+    copy:
+      src: enodump.service
+      dest: /etc/systemd/system/enodump.service
+    changed_when: false
+
+  - name: Reload system daemon
+    systemd:
+      name: "enodump" # ansible <2.4 always requires 'name'
+      daemon_reload: yes
+
+  - name: Ensure /pcaps exists
+    file:
+      path: /pcaps
+      state: directory
+
+  - name: Ensure /pcaps/data exists
+    file:
+      path: /pcaps/data
+      state: directory
+
+  - name: Enable and start enodump
+    service:
+      name: enodump
+      enabled: yes
