@@ -3,7 +3,11 @@
         {
             "type": "ansible",
             "playbook_file": "../ansible/bambichecker.yml",
-            "host_alias": "packer-checker"
+            "host_alias": "packer-checker",
+            "extra_arguments": [
+                "--extra-vars",
+                "ansible_python_interpreter=/usr/bin/python3"
+            ]
         }
     ],
     "builders": [

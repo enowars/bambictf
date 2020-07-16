@@ -3,7 +3,11 @@
         {
             "type": "ansible",
             "playbook_file": "../ansible/bambivulnbox.yml",
-            "host_alias": "packer-vulnbox"
+            "host_alias": "packer-vulnbox",
+            "extra_arguments": [
+                "--extra-vars",
+                "ansible_python_interpreter=/usr/bin/python3"
+            ]
         }
     ],
     "builders": [

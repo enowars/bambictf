@@ -3,7 +3,11 @@
         {
             "type": "ansible",
             "playbook_file": "../ansible/bambirouter.yml",
-            "host_alias": "packer-router"
+            "host_alias": "packer-router",
+            "extra_arguments": [
+                "--extra-vars",
+                "ansible_python_interpreter=/usr/bin/python3"
+            ]
         }
     ],
     "builders": [
