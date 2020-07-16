@@ -61,6 +61,16 @@
       jump: DNAT
       to_destination: 192.168.1.0
 
+  - name: allow pinging the flag submission endpoint
+    iptables:
+      chain: FORWARD
+      in_interface: router
+      out_interface: internal
+      destination: 192.168.1.0
+      protocol: icmp
+      icmp_type: "8"
+      jump: ACCEPT
+
   - name: allow flag submission traffic
     iptables:
       chain: FORWARD
