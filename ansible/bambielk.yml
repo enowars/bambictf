@@ -11,16 +11,6 @@
       - wireguard
       - enoengine
       - enoelk
-      - bambi-scoreboard
-      - role: filebeat
-        vars:
-          elk: {{ elk_adress }}
-      - role: journalbeat
-        vars:
-          elk: {{ elk_adress }}
-      - role: metricbeat
-        vars:
-          elk: {{ elk_adress }}
       - docker-block-external
       - role: programs
         vars:

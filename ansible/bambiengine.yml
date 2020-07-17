@@ -10,7 +10,6 @@
       - firewall
       - wireguard
       - enoengine
-      - enoelk
       - bambi-scoreboard
       - role: filebeat
         vars:
