@@ -43,6 +43,11 @@ ListenPort = 51821
 [Peer]
 PublicKey = $engine_pubkey
 AllowedIPs = $ENGINE_ADDRESS
+
+[Peer]
+PublicKey = $elk_pubkey
+AllowedIPs = $ELK_ADDRESS
+PersistentKeepalive = 15
 EOF
 )"
 
@@ -57,6 +62,11 @@ PublicKey = $router_pubkey
 AllowedIPs = $GAME_NETWORK, $INTERNAL_NETWORK
 Endpoint = $ROUTER_ENDPOINT
 PersistentKeepalive = 15
+
+[Peer]
+PublicKey = $elk_pubkey
+AllowedIPs = $ELK_ADDRESS
+PersistentKeepalive = 15
 EOF
 )"
 
@@ -67,9 +77,14 @@ PrivateKey = $elk_privkey
 ListenPort = 51821
 
 [Peer]
-PublicKey = $ROUTER_pubkey
+PublicKey = $router_pubkey
 AllowedIPs = $INTERNAL_NETWORK
 Endpoint = $ROUTER_ENDPOINT
+PersistentKeepalive = 15
+
+[Peer]
+PublicKey = $engine_pubkey
+AllowedIPs = $ENGINE_ADDRESS
 PersistentKeepalive = 15
 EOF
 )"
@@ -98,6 +113,11 @@ PersistentKeepalive = 15
 PublicKey = $engine_pubkey
 AllowedIPs = $ENGINE_ADDRESS
 Endpoint = $ENGINE_ENDPOINT
+PersistentKeepalive = 15
+
+[Peer]
+PublicKey = $elk_pubkey
+AllowedIPs = $ELK_ADDRESS
 PersistentKeepalive = 15
 EOF
     router_conf+=$(cat << EOF
