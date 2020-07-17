@@ -58,7 +58,7 @@ EOF
 cat <<EOF > /root/client.conf
 proto udp
 dev tun
-remote $(cat /etc/hostname).ext.bambi.ovh 1194
+remote $(ip a | grep eth0 | grep inet | awk '{ print $2 }' | cut -f1 -d'/') 1194
 resolv-retry infinite
 nobind
 
