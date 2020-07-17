@@ -1,0 +1,14 @@
+version: '3'
+services:
+  moloch:
+    image: enoflag/enomoloch
+    ports:
+      - 80:8005
+    volumes:
+      - "/pcaps:/data/moloch/raw"
+    environment:
+      - "MOLOCH_PASSWORD=moloch"
+  elasticsearchmoloch:
+    image: elasticsearch:7.6.0
+    environment:
+      - discovery.type=single-node
