@@ -206,8 +206,8 @@ TERRAFORMEOF
 
 resource "hcloud_server" "elk" {
   name        = "elk"
-  image       = local.location
-  location    = "fsn1"
+  image       = data.hcloud_image.bambielk.id
+  location    = local.location
   server_type = local.elk_type
   count       = local.elk_count
 
