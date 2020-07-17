@@ -51,8 +51,8 @@ data "hcloud_image" "bambiengine" {
 }
 
 data "hcloud_image" "bambielk" {
-  with_selector = local.engine_count > 0 ? "type=bambielk" : null
-  name          = local.engine_count > 0 ? null : "debian-10"
+  with_selector = local.elk_count > 0 ? "type=bambielk" : null
+  name          = local.elk_count > 0 ? null : "debian-10"
   most_recent   = true
 }
 
