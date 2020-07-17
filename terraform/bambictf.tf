@@ -11,12 +11,12 @@ locals {
   vulnbox_count = 1
   checker_count = 1
   engine_count  = 1 # must be 0 or 1
-  elk_count     = 1
+  moloch_count  = 1
   vulnbox_type  = "cpx21"
   router_type   = "cpx11"
   checker_type  = "cpx21"
   engine_type   = "cpx21"
-  elk_type      = "cpx21"
+  moloch_type   = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
@@ -50,8 +50,8 @@ data "hcloud_image" "bambiengine" {
   most_recent   = true
 }
 
-data "hcloud_image" "bambielk" {
-  with_selector = local.engine_count > 0 ? "type=bambielk" : null
+data "hcloud_image" "bambimoloch" {
+  with_selector = local.engine_count > 0 ? "type=bambimoloch" : null
   name          = local.engine_count > 0 ? null : "debian-10"
   most_recent   = true
 }
@@ -204,12 +204,12 @@ systemctl start wg-quick@internal
 TERRAFORMEOF
 }
 
-resource "hcloud_server" "elk" {
-  name        = "elk${count.index + 1}"
-  image       = data.hcloud_image.bambielk.id
+resource "hcloud_server" "moloch" {
+  name        = "moloch${count.index + 1}"
+  image       = data.hcloud_image.bambimoloch.id
   location    = "fsn1"
-  server_type = local.elk_type
-  count       = local.elk_count
+  server_type = local.moloch_type
+  count       = local.moloch_count
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
@@ -219,11 +219,21 @@ resource "hcloud_server" "elk" {
 
   # ensure that the wireguard endpoint is resolved correctly on boot
   depends_on = [
-    hcloud_floating_ip.engine_vpn
+    hcloud_floating_ip.engine_vpn #not sure if needed?
   ]
-  user_data = <<TERRAFORMEOF
 
+  user_data = <<TERRAFORMEOF
 #!/bin/sh
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${hcloud_floating_ip.elk_vpn.ip_address}/32
+EOF
+ip addr add ${hcloud_floating_ip.elk_vpn.ip_address}/32 dev eth0
+
 cat <<EOF >> /etc/wireguard/internal.conf
 ${file("../config/internal_router/elk.conf")}
 EOF
