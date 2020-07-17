@@ -6,14 +6,13 @@
       - config_bambi.yml
 
     roles:
-      - hetzner-base
       - docker
       - vuln_services
       - bambi-ssh-keys
       - firewall
       - docker-block-external
       - wireguard
-      - enomoloch
+      #- enomoloch
       - role: programs
         vars:
           program_list: "tmux"
