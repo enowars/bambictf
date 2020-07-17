@@ -9,7 +9,6 @@
       - bambi-ssh-keys
       - firewall
       - wireguard
-      - enoengine
       - enoelk
       - docker-block-external
       - role: programs
