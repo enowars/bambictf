@@ -1,6 +1,6 @@
 #!/bin/bash
 
-scp -i ~/.ssh/priv_key_for_moloch $1 root@192.168.0.3:/pcaps
+scp -i ~/.ssh/moloch_key $1 root@192.168.0.3:/pcaps
 
 rm $1
 
