@@ -51,7 +51,7 @@ data "hcloud_image" "bambiengine" {
 }
 
 data "hcloud_image" "bambielk" {
-  with_selector = local.engine_count > 0 ? "type=bambimoloch" : null
+  with_selector = local.engine_count > 0 ? "type=bambielk" : null
   name          = local.engine_count > 0 ? null : "debian-10"
   most_recent   = true
 }
@@ -206,7 +206,7 @@ TERRAFORMEOF
 
 resource "hcloud_server" "elk" {
   name        = "elk"
-  image       = data.hcloud_image.bambielk.id
+  image       = local.location
   location    = "fsn1"
   server_type = local.elk_type
   count       = local.elk_count
