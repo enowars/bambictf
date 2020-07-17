@@ -11,6 +11,15 @@
       - wireguard
       - enoelk
       - docker-block-external
+      - role: filebeat
+        vars:
+          elk: {{ elk_address }}
+      - role: journalbeat
+        vars:
+          elk: {{ elk_address }}
+      - role: metricbeat
+        vars:
+          elk: {{ elk_address }}
       - role: programs
         vars:
           program_list: "tmux"
