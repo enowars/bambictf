@@ -1,0 +1,19 @@
+[Unit]
+Description=ENOWARS ELK
+Requires=docker.service
+After=docker.service containerd.service
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+WorkingDirectory=/services/EnoELK
+
+ExecStartPre=/usr/local/bin/docker-compose kill
+ExecStartPre=/usr/local/bin/docker-compose pull
+
+ExecStart=/services/EnoELK/run.sh
+
+ExecStop=/usr/local/bin/docker-compose kill
+
+[Install]
+WantedBy=multi-user.target
