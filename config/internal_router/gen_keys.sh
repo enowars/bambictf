@@ -5,8 +5,10 @@ INTERNAL_NETWORK="192.168.0.0/20"
 TEAM_IP_PREFIX="192.168.1."
 ROUTER_ADDRESS="192.168.0.2/20"
 ENGINE_ADDRESS="192.168.1.0/32"
+ELK_ADDRESS   ="192.168.1.1/32"
 ROUTER_ENDPOINT=vpn.bambi.ovh:51821
 ENGINE_ENDPOINT=engine-vpn.bambi.ovh:51821
+ELK_ENDPOINT   =elk-vpn.bambi.ohv:51821
 
 if ! command -v wg; then
     echo "The command wg does not exist."
@@ -29,6 +31,9 @@ router_pubkey=$(echo "$router_privkey" | wg pubkey)
 engine_privkey=$(wg genkey)
 engine_pubkey=$(echo "$engine_privkey" | wg pubkey)
 
+elk_privkey=$(wg genkey)
+elk_pubkey=$(echo "$engine_privkey" | wg pubkey)
+
 router_conf="$( cat <<-EOF
 [Interface]
 Address = $ROUTER_ADDRESS
@@ -49,6 +54,20 @@ ListenPort = 51821
 
 [Peer]
 PublicKey = $router_pubkey
+AllowedIPs = $GAME_NETWORK, $INTERNAL_NETWORK
+Endpoint = $ROUTER_ENDPOINT
+PersistentKeepalive = 15
+EOF
+)"
+
+elk_conf="$( cat <<-EOF
+[Interface]
+Address = $ELK_ADDRESS
+PrivateKey = $elk_privkey
+ListenPort = 51821
+
+[Peer]
+PublicKey = $ROUTER_pubkey
 AllowedIPs = $GAME_NETWORK, $INTERNAL_NETWORK
 Endpoint = $ROUTER_ENDPOINT
 PersistentKeepalive = 15
@@ -102,3 +121,4 @@ done
 
 echo "$router_conf" > router.conf
 echo "$engine_conf" > engine.conf
+echo "$elk_conf"    > elk.conf
