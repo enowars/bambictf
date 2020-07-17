@@ -118,7 +118,7 @@ AllowedIPs = ${team_ip}/32
 EOF
 )
 
-    elk_conf+=$(cat<< EOF
+    elk_conf+=$(cat << EOF
     
 
 [Peer]
