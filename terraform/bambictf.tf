@@ -205,7 +205,7 @@ TERRAFORMEOF
 }
 
 resource "hcloud_server" "moloch" {
-  name        = "moloch${count.index + 1}"
+  name        = "moloch"
   image       = data.hcloud_image.bambimoloch.id
   location    = "fsn1"
   server_type = local.moloch_type
