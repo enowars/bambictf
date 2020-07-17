@@ -11,11 +11,13 @@ locals {
   vulnbox_count = 4
   checker_count = 7
   engine_count  = 1 # must be 0 or 1
+  moloch_count  = 1
   elk_count  = 1
   vulnbox_type  = "ccx11"
   router_type   = "cpx11"
   checker_type  = "ccx31"
   engine_type   = "ccx31"
+  moloch_type   = "cpx21"
   elk_type   = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
@@ -48,6 +50,12 @@ data "hcloud_image" "bambichecker" {
 
 data "hcloud_image" "bambiengine" {
   with_selector = local.engine_count > 0 ? "type=bambiengine" : null
+  name          = local.engine_count > 0 ? null : "debian-10"
+  most_recent   = true
+}
+
+data "hcloud_image" "bambimoloch" {
+  with_selector = local.engine_count > 0 ? "type=bambimoloch" : null
   name          = local.engine_count > 0 ? null : "debian-10"
   most_recent   = true
 }
@@ -100,6 +108,11 @@ ${file("../config/wireguard_router/router.conf")}
 EOF
 systemctl enable wg-quick@router
 systemctl start wg-quick@router
+
+cat <<EOF >> /root/.ssh/moloch_key
+${file("../config/moloch_keys/moloch_key")}
+EOF
+chmod 600 /root/.ssh/moloch_key
 TERRAFORMEOF
 }
 
@@ -160,7 +173,8 @@ resource "hcloud_server" "checker" {
 
   # ensure that the wireguard endpoint is resolved correctly on boot
   depends_on = [
-    hcloud_floating_ip.engine_vpn
+    hcloud_floating_ip.engine_vpn,
+    hcloud_floating_ip.elk_vpn,
   ]
 
   user_data = <<TERRAFORMEOF
@@ -186,6 +200,11 @@ resource "hcloud_server" "engine" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
 
+  # ensure that the wireguard endpoint is resolved correctly on boot
+  depends_on = [
+    hcloud_floating_ip.elk_vpn,
+  ]
+
   user_data = <<TERRAFORMEOF
 #!/bin/sh
 cat > /etc/netplan/60-floating-ip.yaml <<EOF
@@ -206,6 +225,33 @@ systemctl start wg-quick@internal
 TERRAFORMEOF
 }
 
+resource "hcloud_server" "moloch" {
+  name        = "moloch"
+  image       = data.hcloud_image.bambimoloch.id
+  location    = local.location
+  server_type = local.moloch_type
+  count       = local.moloch_count
+
+  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
+
+  provisioner "local-exec" {
+    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
+  }
+
+  user_data = <<TERRAFORMEOF
+#!/bin/sh
+cat <<EOF >> /etc/wireguard/internal.conf
+${file("../config/internal_router/moloch.conf")}
+EOF
+systemctl enable wg-quick@internal
+systemctl start wg-quick@internal
+cat <<EOF >> /etc/.ssh/authorized_keys
+${file("../config/moloch_keys/moloch_key.pub")}
+EOF
+
+TERRAFORMEOF
+}
+
 resource "hcloud_server" "elk" {
   name        = "elk"
   image       = data.hcloud_image.bambielk.id
@@ -218,11 +264,6 @@ resource "hcloud_server" "elk" {
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
-
-  # ensure that the wireguard endpoint is resolved correctly on boot
-  depends_on = [
-    hcloud_floating_ip.engine_vpn #not sure if needed?
-  ]
 
   user_data = <<TERRAFORMEOF
 #!/bin/sh
