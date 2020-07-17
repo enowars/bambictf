@@ -1,25 +1,9 @@
 ---
   - name: Install tcpdump
-    apt: 
+    apt:
       name: tcpdump
-      state: present 
+      state: present
       update_cache: yes
-  
-  - name: Ensure ~/.ssh exists
-    file:
-      path: ~/.ssh
-      state: directory
-
-  - name: Copy over the key
-    copy:
-      src: priv_key_for_moloch
-      dest: ~/.ssh/priv_key_for_moloch
-    changed_when: false
-
-  - name: ensure key file permissions
-    file:
-      path: ~/.ssh/priv_key_for_moloch
-      mode: '0600'
 
   - name: Copy over the enodump unit
     copy:
@@ -41,7 +25,7 @@
     file:
       path: /pcaps/data
       state: directory
-  
+
   - name: Copy over the send_pcaps script
     copy:
       src: send_pcap.sh

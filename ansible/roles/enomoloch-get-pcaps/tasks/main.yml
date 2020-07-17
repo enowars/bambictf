@@ -12,28 +12,16 @@
       enabled: no
 
   - name: Install tcpdump
-    apt: 
+    apt:
       name: tcpdump
-      state: present 
-      update_cache: yes
-  
-  - name: Copy over the router key
-    copy:
-      src: router_key
-      dest: /router_key
-    changed_when: false
-
-  - name: Add router key
-    authorized_key:
-      user: root
       state: present
-      key: "/router_key" 
+      update_cache: yes
 
   - name: Ensure /services exists
     file:
       path: /services
       state: directory
-  
+
   - name: Ensure /pcaps exists
     file:
       path: /pcaps
@@ -49,7 +37,6 @@
       src: docker-compose.yml
       dest: /services/EnoMoloch/docker-compose.yml
     changed_when: false
-
 
   - name: Enable and start EnoMoloch
     service:

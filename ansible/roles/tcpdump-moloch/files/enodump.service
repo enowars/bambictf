@@ -1,13 +1,12 @@
 [Unit]
 Description=enodump packet capture
 
-
 [Service]
 Restart=always
 TimeoutStartSec=300
 WorkingDirectory=/pcaps
 
-ExecStart=/usr/sbin/tcpdump -i vulnboxes --packet-buffered -G 60 -w './data/enoflag_%Y-%m-%d_%H_%M_%S.pcap' -z "./send_pcap.sh" -s 0
+ExecStart=/usr/sbin/tcpdump -i vulnboxes --packet-buffered -G 60 -w './data/enoflag_%%Y-%%m-%%d_%%H_%%M_%%S.pcap' -z "./send_pcap.sh" -s 0
 
 [Install]
 WantedBy=multi-user.target

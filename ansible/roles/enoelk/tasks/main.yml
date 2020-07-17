@@ -5,6 +5,11 @@
       value: 262144
       sysctl_set: yes
 
+  - name: Install docker dependencies
+    apt:
+      name: ["git"]
+      state: present
+
   - name: Clone EnoELK
     git:
       repo: "https://github.com/enowars/EnoELK.git"
