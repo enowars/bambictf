@@ -11,13 +11,13 @@
       - wireguard
       - role: filebeat
         vars:
-          elk: {{ elk_adress }}
+          elk: {{ elk_address }}
       - role: journalbeat
         vars:
-          elk: {{ elk_adress }}
+          elk: {{ elk_address }}
       - role: metricbeat
         vars:
-          elk: {{ elk_adress }}
+          elk: {{ elk_address }}
       - vuln_checkers
       - docker-block-external
       - role: programs

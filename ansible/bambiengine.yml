@@ -13,13 +13,13 @@
       - bambi-scoreboard
       - role: filebeat
         vars:
-          elk: {{ elk_adress }}
+          elk: {{ elk_address }}
       - role: journalbeat
         vars:
-          elk: {{ elk_adress }}
+          elk: {{ elk_address }}
       - role: metricbeat
         vars:
-          elk: {{ elk_adress }}
+          elk: {{ elk_address }}
       - docker-block-external
       - role: programs
         vars:
