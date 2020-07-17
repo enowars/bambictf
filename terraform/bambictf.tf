@@ -16,7 +16,7 @@ locals {
   router_type   = "cpx11"
   checker_type  = "cpx21"
   engine_type   = "cpx21"
-  moloch_type   = "cpx21"
+  elk_type   = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
@@ -50,7 +50,7 @@ data "hcloud_image" "bambiengine" {
   most_recent   = true
 }
 
-data "hcloud_image" "bambimoloch" {
+data "hcloud_image" "bambielk" {
   with_selector = local.engine_count > 0 ? "type=bambimoloch" : null
   name          = local.engine_count > 0 ? null : "debian-10"
   most_recent   = true
@@ -204,12 +204,12 @@ systemctl start wg-quick@internal
 TERRAFORMEOF
 }
 
-resource "hcloud_server" "moloch" {
+resource "hcloud_server" "elk" {
   name        = "moloch${count.index + 1}"
-  image       = data.hcloud_image.bambimoloch.id
+  image       = data.hcloud_image.bambielk.id
   location    = "fsn1"
-  server_type = local.moloch_type
-  count       = local.moloch_count
+  server_type = local.elk_type
+  count       = local.elk_count
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 

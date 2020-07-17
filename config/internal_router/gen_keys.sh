@@ -5,7 +5,7 @@ INTERNAL_NETWORK="192.168.0.0/20"
 TEAM_IP_PREFIX="192.168.1."
 ROUTER_ADDRESS="192.168.0.2/20"
 ENGINE_ADDRESS="192.168.1.0/32"
-ELK_ADDRESS="192.168.1.1/32"
+ELK_ADDRESS="192.168.3.0/32"
 ROUTER_ENDPOINT=vpn.bambi.ovh:51821
 ENGINE_ENDPOINT=engine-vpn.bambi.ovh:51821
 ELK_ENDPOINT=elk-vpn.bambi.ohv:51821
@@ -90,7 +90,7 @@ EOF
 )"
 
 mkdir -p clients
-for team_id in $(seq 2 "$1"); do
+for team_id in $(seq 1 "$1"); do
     team_ip="${TEAM_IP_PREFIX}${team_id}"
     echo $team_ip
     privkey=$(wg genkey)
