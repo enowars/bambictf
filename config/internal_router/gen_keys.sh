@@ -117,6 +117,15 @@ PublicKey = $pubkey
 AllowedIPs = ${team_ip}/32
 EOF
 )
+
+    elk_conf+=$(cat<< EOF
+    
+
+[Peer]
+PublicKey = $pubkey
+AllowedIPs = ${team_ip}/32
+EOF    
+)
 done
 
 echo "$router_conf" > router.conf
