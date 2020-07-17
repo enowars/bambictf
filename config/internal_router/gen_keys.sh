@@ -68,7 +68,7 @@ ListenPort = 51821
 
 [Peer]
 PublicKey = $ROUTER_pubkey
-AllowedIPs = $GAME_NETWORK, $INTERNAL_NETWORK
+AllowedIPs = $INTERNAL_NETWORK
 Endpoint = $ROUTER_ENDPOINT
 PersistentKeepalive = 15
 EOF
