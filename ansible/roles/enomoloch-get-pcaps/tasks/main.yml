@@ -1,16 +1,34 @@
 ---
+  - name: Increase max_map_count
+    sysctl:
+      name: vm.max_map_count
+      value: 262144
+      sysctl_set: yes
+
+  - name: Disable and stop EnoMoloch
+    service:
+      name: dc@EnoMoloch
+      state: stopped
+      enabled: no
+
   - name: Install tcpdump
     apt: 
       name: tcpdump
       state: present 
       update_cache: yes
-
-  - name: Copy over the get_messages unit
-    copy:
-      src: get_tcpdump_messages.service
-      dest: /etc/systemd/system/get_tcpdump_messages.service
-    changed_when: false
   
+  - name: Copy over the router key
+    copy:
+      src: router_key
+      dest: /router_key
+    changed_when: false
+
+  - name: Add router key
+    authorized_key:
+      user: root
+      state: present
+      key: "/router_key" 
+
   - name: Ensure /services exists
     file:
       path: /services
@@ -20,14 +38,20 @@
     file:
       path: /pcaps
       state: directory
-  
-  - name: Copy over the get_messages script
+
+  - name: Ensure /services/EnoMoloch exists
+    file:
+      path: /services/EnoMoloch
+      state: directory
+
+  - name: Copy over the EnoMoloch docker-compose file
     copy:
-      src: get_messages.sh
-      dest: /services/get_messages.sh
+      src: docker-compose.yml
+      dest: /services/EnoMoloch/docker-compose.yml
     changed_when: false
 
-  - name: Reload system daemon
-    systemd:
-      name: "get_tcpdump_messages" # ansible <2.4 always requires 'name'
-      daemon_reload: yes
+
+  - name: Enable and start EnoMoloch
+    service:
+      name: dc@EnoMoloch
+      enabled: yes
