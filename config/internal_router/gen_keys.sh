@@ -34,7 +34,7 @@ engine_pubkey=$(echo "$engine_privkey" | wg pubkey)
 elk_privkey=$(wg genkey)
 elk_pubkey=$(echo "$elk_privkey" | wg pubkey)
 
-router_conf="$( cat <<-EOF
+router_conf="$( cat <<EOF
 [Interface]
 Address = $ROUTER_ADDRESS
 PrivateKey = $router_privkey
@@ -51,7 +51,7 @@ PersistentKeepalive = 15
 EOF
 )"
 
-engine_conf="$( cat <<-EOF
+engine_conf="$( cat <<EOF
 [Interface]
 Address = $ENGINE_ADDRESS
 PrivateKey = $engine_privkey
@@ -120,7 +120,7 @@ PublicKey = $elk_pubkey
 AllowedIPs = $ELK_ADDRESS
 PersistentKeepalive = 15
 EOF
-    router_conf+=$(cat << EOF
+    router_conf+=$(cat <<EOF
 
 
 [Peer]
@@ -129,7 +129,7 @@ AllowedIPs = ${team_ip}/32
 EOF
 )
 
-    engine_conf+=$(cat << EOF
+    engine_conf+=$(cat <<EOF
 
 
 [Peer]
@@ -138,13 +138,13 @@ AllowedIPs = ${team_ip}/32
 EOF
 )
 
-    elk_conf+=$(cat << EOF
-    
+    elk_conf+=$(cat <<EOF
+
 
 [Peer]
 PublicKey = $pubkey
 AllowedIPs = ${team_ip}/32
-EOF    
+EOF
 )
 done
 
