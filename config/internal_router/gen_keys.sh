@@ -75,7 +75,7 @@ EOF
 )"
 
 mkdir -p clients
-for team_id in $(seq 1 "$1"); do
+for team_id in $(seq 2 "$1"); do
     team_ip="${TEAM_IP_PREFIX}${team_id}"
     echo $team_ip
     privkey=$(wg genkey)
