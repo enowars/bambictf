@@ -11,7 +11,7 @@ locals {
   vulnbox_count = 1
   checker_count = 1
   engine_count  = 1 # must be 0 or 1
-  moloch_count  = 1
+  elk_count  = 1
   vulnbox_type  = "cpx21"
   router_type   = "cpx11"
   checker_type  = "cpx21"
