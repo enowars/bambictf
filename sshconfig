@@ -1,7 +1,7 @@
 Host bengine
     HostName engine.bambi.ovh
     User root
-    LocalForward 8080 127.0.0.1:80
+    LocalForward 8081 127.0.0.1:80
     StrictHostKeyChecking no
     CheckHostIP no
 
@@ -15,7 +15,7 @@ Host belk
 Host bmoloch
     HostName moloch.bambi.ovh
     User root
-    LocalForward 8080 127.0.0.1:8080
+    LocalForward 8082 127.0.0.1:80
     StrictHostKeyChecking no
     CheckHostIP no
 
