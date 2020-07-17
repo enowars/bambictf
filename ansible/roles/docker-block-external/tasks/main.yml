@@ -19,5 +19,10 @@
       jump: RETURN
       state: absent
 
+  - name: "REJECT MISSING-CHECKER TRAFFIC"
+    iptablees:
+      chain: INPUT
+      jump: REJECT
+
   - name: persist iptables config
     shell: "iptables-save > /etc/iptables/rules.v4"
