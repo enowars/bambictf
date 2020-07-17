@@ -8,6 +8,7 @@
     roles:
         - bambi-ssh-keys
         - firewall
+        - wireguard
         - enomoloch
         - role: filebeat
           vars:
