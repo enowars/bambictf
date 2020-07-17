@@ -8,19 +8,21 @@ provider "hcloud" {
 }
 
 locals {
-  vulnbox_count = 1
-  checker_count = 1
+  vulnbox_count = 4
+  checker_count = 7
   engine_count  = 1 # must be 0 or 1
   elk_count  = 1
-  vulnbox_type  = "cpx21"
+  vulnbox_type  = "ccx11"
   router_type   = "cpx11"
-  checker_type  = "cpx21"
-  engine_type   = "cpx21"
+  checker_type  = "ccx31"
+  engine_type   = "ccx31"
   elk_type   = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
   ovh_dyndns_domain   = "bambi.ovh"
+
+  location = "nbg1"
 }
 
 data "hcloud_ssh_keys" "all_keys" {
@@ -63,7 +65,7 @@ data "hcloud_floating_ip" "vpn" {
 resource "hcloud_server" "router" {
   name        = "router"
   image       = data.hcloud_image.bambirouter.id
-  location    = "fsn1"
+  location    = local.location
   server_type = local.router_type
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
@@ -109,7 +111,7 @@ resource "hcloud_floating_ip_assignment" "vpn" {
 resource "hcloud_server" "vulnbox" {
   name        = "team${count.index + 1}"
   image       = data.hcloud_image.bambivulnbox.id
-  location    = "fsn1"
+  location    = local.location
   server_type = local.vulnbox_type
   count       = local.vulnbox_count
 
@@ -146,7 +148,7 @@ TERRAFORMEOF
 resource "hcloud_server" "checker" {
   name        = "checker${count.index + 1}"
   image       = data.hcloud_image.bambichecker.id
-  location    = "fsn1"
+  location    = local.location
   server_type = local.checker_type
   count       = local.checker_count
 
@@ -174,7 +176,7 @@ TERRAFORMEOF
 resource "hcloud_server" "engine" {
   name        = "engine"
   image       = data.hcloud_image.bambiengine.id
-  location    = "fsn1"
+  location    = local.location
   server_type = local.engine_type
   count       = local.engine_count
 
@@ -245,7 +247,7 @@ TERRAFORMEOF
 resource "hcloud_floating_ip" "engine_vpn" {
   name          = "engine-vpn"
   type          = "ipv4"
-  home_location = "fsn1"
+  home_location = local.location
 
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ip_address}\""
@@ -255,4 +257,19 @@ resource "hcloud_floating_ip" "engine_vpn" {
 resource "hcloud_floating_ip_assignment" "engine_vpn" {
   floating_ip_id = hcloud_floating_ip.engine_vpn.id
   server_id      = hcloud_server.engine[0].id
+}
+
+resource "hcloud_floating_ip" "elk_vpn" {
+  name          = "elk-vpn"
+  type          = "ipv4"
+  home_location = local.location
+
+  provisioner "local-exec" {
+    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ip_address}\""
+  }
+}
+
+resource "hcloud_floating_ip_assignment" "elk_vpn" {
+  floating_ip_id = hcloud_floating_ip.elk_vpn.id
+  server_id      = hcloud_server.elk[0].id
 }
