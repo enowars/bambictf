@@ -19,8 +19,8 @@
       jump: RETURN
       state: absent
 
-  - name: "REJECT MISSING-CHECKER TRAFFIC"
-    iptablees:
+  - name: "REJECT missing checker-traffic"
+    iptables:
       chain: INPUT
       jump: REJECT
 
