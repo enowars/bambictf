@@ -10,7 +10,18 @@
       repo: "https://github.com/enowars/EnoELK.git"
       dest: /services/EnoELK
 
-  - name: Start EnoELK
+  - name: Copy over the EnoELK unit
+    copy:
+      src: EnoELK.service
+      dest: /etc/systemd/system/EnoELK.service
+    changed_when: false
+
+  - name: Reload system daemon
+    systemd:
+      name: "EnoELK" # ansible <2.4 always requires 'name'
+      daemon_reload: yes
+
+  - name: Enable EnoELK
     service:
-      name: dc@EnoELK
+      name: EnoELK
       enabled: yes
