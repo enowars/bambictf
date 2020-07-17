@@ -33,7 +33,7 @@ engine_pubkey=$(echo "$engine_privkey" | wg pubkey)
 moloch_privkey=$(wg genkey)
 moloch_pubkey=$(echo "$moloch_privkey" | wg pubkey)
 
-router_conf="$( cat <<-EOF
+router_conf="$( cat <<EOF
 [Interface]
 Address = $ROUTER_ADDRESS
 PrivateKey = $router_privkey
@@ -49,7 +49,7 @@ AllowedIPs = $MOLOCH_ADDRESS
 EOF
 )"
 
-engine_conf="$( cat <<-EOF
+engine_conf="$( cat <<EOF
 [Interface]
 Address = $ENGINE_ADDRESS
 PrivateKey = $engine_privkey
@@ -63,7 +63,7 @@ PersistentKeepalive = 15
 EOF
 )"
 
-moloch_conf="$( cat <<-EOF
+moloch_conf="$( cat <<EOF
 [Interface]
 Address = $MOLOCH_ADDRESS
 PrivateKey = $moloch_privkey
@@ -103,7 +103,7 @@ AllowedIPs = $ENGINE_ADDRESS
 Endpoint = $ENGINE_ENDPOINT
 PersistentKeepalive = 15
 EOF
-    router_conf+=$(cat << EOF
+    router_conf+=$(cat <<EOF
 
 
 [Peer]
@@ -112,7 +112,7 @@ AllowedIPs = ${team_ip}/32
 EOF
 )
 
-    engine_conf+=$(cat << EOF
+    engine_conf+=$(cat <<EOF
 
 
 [Peer]
