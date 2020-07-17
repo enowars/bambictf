@@ -168,7 +168,8 @@ resource "hcloud_server" "checker" {
 
   # ensure that the wireguard endpoint is resolved correctly on boot
   depends_on = [
-    hcloud_floating_ip.engine_vpn
+    hcloud_floating_ip.engine_vpn,
+    hcloud_floating_ip.elk_vpn,
   ]
 
   user_data = <<TERRAFORMEOF
@@ -193,6 +194,11 @@ resource "hcloud_server" "engine" {
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
+
+  # ensure that the wireguard endpoint is resolved correctly on boot
+  depends_on = [
+    hcloud_floating_ip.elk_vpn,
+  ]
 
   user_data = <<TERRAFORMEOF
 #!/bin/sh
