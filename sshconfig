@@ -1,0 +1,80 @@
+Host bengine
+    HostName engine.bambi.ovh
+    User root
+    LocalForward 8080 127.0.0.1:80
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host belk
+    HostName elk.bambi.ovh
+    User root
+    LocalForward 5601 127.0.0.1:5601
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bmoloch
+    HostName moloch.bambi.ovh
+    User root
+    LocalForward 8080 127.0.0.1:8080
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker1
+    HostName checker1.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker2
+    HostName checker2.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker3
+    HostName checker3.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker4
+    HostName checker4.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker5
+    HostName checker5.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker6
+    HostName checker6.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker7
+    HostName checker7.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker8
+    HostName checker8.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host bchecker9
+    HostName checker9.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
+
+Host brouter
+    HostName router.bambi.ovh
+    User root
+    StrictHostKeyChecking no
+    CheckHostIP no
