@@ -8,13 +8,13 @@
     roles:
       - role: filebeat
         vars:
-          elk: 192.168.1.0
+          elk: {{ elk_adress }}
       - role: journalbeat
         vars:
-          elk: 192.168.1.0
+          elk: {{ elk_adress }}
       - role: metricbeat
         vars:
-          elk: 192.168.1.0
+          elk: {{ elk_adress }}
       - bambi-ssh-keys
       - firewall
       - bambi-wireguard-router

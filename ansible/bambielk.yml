@@ -9,6 +9,9 @@
       - bambi-ssh-keys
       - firewall
       - wireguard
+      - enoengine
+      - enoelk
+      - bambi-scoreboard
       - role: filebeat
         vars:
           elk: {{ elk_adress }}
@@ -18,7 +21,6 @@
       - role: metricbeat
         vars:
           elk: {{ elk_adress }}
-      - vuln_checkers
       - docker-block-external
       - role: programs
         vars:

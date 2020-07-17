@@ -217,19 +217,19 @@ resource "hcloud_server" "elk" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
   }
 
-#  # ensure that the wireguard endpoint is resolved correctly on boot
-#  depends_on = [
-#    hcloud_floating_ip.engine_vpn
-#  ]
+  # ensure that the wireguard endpoint is resolved correctly on boot
+  depends_on = [
+    hcloud_floating_ip.engine_vpn
+  ]
+  user_data = <<TERRAFORMEOF
 
-#  user_data = <<TERRAFORMEOF
-##!/bin/sh
-#cat <<EOF >> /etc/wireguard/internal.conf
-#${file("../config/internal_router/clients/team${count.index + 1}.conf")}
-#EOF
-#systemctl enable wg-quick@internal
-#systemctl start wg-quick@internal
-#TERRAFORMEOF
+#!/bin/sh
+cat <<EOF >> /etc/wireguard/internal.conf
+${file("../config/internal_router/elk.conf")}
+EOF
+systemctl enable wg-quick@internal
+systemctl start wg-quick@internal
+TERRAFORMEOF
 }
 
 resource "hcloud_floating_ip" "engine_vpn" {
