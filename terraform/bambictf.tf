@@ -201,7 +201,7 @@ TERRAFORMEOF
 resource "hcloud_floating_ip" "engine_vpn" {
   name          = "engine-vpn"
   type          = "ipv4"
-  home_location = "fsn1"
+  home_location = local.location
 
   provisioner "local-exec" {
     command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ip_address}\""
