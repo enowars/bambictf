@@ -5,10 +5,10 @@ INTERNAL_NETWORK="192.168.0.0/20"
 TEAM_IP_PREFIX="192.168.1."
 ROUTER_ADDRESS="192.168.0.2/20"
 ENGINE_ADDRESS="192.168.1.0/32"
-ELK_ADDRESS   ="192.168.1.1/32"
+ELK_ADDRESS="192.168.1.1/32"
 ROUTER_ENDPOINT=vpn.bambi.ovh:51821
 ENGINE_ENDPOINT=engine-vpn.bambi.ovh:51821
-ELK_ENDPOINT   =elk-vpn.bambi.ohv:51821
+ELK_ENDPOINT=elk-vpn.bambi.ohv:51821
 
 if ! command -v wg; then
     echo "The command wg does not exist."
@@ -32,7 +32,7 @@ engine_privkey=$(wg genkey)
 engine_pubkey=$(echo "$engine_privkey" | wg pubkey)
 
 elk_privkey=$(wg genkey)
-elk_pubkey=$(echo "$engine_privkey" | wg pubkey)
+elk_pubkey=$(echo "$elk_privkey" | wg pubkey)
 
 router_conf="$( cat <<-EOF
 [Interface]
