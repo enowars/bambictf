@@ -4,6 +4,7 @@ Host bengine
     LocalForward 8081 127.0.0.1:80
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host belk
     HostName elk.bambi.ovh
@@ -11,6 +12,7 @@ Host belk
     LocalForward 5601 127.0.0.1:5601
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bmoloch
     HostName moloch.bambi.ovh
@@ -18,63 +20,74 @@ Host bmoloch
     LocalForward 8082 127.0.0.1:80
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker1
     HostName checker1.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker2
     HostName checker2.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker3
     HostName checker3.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker4
     HostName checker4.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker5
     HostName checker5.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker6
     HostName checker6.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker7
     HostName checker7.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker8
     HostName checker8.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host bchecker9
     HostName checker9.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
 
 Host brouter
     HostName router.bambi.ovh
     User root
     StrictHostKeyChecking no
     CheckHostIP no
+    UserKnownHostsFile /dev/null
