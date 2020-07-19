@@ -8,17 +8,17 @@ provider "hcloud" {
 }
 
 locals {
-  vulnbox_count = 4
+  vulnbox_count = 0
   checker_count = 7
   engine_count  = 1 # must be 0 or 1
   moloch_count  = 1
   elk_count  = 1
-  vulnbox_type  = "ccx11"
-  router_type   = "cpx11"
-  checker_type  = "ccx31"
-  engine_type   = "ccx31"
-  moloch_type   = "cpx21"
-  elk_type   = "cpx21"
+  vulnbox_type  = "ccx21"
+  router_type   = "ccx41"
+  checker_type  = "ccx41"
+  engine_type   = "ccx41"
+  moloch_type   = "cx51"
+  elk_type   = "ccx51"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
@@ -213,9 +213,9 @@ network:
   ethernets:
     eth0:
       addresses:
-      - ${hcloud_floating_ip.engine_vpn.ip_address}/32
+      - ${hcloud_floating_ip.engine_vpn[0].ip_address}/32
 EOF
-ip addr add ${hcloud_floating_ip.engine_vpn.ip_address}/32 dev eth0
+ip addr add ${hcloud_floating_ip.engine_vpn[0].ip_address}/32 dev eth0
 
 cat <<EOF >> /etc/wireguard/internal.conf
 ${file("../config/internal_router/engine.conf")}
@@ -273,9 +273,9 @@ network:
   ethernets:
     eth0:
       addresses:
-      - ${hcloud_floating_ip.elk_vpn.ip_address}/32
+      - ${hcloud_floating_ip.elk_vpn[0].ip_address}/32
 EOF
-ip addr add ${hcloud_floating_ip.elk_vpn.ip_address}/32 dev eth0
+ip addr add ${hcloud_floating_ip.elk_vpn[0].ip_address}/32 dev eth0
 
 cat <<EOF >> /etc/wireguard/internal.conf
 ${file("../config/internal_router/elk.conf")}
@@ -286,6 +286,7 @@ TERRAFORMEOF
 }
 
 resource "hcloud_floating_ip" "engine_vpn" {
+  count = local.engine_count
   name          = "engine-vpn"
   type          = "ipv4"
   home_location = local.location
@@ -296,11 +297,13 @@ resource "hcloud_floating_ip" "engine_vpn" {
 }
 
 resource "hcloud_floating_ip_assignment" "engine_vpn" {
-  floating_ip_id = hcloud_floating_ip.engine_vpn.id
+  count = local.engine_count
+  floating_ip_id = hcloud_floating_ip.engine_vpn[0].id
   server_id      = hcloud_server.engine[0].id
 }
 
 resource "hcloud_floating_ip" "elk_vpn" {
+  count = local.elk_count
   name          = "elk-vpn"
   type          = "ipv4"
   home_location = local.location
@@ -311,6 +314,7 @@ resource "hcloud_floating_ip" "elk_vpn" {
 }
 
 resource "hcloud_floating_ip_assignment" "elk_vpn" {
-  floating_ip_id = hcloud_floating_ip.elk_vpn.id
+  count = local.elk_count
+  floating_ip_id = hcloud_floating_ip.elk_vpn[0].id
   server_id      = hcloud_server.elk[0].id
 }

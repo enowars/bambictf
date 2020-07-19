@@ -30,3 +30,14 @@
     service:
       name: EnoELK
       enabled: yes
+
+  - name: allow wireguard input traffic (internal)
+    iptables:
+      chain: INPUT
+      in_interface: eth0
+      destination_port: "51821"
+      protocol: udp
+      jump: ACCEPT
+
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"

@@ -9,7 +9,7 @@ MOLOCH_ADDRESS="192.168.0.3/32"
 ELK_ADDRESS="192.168.3.0/32"
 ROUTER_ENDPOINT=vpn.bambi.ovh:51821
 ENGINE_ENDPOINT=engine-vpn.bambi.ovh:51821
-ELK_ENDPOINT=elk-vpn.bambi.ohv:51821
+ELK_ENDPOINT=elk-vpn.bambi.ovh:51821
 
 if ! command -v wg; then
     echo "The command wg does not exist."
@@ -78,6 +78,7 @@ PersistentKeepalive = 15
 [Peer]
 PublicKey = $elk_pubkey
 AllowedIPs = $ELK_ADDRESS
+Endpoint = $ELK_ENDPOINT
 PersistentKeepalive = 15
 EOF
 )"
@@ -148,6 +149,7 @@ PersistentKeepalive = 15
 [Peer]
 PublicKey = $elk_pubkey
 AllowedIPs = $ELK_ADDRESS
+Endpoint = $ELK_ENDPOINT
 PersistentKeepalive = 15
 EOF
     router_conf+=$(cat <<EOF
