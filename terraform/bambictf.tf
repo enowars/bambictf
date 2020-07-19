@@ -12,13 +12,13 @@ locals {
   checker_count = 7
   engine_count  = 1 # must be 0 or 1
   moloch_count  = 1
-  elk_count  = 1
+  elk_count     = 1
   vulnbox_type  = "ccx21"
   router_type   = "ccx41"
   checker_type  = "ccx41"
   engine_type   = "ccx41"
   moloch_type   = "cx51"
-  elk_type   = "ccx51"
+  elk_type      = "ccx51"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
@@ -286,7 +286,7 @@ TERRAFORMEOF
 }
 
 resource "hcloud_floating_ip" "engine_vpn" {
-  count = local.engine_count
+  count         = local.engine_count
   name          = "engine-vpn"
   type          = "ipv4"
   home_location = local.location
@@ -297,13 +297,13 @@ resource "hcloud_floating_ip" "engine_vpn" {
 }
 
 resource "hcloud_floating_ip_assignment" "engine_vpn" {
-  count = local.engine_count
+  count          = local.engine_count
   floating_ip_id = hcloud_floating_ip.engine_vpn[0].id
   server_id      = hcloud_server.engine[0].id
 }
 
 resource "hcloud_floating_ip" "elk_vpn" {
-  count = local.elk_count
+  count         = local.elk_count
   name          = "elk-vpn"
   type          = "ipv4"
   home_location = local.location
@@ -314,7 +314,7 @@ resource "hcloud_floating_ip" "elk_vpn" {
 }
 
 resource "hcloud_floating_ip_assignment" "elk_vpn" {
-  count = local.elk_count
+  count          = local.elk_count
   floating_ip_id = hcloud_floating_ip.elk_vpn[0].id
   server_id      = hcloud_server.elk[0].id
 }
