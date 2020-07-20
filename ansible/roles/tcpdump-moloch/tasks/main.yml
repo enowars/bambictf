@@ -27,10 +27,9 @@
       state: directory
 
   - name: Copy over the send_pcaps script
-    copy:
-      src: send_pcap.sh
+    template:
+      src: templates/send_pcap.sh.j2
       dest: /pcaps/send_pcap.sh
-    changed_when: false
 
   - name: Enable and start enodump
     service:
