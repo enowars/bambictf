@@ -1,6 +1,6 @@
 #!/bin/bash
 
-scp -i ~/.ssh/moloch_key $1 root@192.168.0.3:/pcaps
+scp -i pcaps/moloch_key  -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $1 root@192.168.0.3:/pcaps
 
 rm $1
 

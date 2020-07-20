@@ -109,10 +109,11 @@ EOF
 systemctl enable wg-quick@router
 systemctl start wg-quick@router
 
-cat <<EOF >> /root/.ssh/moloch_key
+cat <<EOF >> /pcaps/moloch_key
 ${file("../config/moloch_keys/moloch_key")}
 EOF
-chmod 600 /root/.ssh/moloch_key
+chown -R tcpdump:tcpdump /pcaps
+chmod 600 /pcaps/moloch_key
 TERRAFORMEOF
 }
 
@@ -245,7 +246,7 @@ ${file("../config/internal_router/moloch.conf")}
 EOF
 systemctl enable wg-quick@internal
 systemctl start wg-quick@internal
-cat <<EOF >> /etc/.ssh/authorized_keys
+cat <<EOF >> /root/.ssh/authorized_keys
 ${file("../config/moloch_keys/moloch_key.pub")}
 EOF
 
