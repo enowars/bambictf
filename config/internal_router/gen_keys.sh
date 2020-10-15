@@ -64,7 +64,7 @@ for checker_id in $(seq 1 "$1"); do
     pubkey=$(echo "$privkey" | wg pubkey)
     echo $pubkey
     echo $checker_id
-    cat > "clients/team${checker_id}.conf" <<EOF
+    cat > "clients/checker${checker_id}.conf" <<EOF
 [Interface]
 Address = $checker_ip/32
 PrivateKey = $privkey
