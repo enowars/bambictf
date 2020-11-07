@@ -181,7 +181,7 @@ resource "hcloud_server" "checker" {
   user_data = <<TERRAFORMEOF
 #!/bin/sh
 cat <<EOF >> /etc/wireguard/internal.conf
-${file("../config/internal_router/clients/team${count.index + 1}.conf")}
+${file("../config/internal_router/clients/checker${count.index + 1}.conf")}
 EOF
 systemctl enable wg-quick@internal
 systemctl start wg-quick@internal

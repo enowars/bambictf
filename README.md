@@ -1,12 +1,21 @@
 # Bambi CTF Infrastructure
 
-This is the setup used for our Bambi CTF training competitions.
+This is the setup used for our Bambi CTF training competitions. It was also used to host [ENOWARS4](https://enowars.com).
 
 It uses ansible and packer to prepare images for Hetzner Cloud and terraform to create the infrastructure.
 
 The Vagrantfile in the `ansible/` folder is used for local testing only (to ensure your ansible playbook does not contain any syntax errors before running them with packer on a paid VM).
 
-To be continued...
+## Related Repositories
+
+This setup combines a lot of other services/repositories.
+
+- Engine: [EnoEngine](https://github.com/enowars/enoengine)
+- Scoreboard: [bambi-scoreboard](https://github.com/enowars/bambi-scoreboard)
+- Checker Library: [enochecker](https://github.com/enowars/enochecker)
+- Registration Page: [eno-landing-page](https://github.com/enowars/eno-landing-page)
+- Moloch (Traffic Analysis): [EnoMoloch](https://github.com/enoflag/EnoMoloch)
+- ELK (Log Analysis): [EnoELK](https://github.com/enowars/EnoELK)
 
 ## Usage
 

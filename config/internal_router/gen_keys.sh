@@ -2,7 +2,7 @@
 
 GAME_NETWORK="10.0.0.0/16"
 INTERNAL_NETWORK="192.168.0.0/20"
-TEAM_IP_PREFIX="192.168.1."
+CHECKER_IP_PREFIX="192.168.1."
 ROUTER_ADDRESS="192.168.0.2/20"
 ENGINE_ADDRESS="192.168.1.0/32"
 MOLOCH_ADDRESS="192.168.0.3/32"
@@ -118,17 +118,17 @@ EOF
 )"
 
 mkdir -p clients
-for team_id in $(seq 1 "$1"); do
-    team_ip="${TEAM_IP_PREFIX}${team_id}"
-    echo $team_ip
+for checker_id in $(seq 1 "$1"); do
+    checker_ip="${CHECKER_IP_PREFIX}${checker_id}"
+    echo $checker_ip
     privkey=$(wg genkey)
     echo $privkey
     pubkey=$(echo "$privkey" | wg pubkey)
     echo $pubkey
-    echo $team_id
-    cat > "clients/team${team_id}.conf" <<EOF
+    echo $checker_id
+    cat > "clients/checker${checker_id}.conf" <<EOF
 [Interface]
-Address = $team_ip/32
+Address = $checker_ip/32
 PrivateKey = $privkey
 
 # Router
@@ -168,7 +168,7 @@ EOF
 # Checker ${team_id}
 [Peer]
 PublicKey = $pubkey
-AllowedIPs = ${team_ip}/32
+AllowedIPs = ${checker_ip}/32
 EOF
 )
 
@@ -178,7 +178,7 @@ EOF
 # Checker ${team_id}
 [Peer]
 PublicKey = $pubkey
-AllowedIPs = ${team_ip}/32
+AllowedIPs = ${checker_ip}/32
 EOF
 )
 done
