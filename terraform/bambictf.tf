@@ -8,23 +8,23 @@ provider "hcloud" {
 }
 
 locals {
-  vulnbox_count = 0
-  checker_count = 7
+  vulnbox_count = 2
+  checker_count = 1
   engine_count  = 1 # must be 0 or 1
-  moloch_count  = 1
+  moloch_count  = 0
   elk_count     = 1
-  vulnbox_type  = "ccx21"
-  router_type   = "ccx41"
-  checker_type  = "ccx41"
-  engine_type   = "ccx41"
-  moloch_type   = "cx51"
-  elk_type      = "ccx51"
+  vulnbox_type  = "cpx21"
+  router_type   = "cpx21"
+  checker_type  = "cpx21"
+  engine_type   = "cpx21"
+  moloch_type   = "cpx21"
+  elk_type      = "cpx21"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
   ovh_dyndns_domain   = "bambi.ovh"
 
-  location = "nbg1"
+  location = "fsn1"
 }
 
 data "hcloud_ssh_keys" "all_keys" {
@@ -55,8 +55,8 @@ data "hcloud_image" "bambiengine" {
 }
 
 data "hcloud_image" "bambimoloch" {
-  with_selector = local.engine_count > 0 ? "type=bambimoloch" : null
-  name          = local.engine_count > 0 ? null : "debian-10"
+  with_selector = local.moloch_count > 0 ? "type=bambimoloch" : null
+  name          = local.moloch_count > 0 ? null : "debian-10"
   most_recent   = true
 }
 

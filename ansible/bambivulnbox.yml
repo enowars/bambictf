@@ -12,7 +12,7 @@
       - firewall
       - docker-block-external
       - wireguard
-      #- enomoloch
+      - enomoloch
       - role: programs
         vars:
           program_list:

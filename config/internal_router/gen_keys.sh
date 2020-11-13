@@ -158,7 +158,7 @@ EOF
 # Checker ${team_id}
 [Peer]
 PublicKey = $pubkey
-AllowedIPs = ${team_ip}/32
+AllowedIPs = ${checker_ip}/32
 EOF
 )
 
