@@ -8,17 +8,17 @@ provider "hcloud" {
 }
 
 locals {
-  vulnbox_count = 2
+  vulnbox_count = 5
   checker_count = 1
   engine_count  = 1 # must be 0 or 1
   moloch_count  = 0
   elk_count     = 1
-  vulnbox_type  = "cpx21"
-  router_type   = "cpx21"
-  checker_type  = "cpx21"
-  engine_type   = "cpx21"
+  vulnbox_type  = "cpx31"
+  router_type   = "cpx31"
+  checker_type  = "cpx31"
+  engine_type   = "cpx31"
   moloch_type   = "cpx21"
-  elk_type      = "cpx21"
+  elk_type      = "cpx31"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
   ovh_dyndns_password = var.ovh_dyndns_password
