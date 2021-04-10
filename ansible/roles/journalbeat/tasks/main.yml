@@ -7,12 +7,13 @@
 
   - name: Download journalbeat
     get_url: 
-      url="https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.6.2-amd64.deb"
-      dest="/tmp/journalbeat.deb"
+      url: "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.6.2-amd64.deb"
+      dest: "/tmp/journalbeat.deb"
     when: journalbeat_check_deb.rc == 1
 
   - name: Install journalbeat
-    apt: deb="/tmp/journalbeat.deb"
+    apt:
+      deb: "/tmp/journalbeat.deb"
     become: yes
     when: journalbeat_check_deb.rc == 1
 

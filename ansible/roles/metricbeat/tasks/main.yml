@@ -7,12 +7,13 @@
 
 - name: Download Metricbeat
   get_url:
-    url="https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.6.2-amd64.deb"
-    dest="/tmp/metricbeat.deb"
+    url: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.6.2-amd64.deb"
+    dest: "/tmp/metricbeat.deb"
   when: metricbeat_check_deb.rc == 1
 
 - name: Install Metricbeat
-  apt: deb="/tmp/metricbeat.deb"
+  apt:
+    deb: "/tmp/metricbeat.deb"
   become: yes
   when: metricbeat_check_deb.rc == 1
 

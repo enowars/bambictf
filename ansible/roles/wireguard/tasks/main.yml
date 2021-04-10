@@ -1,7 +1,7 @@
 ---
   - name: Update and upgrade apt packages
     apt:
-      upgrade: yes
+      upgrade: "yes"
       update_cache: yes
 
   - name: Install wg

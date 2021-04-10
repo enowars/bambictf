@@ -37,7 +37,6 @@ mode server
 tls-server
 key-direction 0
 cipher AES-256-CBC
-data-ciphers AES-256-GCM:AES-128-GCM:AES-256-CBC
 auth SHA256
 
 topology subnet

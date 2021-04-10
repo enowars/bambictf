@@ -7,19 +7,20 @@
 
   - name: Download Filebeat
     get_url:
-      url="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.2-amd64.deb"
-      dest="/tmp/filebeat.deb"
+      url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.2-amd64.deb"
+      dest: "/tmp/filebeat.deb"
     when: filebeat_check_deb.rc == 1
 
   - name: Install Filebeat
-    apt: deb="/tmp/filebeat.deb"
+    apt:
+      deb: "/tmp/filebeat.deb"
     become: yes
     when: filebeat_check_deb.rc == 1
 
   - name: Copy filebeat.yml to host
     template:
-      src: filebeat.yml.j2
-      dest: /etc/filebeat/filebeat.yml
+      src: "filebeat.yml.j2"
+      dest: "/etc/filebeat/filebeat.yml"
 
   - name: Enable and start Filebeat
     service:

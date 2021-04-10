@@ -37,8 +37,8 @@ EOF
 systemctl enable openvpn-server@team
 systemctl start openvpn-server@team
 
-for service in $(ls /services/); do
-cd "/services/$service" && docker-compose up -d &
+for service in \$(ls /services/); do
+cd "/services/\$service" && docker-compose up -d &
 done
 
 cat <<EOF | passwd

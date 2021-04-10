@@ -24,7 +24,6 @@ locals {
 }
 
 data "hcloud_ssh_keys" "all_keys" {
-  with_selector = "admin=true"
 }
 
 data "hcloud_image" "bambirouter" {
