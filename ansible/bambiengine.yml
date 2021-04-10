@@ -10,7 +10,6 @@
       - firewall
       - wireguard
       - enoengine
-      - bambi-scoreboard
       - role: filebeat
         vars:
           elk: 192.168.3.0
