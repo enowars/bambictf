@@ -3,13 +3,6 @@
     apt:
       package:
         - openvpn
-        - easy-rsa
-
-  - name: "Add setup-team-openvpn.sh script"
-    copy:
-      src: setup-team-openvpn.sh
-      dest: /opt/setup-team-openvpn.sh
-      mode: "755"
 
   - name: "Enable ipv4 forward"
     sysctl:
