@@ -49,7 +49,7 @@
 
   - name: Install docker-compose
     get_url:
-      url: "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}"
+      url: "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}"
       dest: /usr/local/bin/docker-compose
       mode: 0755
 
