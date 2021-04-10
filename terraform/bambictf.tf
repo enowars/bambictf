@@ -10,12 +10,10 @@ provider "hcloud" {
 locals {
   checker_count = 1
   engine_count  = 1 # must be 0 or 1
-  moloch_count  = 0
   elk_count     = 1
   router_type   = "cpx31"
   checker_type  = "cpx31"
   engine_type   = "cpx31"
-  moloch_type   = "cpx21"
   elk_type      = "cpx31"
 
   ovh_dyndns_username = "bambi.ovh-enoblade1"
@@ -43,12 +41,6 @@ data "hcloud_image" "bambichecker" {
 data "hcloud_image" "bambiengine" {
   with_selector = local.engine_count > 0 ? "type=bambiengine" : null
   name          = local.engine_count > 0 ? null : "debian-10"
-  most_recent   = true
-}
-
-data "hcloud_image" "bambimoloch" {
-  with_selector = local.moloch_count > 0 ? "type=bambimoloch" : null
-  name          = local.moloch_count > 0 ? null : "debian-10"
   most_recent   = true
 }
 
@@ -100,12 +92,6 @@ ${file("../config/wireguard_router/router.conf")}
 EOF
 systemctl enable wg-quick@router
 systemctl start wg-quick@router
-
-cat <<EOF >> /pcaps/moloch_key
-${file("../config/moloch_keys/moloch_key")}
-EOF
-chown -R tcpdump:tcpdump /pcaps
-chmod 600 /pcaps/moloch_key
 TERRAFORMEOF
 }
 
@@ -178,33 +164,6 @@ ${file("../config/internal_router/engine.conf")}
 EOF
 systemctl enable wg-quick@internal
 systemctl start wg-quick@internal
-TERRAFORMEOF
-}
-
-resource "hcloud_server" "moloch" {
-  name        = "moloch"
-  image       = data.hcloud_image.bambimoloch.id
-  location    = local.location
-  server_type = local.moloch_type
-  count       = local.moloch_count
-
-  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
-
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
-  }
-
-  user_data = <<TERRAFORMEOF
-#!/bin/sh
-cat <<EOF >> /etc/wireguard/internal.conf
-${file("../config/internal_router/moloch.conf")}
-EOF
-systemctl enable wg-quick@internal
-systemctl start wg-quick@internal
-cat <<EOF >> /root/.ssh/authorized_keys
-${file("../config/moloch_keys/moloch_key.pub")}
-EOF
-
 TERRAFORMEOF
 }
 

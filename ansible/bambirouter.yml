@@ -18,7 +18,6 @@
       - bambi-ssh-keys
       - firewall
       - bambi-wireguard-router
-      #- tcpdump-moloch
       - role: programs
         vars:
           program_list: "tmux"
