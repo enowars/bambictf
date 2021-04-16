@@ -23,6 +23,14 @@
       dest: /etc/systemd/system/enodump.service
     changed_when: false
 
+  - name: Disable tcpdump apparmor profile
+    file:
+      path: /etc/apparmor.d/disable/usr.sbin.tcpdump
+      src: /etc/apparmor.d/usr.sbin.tcpdump
+      state: link
+      force: yes
+      follow: no
+
   - name: Ensure /services/EnoMoloch exists
     file:
       path: /services/EnoMoloch

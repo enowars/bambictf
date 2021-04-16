@@ -1,9 +1,9 @@
 version: '3'
 services:
   moloch:
-    image: enoflag/enomoloch
+    image: ghcr.io/enoflag/enomoloch:latest
     ports:
-      - 80:8005
+      - 8005:8005
     volumes:
       - "/pcaps:/data/moloch/raw"
     environment:
