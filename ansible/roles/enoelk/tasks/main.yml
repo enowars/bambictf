@@ -2,15 +2,42 @@
   - name: Increase max_map_count
     sysctl:
       name: vm.max_map_count
-      value: 262144
+      value: "262144"
       sysctl_set: yes
+
+  - name: Install docker dependencies
+    apt:
+      name: ["git"]
+      state: present
 
   - name: Clone EnoELK
     git:
       repo: "https://github.com/enowars/EnoELK.git"
       dest: /services/EnoELK
 
-  - name: Start EnoELK
+  - name: Copy over the EnoELK unit
+    copy:
+      src: EnoELK.service
+      dest: /etc/systemd/system/EnoELK.service
+    changed_when: false
+
+  - name: Reload system daemon
+    systemd:
+      name: "EnoELK" # ansible <2.4 always requires 'name'
+      daemon_reload: yes
+
+  - name: Enable EnoELK
     service:
-      name: dc@EnoELK
+      name: EnoELK
       enabled: yes
+
+  - name: allow wireguard input traffic (internal)
+    iptables:
+      chain: INPUT
+      in_interface: eth0
+      destination_port: "51821"
+      protocol: udp
+      jump: ACCEPT
+
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"

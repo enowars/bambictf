@@ -10,17 +10,15 @@
       - firewall
       - wireguard
       - enoengine
-      - enoelk
-      - bambi-scoreboard
       - role: filebeat
         vars:
-          elk: 192.168.1.0
+          elk: 192.168.3.0
       - role: journalbeat
         vars:
-          elk: 192.168.1.0
+          elk: 192.168.3.0
       - role: metricbeat
         vars:
-          elk: 192.168.1.0
+          elk: 192.168.3.0
       - docker-block-external
       - role: programs
         vars:

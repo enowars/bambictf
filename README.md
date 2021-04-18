@@ -31,6 +31,8 @@ github_ssh_keys:
     - domenukk
     - ldruschk
     - MMunier
+elk_address: ip or url
+moloch_internal_ip: ip or url
 ```
 2. Create `./terraform/terraform.tfvars`:
 ```
@@ -53,11 +55,16 @@ ovh_dyndns_password = "..."
 ```sh
 (cd ./config/passwords; ./gen_passwords.sh $TEAMS_COUNT)
 ```
-7. Build images
+7. Create SSH keys for router -> moloch
+```sh
+(ssh-keygen -t ed25519 -f ./config/moloch_keys/moloch_key -C "tcpdump@router")
+```
+8. Build images
 ```sh
 export HCLOUD_TOKEN="..."
 (cd packer; packer build bambichecker.json)
 (cd packer; packer build bambiengine.json)
 (cd packer; packer build bambirouter.json)
 (cd packer; packer build bambivulnbox.json)
+(cd packer; packer build bamibmoloch.json)
 ```

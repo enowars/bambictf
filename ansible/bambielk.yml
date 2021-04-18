@@ -9,6 +9,8 @@
       - bambi-ssh-keys
       - firewall
       - wireguard
+      - enoelk
+      - docker-block-external
       - role: filebeat
         vars:
           elk: 192.168.3.0
@@ -18,8 +20,6 @@
       - role: metricbeat
         vars:
           elk: 192.168.3.0
-      - vuln_checkers
-      - docker-block-external
       - role: programs
         vars:
           program_list: "tmux"

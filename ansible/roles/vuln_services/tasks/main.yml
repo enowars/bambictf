@@ -27,10 +27,3 @@
       src: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}/service/
       dest: /services/{{ item.key }}
     with_dict: "{{ vulnerable_services }}"
-
-# Start them with docker-compose up -d during cloud-init instead
-#  - name: Enable and start services
-#    service:
-#      name: dc@{{ item.key }}
-#      enabled: yes
-#    with_dict: "{{ vulnerable_services }}"
