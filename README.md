@@ -11,9 +11,8 @@ The Vagrantfile in the `ansible/` folder is used for local testing only (to ensu
 This setup combines a lot of other services/repositories.
 
 - Engine: [EnoEngine](https://github.com/enowars/enoengine)
-- Scoreboard: [bambi-scoreboard](https://github.com/enowars/bambi-scoreboard)
 - Checker Library: [enochecker](https://github.com/enowars/enochecker)
-- Registration Page: [eno-landing-page](https://github.com/enowars/eno-landing-page)
+- Registration Page/Scoreboard: [EnoLandingPage](https://github.com/enowars/EnoLandingPage)
 - Moloch (Traffic Analysis): [EnoMoloch](https://github.com/enoflag/EnoMoloch)
 - ELK (Log Analysis): [EnoELK](https://github.com/enowars/EnoELK)
 
