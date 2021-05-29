@@ -1,0 +1,19 @@
+hetznerdns_token = "redacted"
+hetznerdns_zone  = "bambi.ovh"
+hcloud_token     = "redacted"
+home_location    = "fsn1"
+
+gateway_count = 2
+checker_count = 1
+engine_count  = 1
+elk_count     = 1
+vulnbox_count = 0
+
+gateway_type = "cpx31"
+checker_type = "cpx31"
+engine_type  = "cpx31"
+elk_type     = "cpx31"
+vulnbox_type = "cpx21"
+
+vpn_floating_ip_only      = true
+internal_floating_ip_only = true
