@@ -1,8 +1,11 @@
 #!/bin/bash
 
 [ -f dh.pem ] || openssl dhparam -out dh.pem 2048
+mkdir -p zips
+rm zips/*.zip
 
 for i in $(seq 1 $1); do
+    gateway_id="$((($i - 1) % $2 + 1))"
     (
         rm -r /tmp/openvpn-ca
         mkdir /tmp/openvpn-ca
@@ -27,10 +30,15 @@ for i in $(seq 1 $1); do
         cp /tmp/openvpn-ca/pki/issued/client.crt .
         cp /tmp/openvpn-ca/pki/private/client.key .
 
-        cat <<EOF > team.conf
-port 1194
+        TEAM_SUBNET_PREFIX="10.$((($i - 1) / 250 + 1)).$((($i - 1) % 250 + 1))"
+        REMOTE_ADDRESS="vpn${gateway_id}.bambi.ovh"
+        SERVER_PORT="$(printf '3%04d' $i)"
+
+        cat <<EOF > team${i}.conf
+port ${SERVER_PORT}
+local 0.0.0.0
 proto udp
-dev team
+dev team${i}
 dev-type tun
 
 mode server
@@ -40,12 +48,12 @@ cipher AES-256-CBC
 auth SHA256
 
 topology subnet
-ifconfig 10.0.240.1 255.255.255.0
+ifconfig ${TEAM_SUBNET_PREFIX}.129 255.255.255.128
 push "topology subnet"
-ifconfig-pool 10.0.240.2 10.0.240.254
-route-gateway 10.0.240.1
-push "route-gateway 10.0.240.1"
-push "route 10.0.0.0 255.255.0.0"
+ifconfig-pool ${TEAM_SUBNET_PREFIX}.130 ${TEAM_SUBNET_PREFIX}.254
+route-gateway ${TEAM_SUBNET_PREFIX}.129
+push "route-gateway ${TEAM_SUBNET_PREFIX}.129"
+push "route 10.0.0.0 255.0.0.0"
 
 keepalive 10 120
 persist-key
@@ -75,7 +83,7 @@ EOF
         cat <<EOF > client.conf
 proto udp
 dev tun
-remote REMOTE_IP_PLACEHOLDER 1194
+remote ${REMOTE_ADDRESS} ${SERVER_PORT}
 resolv-retry infinite
 nobind
 
@@ -102,6 +110,7 @@ $(cat client.crt)
 $(cat client.key)
 </key>
 EOF
+        zip "../zips/gateway${gateway_id}.zip" "team${i}.conf"
     )
     rm -r /tmp/openvpn-ca
 done
