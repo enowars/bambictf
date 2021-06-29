@@ -1,11 +1,4 @@
 ---
-  - name: Disable and stop checker services
-    service:
-      name: dc@checker_{{ item.key }}
-      state: stopped
-      enabled: no
-    with_dict: "{{ vulnerable_services }}"
-
   - name: Clean local checker services cache
     become: no
     local_action:
@@ -27,10 +20,4 @@
     synchronize:
       src: ./services/{{ inventory_hostname }}/{{ item.key }}/checker/
       dest: /services/checker_{{ item.key }}
-    with_dict: "{{ vulnerable_services }}"
-
-  - name: Enable checker services
-    service:
-      name: dc@checker_{{ item.key }}
-      enabled: yes
     with_dict: "{{ vulnerable_services }}"

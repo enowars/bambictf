@@ -5,7 +5,7 @@
       value: "262144"
       sysctl_set: yes
 
-  - name: Install docker dependencies
+  - name: Install git dependency
     apt:
       name: ["git"]
       state: present
@@ -14,22 +14,6 @@
     git:
       repo: "https://github.com/enowars/EnoELK.git"
       dest: /services/EnoELK
-
-  - name: Copy over the EnoELK unit
-    copy:
-      src: EnoELK.service
-      dest: /etc/systemd/system/EnoELK.service
-    changed_when: false
-
-  - name: Reload system daemon
-    systemd:
-      name: "EnoELK" # ansible <2.4 always requires 'name'
-      daemon_reload: yes
-
-  - name: Enable EnoELK
-    service:
-      name: EnoELK
-      enabled: yes
 
   - name: allow wireguard input traffic (internal)
     iptables:

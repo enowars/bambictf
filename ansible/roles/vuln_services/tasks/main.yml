@@ -1,11 +1,4 @@
 ---
-  - name: Disable and stop vuln services
-    service:
-      name: dc@{{ item.key }}
-      state: stopped
-      enabled: no
-    with_dict: "{{ vulnerable_services }}"
-
   - name: Clean local services cache
     become: no
     local_action:
