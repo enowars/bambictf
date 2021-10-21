@@ -53,12 +53,6 @@
       dest: /usr/local/bin/docker-compose
       mode: 0755
 
-  - name: Copy over the docker-compose unit
-    copy:
-      src: dc.service
-      dest: /etc/systemd/system/dc@.service
-    changed_when: false
-
   - name: Create /services
     file:
       path: /services

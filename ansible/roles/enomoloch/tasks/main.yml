@@ -5,12 +5,6 @@
       value: "262144"
       sysctl_set: yes
 
-  - name: Disable and stop EnoMoloch
-    service:
-      name: dc@EnoMoloch
-      state: stopped
-      enabled: no
-
   - name: Install tcpdump
     apt:
       name: tcpdump

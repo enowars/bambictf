@@ -1,33 +1,76 @@
-# Set the variable value in the terraform.tfvars file
-# hcloud_token = "..."
+terraform {
+  required_providers {
+    hetznerdns = {
+      source  = "timohirt/hetznerdns"
+      version = "1.1.1"
+    }
+    hcloud = {
+      source = "hetznercloud/hcloud"
+    }
+  }
+  required_version = ">= 0.13"
+}
+
+variable "hetznerdns_token" {}
+variable "hetznerdns_zone" {}
 variable "hcloud_token" {}
-variable "ovh_dyndns_password" {}
+
+variable "gateway_count" {}
+variable "checker_count" {}
+variable "engine_count" {}
+variable "elk_count" {}
+variable "vulnbox_count" {}
+
+variable "gateway_type" {}
+variable "checker_type" {}
+variable "engine_type" {}
+variable "elk_type" {}
+variable "vulnbox_type" {}
+
+variable "home_location" {}
+
+variable "vpn_floating_ip_only" {}
+variable "internal_floating_ip_only" {}
 
 provider "hcloud" {
   token = var.hcloud_token
 }
 
+provider "hetznerdns" {
+  apitoken = var.hetznerdns_token
+}
+
+data "hetznerdns_zone" "zone" {
+  name = var.hetznerdns_zone
+}
+
 locals {
-  checker_count = 1
-  engine_count  = 1 # must be 0 or 1
-  elk_count     = 1
-  router_type   = "cpx31"
-  checker_type  = "cpx31"
-  engine_type   = "cpx31"
-  elk_type      = "cpx31"
+  internal_floating_ip_only = var.vpn_floating_ip_only || var.internal_floating_ip_only
+  router_count              = var.vpn_floating_ip_only ? 0 : var.gateway_count
+  checker_count             = local.internal_floating_ip_only ? 0 : var.checker_count
+  engine_count              = local.internal_floating_ip_only ? 0 : var.engine_count
+  engine_vpn_count          = var.vpn_floating_ip_only ? 0 : var.engine_count
+  elk_count                 = local.internal_floating_ip_only ? 0 : var.elk_count
+  elk_vpn_count             = var.vpn_floating_ip_only ? 0 : var.elk_count
+  router_type               = var.gateway_type
+  checker_type              = var.checker_type
+  engine_type               = var.engine_type
+  elk_type                  = var.elk_type
 
-  ovh_dyndns_username = "bambi.ovh-enoblade1"
-  ovh_dyndns_password = var.ovh_dyndns_password
-  ovh_dyndns_domain   = "bambi.ovh"
+  # use this only when not managing vulnboxes via the EnoLandingPage
+  vulnbox_count = local.internal_floating_ip_only ? 0 : var.vulnbox_count
+  vulnbox_type  = var.vulnbox_type
 
-  location = "fsn1"
+  location = var.home_location
 }
 
 data "hcloud_ssh_keys" "all_keys" {
+  with_selector = "type=admin"
 }
 
 data "hcloud_image" "bambirouter" {
-  with_selector = "type=bambirouter"
+  with_selector = local.router_count > 0 ? "type=bambirouter" : null
+  name          = local.router_count > 0 ? null : "debian-10"
   most_recent   = true
 }
 
@@ -49,21 +92,41 @@ data "hcloud_image" "bambielk" {
   most_recent   = true
 }
 
-data "hcloud_floating_ip" "vpn" {
-  with_selector = "type=vpn"
+data "hcloud_image" "vulnbox" {
+  with_selector = local.vulnbox_count > 0 ? "type=bambivulnbox" : null
+  name          = local.vulnbox_count > 0 ? null : "debian-10"
+  most_recent   = true
+}
+
+/*data "hcloud_floating_ip" "vpn" {
+  count = var.gateway_count
+  name = "gateway${count.index + 1}"
+}*/
+
+resource "hcloud_floating_ip" "vpn_ip" {
+  count         = var.gateway_count
+  type          = "ipv4"
+  name          = "gateway${count.index + 1}"
+  home_location = var.home_location
+}
+
+resource "hetznerdns_record" "vpn_dns" {
+  count   = var.gateway_count
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "vpn${count.index + 1}"
+  value   = hcloud_floating_ip.vpn_ip[count.index].ip_address
+  type    = "A"
+  ttl     = 60
 }
 
 resource "hcloud_server" "router" {
-  name        = "router"
+  count       = local.router_count
+  name        = "router${count.index + 1}"
   image       = data.hcloud_image.bambirouter.id
   location    = local.location
   server_type = local.router_type
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
-
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
-  }
 
   user_data = <<TERRAFORMEOF
 #!/bin/bash
@@ -74,29 +137,41 @@ network:
   ethernets:
     eth0:
       addresses:
-      - ${data.hcloud_floating_ip.vpn.ip_address}/32
+      - ${hcloud_floating_ip.vpn_ip[count.index].ip_address}/32
 EOF
-ip addr add ${data.hcloud_floating_ip.vpn.ip_address}/32 dev eth0
+ip addr add ${hcloud_floating_ip.vpn_ip[count.index].ip_address}/32 dev eth0
 
 #!/bin/sh
 cat <<EOF >> /etc/wireguard/internal.conf
-${file("../config/internal_router/router.conf")}
+${file("../config/internal_router/gateway_configs/gateway${count.index + 1}.conf")}
 EOF
 systemctl enable wg-quick@internal
 systemctl start wg-quick@internal
 
 #!/bin/sh
 cat <<EOF >> /etc/wireguard/router.conf
-${file("../config/wireguard_router/router.conf")}
+${file("../config/wireguard_router/gateway_configs/gateway${count.index + 1}.conf")}
 EOF
 systemctl enable wg-quick@router
 systemctl start wg-quick@router
+
+(
+    cd /etc/openvpn/server/
+    unzip /root/zips/gateway${count.index + 1}.zip
+    for i in $(ls *.conf);
+      do sed -i "s/local 0.0.0.0/local ${hcloud_floating_ip.vpn_ip[count.index].ip_address}/" $${i};
+      name="openvpn-server@$(echo $i | sed 's/.conf//')";
+      systemctl enable $name;
+      systemctl start $name;
+    done
+)
 TERRAFORMEOF
 }
 
 resource "hcloud_floating_ip_assignment" "vpn" {
-  floating_ip_id = data.hcloud_floating_ip.vpn.id
-  server_id      = hcloud_server.router.id
+  count          = local.router_count
+  floating_ip_id = hcloud_floating_ip.vpn_ip[count.index].id
+  server_id      = hcloud_server.router[count.index].id
 }
 
 resource "hcloud_server" "checker" {
@@ -108,24 +183,37 @@ resource "hcloud_server" "checker" {
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
-  }
-
   # ensure that the wireguard endpoint is resolved correctly on boot
   depends_on = [
     hcloud_floating_ip.engine_vpn,
     hcloud_floating_ip.elk_vpn,
+    hetznerdns_record.engine_vpn_dns,
+    hetznerdns_record.elk_vpn_dns,
+    hcloud_floating_ip.vpn_ip,
+    hetznerdns_record.vpn_dns,
   ]
 
   user_data = <<TERRAFORMEOF
 #!/bin/sh
 cat <<EOF >> /etc/wireguard/internal.conf
-${file("../config/internal_router/clients/checker${count.index + 1}.conf")}
+${file("../config/internal_router/checker_configs/checker${count.index + 1}.conf")}
 EOF
 systemctl enable wg-quick@internal
 systemctl start wg-quick@internal
+
+for service in $(ls /services/); do
+cd "/services/$service" && docker-compose up -d &
+done
 TERRAFORMEOF
+}
+
+resource "hetznerdns_record" "checker_dns" {
+  count   = local.checker_count
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "checker${count.index + 1}"
+  value   = hcloud_server.checker[count.index].ipv4_address
+  type    = "A"
+  ttl     = 60
 }
 
 resource "hcloud_server" "engine" {
@@ -137,13 +225,12 @@ resource "hcloud_server" "engine" {
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
-  }
-
   # ensure that the wireguard endpoint is resolved correctly on boot
   depends_on = [
     hcloud_floating_ip.elk_vpn,
+    hetznerdns_record.elk_vpn_dns,
+    hcloud_floating_ip.vpn_ip,
+    hetznerdns_record.vpn_dns,
   ]
 
   user_data = <<TERRAFORMEOF
@@ -175,10 +262,6 @@ resource "hcloud_server" "elk" {
 
   ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
 
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ipv4_address}\""
-  }
-
   user_data = <<TERRAFORMEOF
 #!/bin/sh
 cat > /etc/netplan/60-floating-ip.yaml <<EOF
@@ -200,14 +283,19 @@ TERRAFORMEOF
 }
 
 resource "hcloud_floating_ip" "engine_vpn" {
-  count         = local.engine_count
+  count         = local.engine_vpn_count
   name          = "engine-vpn"
   type          = "ipv4"
   home_location = local.location
+}
 
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ip_address}\""
-  }
+resource "hetznerdns_record" "engine_vpn_dns" {
+  count   = local.engine_vpn_count
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "engine-vpn"
+  value   = hcloud_floating_ip.engine_vpn[count.index].ip_address
+  type    = "A"
+  ttl     = 60
 }
 
 resource "hcloud_floating_ip_assignment" "engine_vpn" {
@@ -217,18 +305,44 @@ resource "hcloud_floating_ip_assignment" "engine_vpn" {
 }
 
 resource "hcloud_floating_ip" "elk_vpn" {
-  count         = local.elk_count
+  count         = local.elk_vpn_count
   name          = "elk-vpn"
   type          = "ipv4"
   home_location = local.location
-
-  provisioner "local-exec" {
-    command = "curl --user \"${local.ovh_dyndns_username}:${var.ovh_dyndns_password}\" \"https://www.ovh.com/nic/update?system=dyndns&hostname=${self.name}.${local.ovh_dyndns_domain}&myip=${self.ip_address}\""
-  }
 }
 
 resource "hcloud_floating_ip_assignment" "elk_vpn" {
   count          = local.elk_count
   floating_ip_id = hcloud_floating_ip.elk_vpn[0].id
   server_id      = hcloud_server.elk[0].id
+}
+
+resource "hetznerdns_record" "elk_vpn_dns" {
+  count   = local.elk_vpn_count
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "elk-vpn"
+  value   = hcloud_floating_ip.elk_vpn[count.index].ip_address
+  type    = "A"
+  ttl     = 60
+}
+
+resource "hcloud_server" "vulnbox" {
+  name        = "vulnbox${count.index + 1}"
+  image       = data.hcloud_image.vulnbox.id
+  location    = local.location
+  server_type = local.vulnbox_type
+  count       = local.vulnbox_count
+
+  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
+
+  user_data = file("../config/export/team${count.index + 1}/user_data.sh")
+}
+
+resource "hetznerdns_record" "vulnbox_dns" {
+  count   = local.vulnbox_count
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "vulnbox${count.index + 1}"
+  value   = hcloud_server.vulnbox[count.index].ipv4_address
+  type    = "A"
+  ttl     = 60
 }
