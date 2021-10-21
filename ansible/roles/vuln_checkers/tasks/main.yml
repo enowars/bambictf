@@ -21,3 +21,9 @@
       src: ./services/{{ inventory_hostname }}/{{ item.key }}/checker/
       dest: /services/checker_{{ item.key }}
     with_dict: "{{ vulnerable_services }}"
+
+  - name: pull/build service
+    shell: docker-compose pull && docker-compose build
+    args:
+      chdir: /services/checker_{{ item.key }}
+    with_dict: "{{ vulnerable_services }}"

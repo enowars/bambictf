@@ -65,6 +65,7 @@ locals {
 }
 
 data "hcloud_ssh_keys" "all_keys" {
+  with_selector = "type=admin"
 }
 
 data "hcloud_image" "bambirouter" {
@@ -199,6 +200,10 @@ ${file("../config/internal_router/checker_configs/checker${count.index + 1}.conf
 EOF
 systemctl enable wg-quick@internal
 systemctl start wg-quick@internal
+
+for service in $(ls /services/); do
+cd "/services/$service" && docker-compose up -d &
+done
 TERRAFORMEOF
 }
 

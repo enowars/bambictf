@@ -1,10 +1,14 @@
 #!/bin/bash
 
-TEAM_COUNT=24
-GATEWAY_COUNT=2
-CHECKER_COUNT=10
+TEAM_COUNT=200
+GATEWAY_COUNT=4
+CHECKER_COUNT=20
 
 mkdir -p "export"
+mkdir -p "internal_router"
+mkdir -p "wireguard_router"
+mkdir -p "openvpn_configs"
+mkdir -p "passwords"
 
 (
     cd "internal_router"
@@ -45,4 +49,5 @@ OUTEREOF
 
     cp "passwords/team${i}.txt" "export/team${i}/root.pw"
     cp "openvpn_configs/team${i}/client.conf" "export/team${i}/client.conf"
+    cp "wireguard_router/team_configs/team${i}.conf" "export/team${i}/wireguard.conf"
 done

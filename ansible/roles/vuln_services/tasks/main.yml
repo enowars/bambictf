@@ -20,3 +20,9 @@
       src: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}/service/
       dest: /services/{{ item.key }}
     with_dict: "{{ vulnerable_services }}"
+
+  - name: pull/build service
+    shell: docker-compose pull && docker-compose build
+    args:
+      chdir: /services/{{ item.key }}
+    with_dict: "{{ vulnerable_services }}"
