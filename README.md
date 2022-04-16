@@ -65,5 +65,5 @@ export HCLOUD_TOKEN="..."
 (cd packer; packer build bambiengine.json)
 (cd packer; packer build bambirouter.json)
 (cd packer; packer build bambivulnbox.json)
-(cd packer; packer build bamibmoloch.json)
+(cd packer; packer build bambielk.json)
 ```
