@@ -76,11 +76,12 @@ export HCLOUD_TOKEN="..."
 - Run the container (`docker-compose up --build`)
 - Invoke a bash in the container (`docker-compose exec bambictf bash`)
 - Build configs
-    - `cd /bambictf2/config`
+    - `cd /bambictf/config`
     - `./gen_config.sh`
 - Builds VMs
-    - `/bambictf2/packer`
+    - `/bambictf/packer`
     - `packer build bambichecker.json`
 - Create `./terraform/terraform.tfvars`
+- `cd ./terraform`
 - `terraform init`
 - `terraform apply`

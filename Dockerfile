@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 # Core deps
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-RUN apt-get install -y --no-install-recommends rsync git less tmux python3 curl wireguard python3-pip unzip file nano \
+RUN apt-get install -y --no-install-recommends rsync git less tmux python3 curl wireguard python3-pip unzip file nano dnsutils \
     software-properties-common gpg-agent # for ansible and packer install
 
 # Ansible
