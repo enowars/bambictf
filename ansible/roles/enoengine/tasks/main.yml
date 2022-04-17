@@ -27,3 +27,9 @@
 
   - name: persist iptables config
     shell: "iptables-save > /etc/iptables/rules.v4"
+
+  - name: Create /services/data
+    ansible.builtin.file:
+      path: /services/data
+      state: directory
+      mode: '0755'

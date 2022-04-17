@@ -85,3 +85,7 @@ export HCLOUD_TOKEN="..."
 - `cd ./terraform`
 - `terraform init`
 - `terraform apply`
+
+
+## Open game network
+- `iptables -D FORWARD -o router -j ACCEPT` (on *every* gateway)
