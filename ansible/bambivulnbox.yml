@@ -18,4 +18,5 @@
           program_list:
             - tmux
             - unzip
+            - git
       - bambi-openvpn-team-server

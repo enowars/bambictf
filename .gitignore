@@ -13,3 +13,4 @@ config*.yml
 *.retry
 .trash/
 .env
+id_ed25519

@@ -22,4 +22,6 @@
       - docker-block-external
       - role: programs
         vars:
-          program_list: "tmux"
+          program_list:
+            - "tmux"
+            - "git"

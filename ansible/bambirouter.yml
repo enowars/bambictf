@@ -20,5 +20,7 @@
       - bambi-wireguard-router
       - role: programs
         vars:
-          program_list: "tmux"
+          program_list:
+            - "tmux"
+            - "git"
       - teamvpn-configs

@@ -3,4 +3,3 @@ vulnerable_services:
 github_ssh_keys: [
   ldruschk,
 ]
-zip_directory: /home/lucas/Documents/prog/bambictf/config/openvpn_configs/zips

@@ -7,7 +7,7 @@
 
 - name: copy zipped team VPN configs
   copy:
-    src: "{{ zip_directory }}"
+    src: "{{ playbook_dir }}/../config/openvpn_configs/zips"
     dest: /root
 
 - name: allow openvpn input traffic

@@ -67,3 +67,20 @@ export HCLOUD_TOKEN="..."
 (cd packer; packer build bambivulnbox.json)
 (cd packer; packer build bamibmoloch.json)
 ```
+
+## Docker
+- Have at least one ssh key with the label `type=admin` in your project
+- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
+- Create `./ansible/config_bambi.yml`
+- Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
+- Run the container (`docker-compose up --build`)
+- Invoke a bash in the container (`docker-compose exec bambictf bash`)
+- Build configs
+    - `cd /bambictf2/config`
+    - `./gen_config.sh`
+- Builds VMs
+    - `/bambictf2/packer`
+    - `packer build bambichecker.json`
+- Create `./terraform/terraform.tfvars`
+- `terraform init`
+- `terraform apply`

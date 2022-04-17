@@ -15,6 +15,11 @@
       repo: "https://github.com/enowars/EnoELK.git"
       dest: /services/EnoELK
 
+  - name: Pull ELK images
+    shell: docker-compose pull
+    args:
+      chdir: /services/EnoELK
+
   - name: allow wireguard input traffic (internal)
     iptables:
       chain: INPUT

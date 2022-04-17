@@ -1,8 +1,8 @@
 #!/bin/bash
 
-TEAM_COUNT=200
-GATEWAY_COUNT=4
-CHECKER_COUNT=20
+TEAM_COUNT=8
+GATEWAY_COUNT=2
+CHECKER_COUNT=2
 
 mkdir -p "export"
 mkdir -p "internal_router"

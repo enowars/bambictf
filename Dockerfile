@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 # Core deps
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-RUN apt-get install -y --no-install-recommends python3 curl wireguard python3-pip unzip file nano \
+RUN apt-get install -y --no-install-recommends rsync git less tmux python3 curl wireguard python3-pip unzip file nano \
     software-properties-common gpg-agent # for ansible and packer install
 
 # Ansible
@@ -23,7 +23,10 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
 # openvpn
 RUN apt-get install -y openvpn easy-rsa zip unzip
 ENV PATH="/usr/share/easy-rsa:${PATH}"
+
+# QOL
+RUN echo "set -g mouse on" > /root/.tmux.conf
+
 WORKDIR /bambictf
-COPY . .
 
 ENTRYPOINT tail -f /dev/null
