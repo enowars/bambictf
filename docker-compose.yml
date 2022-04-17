@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  bambictf:
+    build: .
+    environment:
+      - HCLOUD_TOKEN=${HCLOUD_TOKEN}
+      - TF_VAR_hcloud_token=${HCLOUD_TOKEN}
+      - HETZNERDNS_TOKEN=${HETZNERDNS_TOKEN}
