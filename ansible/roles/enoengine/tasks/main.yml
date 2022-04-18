@@ -9,12 +9,25 @@
       repo: "https://github.com/enowars/EnoEngine.git"
       dest: /services/EnoEngine
 
+  - name: Clone EnoCTFPortal (for adhoc testing and solutions)
+    git:
+      repo: "https://github.com/enowars/EnoCTFPortal.git"
+      dest: /services/EnoCTFPortal
+
   - name: Allow flag submission traffic
     iptables:
       chain: INPUT
       in_interface: internal
       protocol: tcp
       destination_port: "1337"
+      jump: ACCEPT
+
+  - name: Allow EnoCTFPortal traffic
+    iptables:
+      chain: INPUT
+      in_interface: internal
+      protocol: tcp
+      destination_port: "5001"
       jump: ACCEPT
 
   - name: allow wireguard input traffic (internal)

@@ -88,4 +88,8 @@ export HCLOUD_TOKEN="..."
 
 
 ## Open game network
-- `iptables -D FORWARD -o router -j ACCEPT` (on *every* gateway)
+- `iptables -A FORWARD -o router -j ACCEPT` (on *every* gateway)
+
+
+## Rsync stuff
+- `rsync /services/data/* benni@bambi.enoflag.de:/services/EnoCTFPortal_bambi7/scoreboard` TODO ask Lucas about loops and stuff
