@@ -92,4 +92,4 @@ export HCLOUD_TOKEN="..."
 
 
 ## Rsync stuff
-- `rsync /services/data/* benni@bambi.enoflag.de:/services/EnoCTFPortal_bambi7/scoreboard` TODO ask Lucas about loops and stuff
+- `while true; do rsync /services/data/*.json benni@bambi.enoflag.de:/services/EnoCTFPortal_bambi7/scoreboard; sleep 5; done` TODO ask Lucas about loops and stuff
