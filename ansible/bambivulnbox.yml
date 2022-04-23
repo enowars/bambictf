@@ -20,4 +20,5 @@
             - tmux
             - unzip
             - git
+            - python3-pip
       - bambi-openvpn-team-server
