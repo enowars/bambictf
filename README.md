@@ -79,7 +79,7 @@ export HCLOUD_TOKEN="..."
     - `cd /bambictf/config`
     - `./gen_config.sh`
 - Builds VMs
-    - `/bambictf/packer`
+    - `cd /bambictf/packer`
     - `packer build bambichecker.json`
 - Create `./terraform/terraform.tfvars`
 - `cd ./terraform`

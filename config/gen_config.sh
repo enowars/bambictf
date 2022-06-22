@@ -1,8 +1,8 @@
 #!/bin/bash
 
-TEAM_COUNT=8
-GATEWAY_COUNT=2
-CHECKER_COUNT=2
+TEAM_COUNT=256
+GATEWAY_COUNT=1
+CHECKER_COUNT=5
 
 mkdir -p "export"
 mkdir -p "internal_router"
@@ -38,7 +38,11 @@ systemctl enable wg-quick@game
 systemctl start wg-quick@game
 
 for service in \$(ls /services/); do
-cd "/services/\$service" && docker-compose up -d &
+    cd "/services/\$service"
+    if [ -f "/services/\$service/setup.sh" ]; then
+        /services/\$service/setup.sh
+    fi
+    docker-compose up -d &
 done
 
 cat <<EOF | passwd
