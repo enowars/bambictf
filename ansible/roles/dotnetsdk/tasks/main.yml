@@ -17,9 +17,15 @@
     become: yes
     when: dotnet_sdk_deb.rc == 1
 
+  - name: Install dotnet deps
+    apt:
+      name: "apt-transport-https"
+      state: present
+    when: dotnet_sdk_deb.rc == 1
+
   - name: Install dotnet sdk
     apt:
-      name: "dotnet-sdk-5.0"
+      name: "dotnet-sdk-6.0"
       state: present
       update_cache: yes
     when: dotnet_sdk_deb.rc == 1

@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  bambictf:
+    build: .
+    environment:
+      - HCLOUD_TOKEN=${HCLOUD_TOKEN}                # for packer
+      - TF_VAR_HCLOUD_TOKEN=${HCLOUD_TOKEN}         # for terraform
+      - TF_VAR_HETZNERDNS_TOKEN=${HETZNERDNS_TOKEN} # for terraform
+    volumes:
+    - ".:/bambictf"

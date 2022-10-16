@@ -15,7 +15,7 @@
             "type": "hcloud",
             "image": "ubuntu-20.04",
             "location": "fsn1",
-            "server_type": "cpx11",
+            "server_type": "cx11",
             "ssh_username": "root",
             "snapshot_name": "bambielk-{{timestamp}}",
             "snapshot_labels": {

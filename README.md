@@ -67,3 +67,29 @@ export HCLOUD_TOKEN="..."
 (cd packer; packer build bambivulnbox.json)
 (cd packer; packer build bambielk.json)
 ```
+
+## Docker
+- Have at least one ssh key with the label `type=admin` in your project
+- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
+- Create `./ansible/config_bambi.yml`
+- Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
+- Run the container (`docker-compose up --build`)
+- Invoke a bash in the container (`docker-compose exec bambictf bash`)
+- Build configs
+    - `cd /bambictf/config`
+    - `./gen_config.sh`
+- Builds VMs
+    - `cd /bambictf/packer`
+    - `packer build bambichecker.json`
+- Create `./terraform/terraform.tfvars`
+- `cd ./terraform`
+- `terraform init`
+- `terraform apply`
+
+
+## Open game network
+- `iptables -A FORWARD -o router -j ACCEPT` (on *every* gateway)
+
+
+## Rsync stuff
+- `while true; do rsync /services/data/*.json benni@bambi.enoflag.de:/services/EnoCTFPortal_bambi7/scoreboard; sleep 5; done` TODO ask Lucas about loops and stuff

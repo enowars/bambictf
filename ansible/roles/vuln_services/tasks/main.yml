@@ -12,6 +12,7 @@
       module: git
       repo: "{{ item.value }}"
       dest: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}
+      key_file: "{{ playbook_dir }}/../id_ed25519"
       accept_hostkey: yes
     with_dict: "{{ vulnerable_services }}"
 

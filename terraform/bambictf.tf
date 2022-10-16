@@ -11,9 +11,9 @@ terraform {
   required_version = ">= 0.13"
 }
 
-variable "hetznerdns_token" {}
+variable "HETZNERDNS_TOKEN" {}
 variable "hetznerdns_zone" {}
-variable "hcloud_token" {}
+variable "HCLOUD_TOKEN" {}
 
 variable "gateway_count" {}
 variable "checker_count" {}
@@ -33,11 +33,11 @@ variable "vpn_floating_ip_only" {}
 variable "internal_floating_ip_only" {}
 
 provider "hcloud" {
-  token = var.hcloud_token
+  token = var.HCLOUD_TOKEN
 }
 
 provider "hetznerdns" {
-  apitoken = var.hetznerdns_token
+  apitoken = var.HETZNERDNS_TOKEN
 }
 
 data "hetznerdns_zone" "zone" {
@@ -264,6 +264,7 @@ resource "hcloud_server" "elk" {
 
   user_data = <<TERRAFORMEOF
 #!/bin/sh
+cd "/services/EnoELK" && docker-compose up -d &
 cat > /etc/netplan/60-floating-ip.yaml <<EOF
 network:
   version: 2

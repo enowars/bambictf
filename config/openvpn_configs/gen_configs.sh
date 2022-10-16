@@ -1,19 +1,20 @@
 #!/bin/bash
+set -x
 
 [ -f dh.pem ] || openssl dhparam -out dh.pem 2048
 mkdir -p zips
-rm zips/*.zip
+rm -f zips/*.zip
 
 for i in $(seq 1 $1); do
     gateway_id="$((($i - 1) % $2 + 1))"
     (
-        rm -r /tmp/openvpn-ca
+        rm -rf /tmp/openvpn-ca
         mkdir /tmp/openvpn-ca
         touch /tmp/openvpn-ca/vars
         cd /tmp/openvpn-ca
         easyrsa init-pki
-        cp /etc/easy-rsa/openssl-easyrsa.cnf /tmp/openvpn-ca/pki/
-        cp -r /etc/easy-rsa/x509-types/ /tmp/openvpn-ca/
+        cp /usr/share/easy-rsa/openssl-easyrsa.cnf /tmp/openvpn-ca/pki/
+        cp -r /usr/share/easy-rsa/x509-types/ /tmp/openvpn-ca/
         echo "CA" | easyrsa build-ca nopass
         echo "server" | easyrsa gen-req server nopass
         echo "yes" | easyrsa sign-req server server
@@ -23,7 +24,7 @@ for i in $(seq 1 $1); do
     (
         [ -d "team$i" ] && rm -r "team$i"
         mkdir "team$i" && cd "team$i"
-        openvpn --genkey secret ta.key
+        openvpn --genkey --secret ta.key
         cp /tmp/openvpn-ca/pki/ca.crt .
         cp /tmp/openvpn-ca/pki/issued/server.crt .
         cp /tmp/openvpn-ca/pki/private/server.key .

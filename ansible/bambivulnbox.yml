@@ -13,9 +13,12 @@
       - docker-block-external
       - wireguard
       - enomoloch
+      - bambixploit
       - role: programs
         vars:
           program_list:
             - tmux
             - unzip
+            - git
+            - python3-pip
       - bambi-openvpn-team-server
