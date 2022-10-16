@@ -73,8 +73,8 @@ export HCLOUD_TOKEN="..."
 - Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
 - Create `./ansible/config_bambi.yml`
 - Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
-- Run the container (`docker-compose up --build`)
-- Invoke a bash in the container (`docker-compose exec bambictf bash`)
+- Run the container (`docker compose up -d`)
+- Invoke a bash in the container (`docker compose exec bambictf bash`)
 - Build configs
     - `cd /bambictf/config`
     - `./gen_config.sh`
