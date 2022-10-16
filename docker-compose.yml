@@ -2,7 +2,7 @@ version: '2'
 
 services:
   bambictf:
-    build: .
+    image: ghcr.io/enowars/bambictf:latest
     environment:
       - HCLOUD_TOKEN=${HCLOUD_TOKEN}                # for packer
       - TF_VAR_HCLOUD_TOKEN=${HCLOUD_TOKEN}         # for terraform
