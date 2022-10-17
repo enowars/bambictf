@@ -9,10 +9,31 @@
       repo: "https://github.com/enowars/EnoEngine.git"
       dest: /services/EnoEngine
 
+  - name: Build EnoEngine
+    shell: "dotnet build"
+    args:
+      chdir: /services/EnoEngine
+
+  - name: Start EnoEngine Postgres
+    shell: "docker-compose up -d"
+    args:
+      chdir: /services/EnoEngine
+
   - name: Clone EnoCTFPortal (for adhoc testing and solutions)
     git:
       repo: "https://github.com/enowars/EnoCTFPortal.git"
       dest: /services/EnoCTFPortal
+
+  - name: Copy EnoCTFPortal docker-compose.yml
+    copy:
+      src: docker-compose.yml
+      dest: /services/EnoCTFPortal/
+    changed_when: false
+
+  - name: Start EnoCTFPortal
+    shell: "docker-compose up -d"
+    args:
+      chdir: /services/EnoCTFPortal
 
   - name: Allow flag submission traffic
     iptables:
