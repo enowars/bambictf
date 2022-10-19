@@ -2,33 +2,39 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/hetznercloud/hcloud" {
-  version = "1.26.0"
+  version     = "1.35.2"
+  constraints = "1.35.2"
   hashes = [
-    "h1:2LLe4UKLS7R+t+tQL1oOFLA8c8/rs3iCfT26LyiQcsk=",
-    "zh:03d7eb722a4ee25774949baace0125392060d0369d4cb9257d7d298ab6ece3ff",
-    "zh:0fed2e63ac4cb6fe6b2a5b6891abf973cb7c1716e487fbabc09216e0ec05e866",
-    "zh:1a84c8c1c8e2d6607de5aa09aa3f9254183cde75a5acc666cca5f4b02a1d290e",
-    "zh:23ac426aa3a0001fb20045dc35569978864f139732f45ab671c64e80123c91a1",
-    "zh:23b78348b24ae3e4679bd90989c999346efd71ee228d17368d5f556f63e5fd06",
-    "zh:2503fe28ac87661af96e7755a7404307000822104ac1abc571271eee46c95ab5",
-    "zh:3fe859b2611d20ed5cd65cc2ec812acf73c7dfb39f2fee45ef99a3896c2662a8",
-    "zh:51ef869ed35d0d8aada35f587c4a64802f1140dc93c40a4e7c9800560143bb1a",
-    "zh:69b93cf4adca465b89da08e4e3b4aaf831821f1fbae68e526c0a292b3cfa463d",
-    "zh:6a4e23c6aa86e3d30240e6e4c97daef3af9ad217be2c6f35300fe1839fdbf8b2",
-    "zh:97a513459692a981a62b4a566c1d736c4a67622d2fbbee3771ec3ea8d576d484",
-    "zh:fec6c07731e23d1dd45015b44747b89c4fee58b5b2560f96d24c7da5a8ecb2ad",
+    "h1:a/DH+2jHvgikSDajup5feRZRUwNw8OT9NBPKezjgM5g=",
+    "zh:1a7cb8f9cbd51b62bdbb4f36cdb070dd99059d86115c4777193e0f8536798d4d",
+    "zh:29c104aae7f7a4e1a4aea32febc9caa2d7d86589cd9d01d5b93dbe2cb0a73220",
+    "zh:29f082195d8f4e4cfb4050fae2ed62ed5616659c6dfaa7b5f1eb42d94d130864",
+    "zh:3cfe3876763659e27696adcb945e6da2dc2ec014ff8a2e8f0f3e610e3bfd9b73",
+    "zh:3d967f4b1aef78ffce389dd32cdea4b558ef826cec96ceb4bdafde4bb4a9b655",
+    "zh:3e160f581f7912c2053f86d6d8a3e3470fcf1fe8228b59ac216a7e40a1dd444c",
+    "zh:5138022c8b4c8a572e8097749241d929a96d3522e67ce25f86bb9fd51c4b343c",
+    "zh:5783febc4d8ac4b7fdb49607cab92ad13509d87ad4ca1999067ac3d20e815d12",
+    "zh:7f8ce9268d48beb5fa0103a8510d4fe644aaac6cd328fc4441dd37e8bdbfadab",
+    "zh:8ab6aea82657fd6f97d79b41e6cd129a33a47ce727a7d0b52205590fa3785ce1",
+    "zh:9e4bebe3bbee7875dc2e3ceca3cf0fec3254a8b481c7b96ba9a5d65647ea9092",
+    "zh:af2a912db9a6fce844ac8c0e695a5d92a5625f2df126129940051a6b1021443d",
+    "zh:bfe86d80e55f44a99dbbdca9d1caf0c837fe21d91e78674ee36263b7de71fd38",
+    "zh:d9538a361bd8979c4a87273a82fc5dec7110f3aa7ec69fffb8c70fe8937bc1f4",
   ]
 }
 
 provider "registry.terraform.io/timohirt/hetznerdns" {
-  version     = "1.1.1"
-  constraints = "1.1.1"
+  version     = "2.2.0"
+  constraints = "2.2.0"
   hashes = [
-    "h1:zdJoDXLIX9Cg+s8jddl2IyPB7PJQWjpvxs4qzvJ6uwQ=",
-    "zh:04ce8d4be0efd04558e666fec952169077cfe8479d56432d2f4501cb2a3f5e09",
-    "zh:2514aa9fa74d8ec9e28f456713688efbcc5ccf2cb245d38c35a3362e85ddbe4b",
-    "zh:6a96353af214d5d514bab5f069b822427439a4cf7a631c7f81db70d5e6cbf0d0",
-    "zh:6c75a779df815456a66a17ba0e9e2b4c72b0c16f6f72649914a9f1613f4b9d33",
-    "zh:813365d81a6abb158ed8876a923c5bebc0bc375bc26409bd9f21fce8ba862390",
+    "h1:HyskQAglrOueur79gSCBgx9MNDOs0tz39aNYQiFgxz8=",
+    "zh:5bb0ab9f62be3ed92070235e507f3c290491d51391ef4edcc70df53b65a83019",
+    "zh:5ccdfac7284f5515ac3cff748336b77f21c64760e429e811a1eeefa8ebb86e12",
+    "zh:687c35665139ae37c291e99085be2e38071f6b355c4e1e8957c5a6a3bcdf9caf",
+    "zh:6de27f0d0d1513b3a4b7e81923b4a8506c52759bd466e2b4f8156997b0478931",
+    "zh:85770a9199a4c2d16ca41538d7a0f7a7bfc060678104a1faac19213e6f0a800c",
+    "zh:a5ff723774a9ccfb27d5766c5e6713537f74dd94496048c89c5d64dba597e59e",
+    "zh:bf9ab76fd37cb8aebb6868d73cbe8c08cee36fc25224cc1ef5949efa3c34b06c",
+    "zh:db998fe3bdcd4902e99fa470bb3f355883170cf4c711c8da0b5f1f4510f1be41",
   ]
 }

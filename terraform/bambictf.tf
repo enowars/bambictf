@@ -2,13 +2,14 @@ terraform {
   required_providers {
     hetznerdns = {
       source  = "timohirt/hetznerdns"
-      version = "1.1.1"
+      version = "2.2.0"
     }
     hcloud = {
       source = "hetznercloud/hcloud"
+      version = "1.35.2"
     }
   }
-  required_version = ">= 0.13"
+  required_version = ">= 1.0"
 }
 
 variable "HETZNERDNS_TOKEN" {}
