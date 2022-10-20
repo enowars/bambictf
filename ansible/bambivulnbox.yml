@@ -20,7 +20,10 @@
             - tmux
             - unzip
             - git
-            - python3-pip
+            - binutils
+            - libssl-dev
+            - libffi-dev
+            - build-essential 
       - role: pip-packages
         vars:
           pip_list:
