@@ -1,0 +1,13 @@
+---
+  - name: Install python3-pip
+    apt:
+      name: "python3-pip"
+      force_apt_get: yes
+      autoremove: yes
+      cache_valid_time: 3000
+      state: present
+
+  - name: Install pip packages
+    ansible.builtin.pip:
+      name: "{{ pip_list }}"
+      umask: "0022"

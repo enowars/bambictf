@@ -21,4 +21,8 @@
             - unzip
             - git
             - python3-pip
+      - role: pip-packages
+        vars:
+          pip_list:
+            - pwntools
       - bambi-openvpn-team-server
