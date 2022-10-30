@@ -7,7 +7,7 @@
 
 - name: Download Metricbeat
   get_url:
-    url: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.6.2-amd64.deb"
+    url: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.4.3-amd64.deb"
     dest: "/tmp/metricbeat.deb"
   when: metricbeat_check_deb.rc == 1
 

@@ -7,7 +7,7 @@
 
   - name: Download Filebeat
     get_url:
-      url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.2-amd64.deb"
+      url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.4.3-amd64.deb"
       dest: "/tmp/filebeat.deb"
     when: filebeat_check_deb.rc == 1
 
