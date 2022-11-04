@@ -78,9 +78,13 @@ export HCLOUD_TOKEN="..."
 - Build configs
     - `cd /bambictf/config`
     - `./gen_config.sh`
+- Ship everything to the EnoCTFPortal:
+    - `cp -r ./export/ /services/EnoCTFPortal/data/teamdata` (or whereever it is)
 - Builds VMs
     - `cd /bambictf/packer`
     - `packer build bambichecker.json`
+    - ...
+- Note down vulnbox snapshot id, pass to EnoCTFPortal (`curl -H "Authorization: Bearer $HCLOUD_TOKEN" 'https://api.hetzner.cloud/v1/images?type=snapshot'`)
 - Create `./terraform/terraform.tfvars`
     - set `vpn_floating_ip_only = false`
     - set `internal_floating_ip_only = false`
