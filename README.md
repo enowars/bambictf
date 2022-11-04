@@ -82,6 +82,8 @@ export HCLOUD_TOKEN="..."
     - `cd /bambictf/packer`
     - `packer build bambichecker.json`
 - Create `./terraform/terraform.tfvars`
+    - set `vpn_floating_ip_only = false`
+    - set `internal_floating_ip_only = false`
 - `cd ./terraform`
 - `terraform init`
 - `terraform apply`
