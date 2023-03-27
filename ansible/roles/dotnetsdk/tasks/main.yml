@@ -7,7 +7,7 @@
 
   - name: Download Microsoft PGP key
     get_url:
-      url: "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
+      url: "https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb"
       dest: "/tmp/packages-microsoft-prod.deb"
     when: dotnet_sdk_deb.rc == 1
 
@@ -25,7 +25,7 @@
 
   - name: Install dotnet sdk
     apt:
-      name: "dotnet-sdk-6.0"
+      name: "dotnet-sdk-7.0"
       state: present
       update_cache: yes
     when: dotnet_sdk_deb.rc == 1
