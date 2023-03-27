@@ -30,8 +30,6 @@ github_ssh_keys:
     - domenukk
     - ldruschk
     - MMunier
-elk_address: ip or url
-moloch_internal_ip: ip or url
 ```
 2. Create `./terraform/terraform.tfvars`:
 ```

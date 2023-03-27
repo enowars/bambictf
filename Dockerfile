@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # Core deps
 RUN apt-get update
@@ -26,6 +26,9 @@ ENV PATH="/usr/share/easy-rsa:${PATH}"
 
 # QOL
 RUN echo "set -g mouse on" > /root/.tmux.conf
+
+# fix SSH host key checking
+RUN mkdir /root/.ssh && echo "Host 127.0.0.1\n  HostKeyAlgorithms=+ssh-rsa\n  PubkeyAcceptedKeyTypes=+ssh-rsa" > /root/.ssh/config
 
 WORKDIR /bambictf
 
