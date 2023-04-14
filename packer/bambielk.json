@@ -20,7 +20,8 @@
             "snapshot_name": "bambielk-{{timestamp}}",
             "snapshot_labels": {
                 "type": "bambielk"
-            }
+            },
+            "user_data": "#!/bin/sh\necho PubkeyAcceptedKeyTypes=+ssh-rsa >> /etc/ssh/sshd_config; service ssh reload"
         }
     ]
 }
