@@ -1,0 +1,23 @@
+name: Clean up hcloud resources
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup hcloud
+        run: |
+          curl -o hcloud-linux-amd64.tar.gz -L https://github.com/hetznercloud/cli/releases/download/v1.34.0/hcloud-linux-amd64.tar.gz
+          tar xf hcloud-linux-amd64.tar.gz -C /usr/bin hcloud
+          chmod +x /usr/bin/hcloud
+      - name: clean up resources
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        run: |
+          for i in $(hcloud ssh-key list -o noheader -o columns=id); do hcloud ssh-key delete $i; done
+          for i in $(hcloud server list -o noheader -o columns=id); do hcloud server delete $i; done
+          for i in $(hcloud image list -t snapshot -o noheader -o columns=id); do hcloud image delete $i; done
