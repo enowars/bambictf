@@ -31,8 +31,6 @@ jobs:
         image: ["bambirouter"]
     runs-on: ubuntu-latest
     needs: docker-build
-    env:
-      COMPOSE_INTERACTIVE_NO_CLI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -46,8 +44,8 @@ jobs:
       - name: start docker-compose setup
         run: docker-compose up -d
       - name: prepare ansible config
-        run: docker-compose exec bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
+        run: docker-compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: generate config files
-        run: docker-compose exec bambictf sh -c 'cd config; TEAM_COUNT=4 GATEWAY_COUNT=2 CHECKER_COUNT=2 ./gen_config.sh'
+        run: docker-compose exec -T bambictf sh -c 'cd config; TEAM_COUNT=4 GATEWAY_COUNT=2 CHECKER_COUNT=2 ./gen_config.sh'
       - name: build packer image
-        run: docker-compose exec bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
+        run: docker-compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
