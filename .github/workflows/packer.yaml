@@ -15,15 +15,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          tags: ghcr.io/enowars/bambictf:latest
-          outputs: type=docker,dest=/tmp/bambictf.tar
-      -
-        name: Upload artifact
+      - name: Build and save Docker image
+        run: |
+          docker build -t ghcr.io/enowars/bambictf:latest .
+          docker save --output /tmp/bambictf.tar ghcr.io/enowars/bambictf:latest
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: bambictf
