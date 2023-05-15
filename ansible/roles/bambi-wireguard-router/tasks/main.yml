@@ -118,22 +118,15 @@
       out_interface: router
       jump: ACCEPT
 
-  - name: allow intra-team traffic part 1
-    iptables:
-      chain: FORWARD
-      out_interface: router
-      source: "10.1.{{ item }}.0/24"
-      destination: "10.1.{{ item }}.0/24"
-      jump: ACCEPT
+  # this is a pretty hacky workaround, but the execution of the iptables-module in ansible is just painfully slow
+  - name: "allow intra-team traffic part 1"
+    shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j ACCEPT"
+    when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout'
     with_sequence: start=1 end=255
 
-  - name: allow intra-team traffic part 2
-    iptables:
-      chain: FORWARD
-      out_interface: team+
-      source: "10.1.{{ item }}.0/24"
-      destination: "10.1.{{ item }}.0/24"
-      jump: ACCEPT
+  - name: "allow intra-team traffic part 2"
+    shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o team+ -j ACCEPT"
+    when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout'
     with_sequence: start=1 end=255
 
   - name: persist iptables config
