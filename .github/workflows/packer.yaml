@@ -29,9 +29,9 @@ jobs:
           name: bambictf
           path: /tmp/bambictf.tar
 
-  use:
+  packer-build:
     runs-on: ubuntu-latest
-    needs: build
+    needs: docker-build
     steps:
       - name: Checkout
         uses: actions/checkout@v2
