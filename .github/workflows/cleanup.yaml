@@ -1,9 +1,17 @@
 name: Clean up hcloud resources
 
+# prevent mutliple concurrent workflow executions to avoid hcloud resources interfering with each other
+concurrency: hcloud
+
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 3 * * *"
+  # run the workflow after a packer build workflow is finished to clean up all images created by the workflow (and potentially also left-over servers)
+  workflow_run:
+    workflows: ["Packer build"]
+    types:
+      - completed
 
 jobs:
   cleanup:

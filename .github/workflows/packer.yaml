@@ -1,5 +1,8 @@
 name: Packer build
 
+# prevent mutliple concurrent workflow executions to avoid hcloud resources interfering with each other
+concurrency: hcloud
+
 on:
   push:
     branches:
@@ -27,8 +30,10 @@ jobs:
 
   packer-build:
     strategy:
+      # fail-fast needs to be disabled, otherwise packer processes may be ungracefully killed and leave stale builder VMs
+      fail-fast: false
       matrix:
-        image: ["bambirouter"]
+        image: ["bambichecker", "bambielk", "bambiengine", "bambirouter", "bambivulnbox"]
     runs-on: ubuntu-latest
     needs: docker-build
     steps:
