@@ -1,6 +1,6 @@
 {
     "flagRegex": "ENO[A-Za-z0-9+\/=]{48}",
-    "targetsUrl": "https://gist.githubusercontent.com/PistonMiner/e7532f27ed8f313f8aebda874c1d89c0/raw/2732cbbc5ca8fafe1d6e8edd187ba84ba694032a/ips.txt",
+    "targetsUrl": "https://bambi7.enoflag.de/api/data/ips",
     "submissionAddress": "10.0.13.37",
     "submissionPort": 1337,
     "interval": 50
