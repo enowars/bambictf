@@ -5,23 +5,23 @@
     failed_when: dotnet_sdk_deb.rc > 1
     changed_when: dotnet_sdk_deb.rc == 1
 
-  - name: Download Microsoft PGP key
-    get_url:
-      url: "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb"
-      dest: "/tmp/packages-microsoft-prod.deb"
-    when: dotnet_sdk_deb.rc == 1
+  # - name: Download Microsoft PGP key
+  #   get_url:
+  #     url: "https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb"
+  #     dest: "/tmp/packages-microsoft-prod.deb"
+  #   when: dotnet_sdk_deb.rc == 1
 
-  - name: Install Microsoft PGP key
-    apt:
-      deb: "/tmp/packages-microsoft-prod.deb"
-    become: yes
-    when: dotnet_sdk_deb.rc == 1
+  # - name: Install Microsoft PGP key
+  #   apt:
+  #     deb: "/tmp/packages-microsoft-prod.deb"
+  #   become: yes
+  #   when: dotnet_sdk_deb.rc == 1
 
-  - name: Install dotnet deps
-    apt:
-      name: "apt-transport-https"
-      state: present
-    when: dotnet_sdk_deb.rc == 1
+  # - name: Install dotnet deps
+  #   apt:
+  #     name: "apt-transport-https"
+  #     state: present
+  #   when: dotnet_sdk_deb.rc == 1
 
   - name: Install dotnet sdk
     apt:

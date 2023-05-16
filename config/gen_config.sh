@@ -1,8 +1,8 @@
 #!/bin/bash
 
-TEAM_COUNT=256
-GATEWAY_COUNT=1
-CHECKER_COUNT=5
+TEAM_COUNT=$(if [ -z "$TEAM_COUNT" ]; then echo 255; else echo "$TEAM_COUNT"; fi)
+GATEWAY_COUNT=$(if [ -z "$GATEWAY_COUNT" ]; then echo 2; else echo "$GATEWAY_COUNT"; fi)
+CHECKER_COUNT=$(if [ -z "$CHECKER_COUNT" ]; then echo 4; else echo "$CHECKER_COUNT"; fi)
 
 mkdir -p "export"
 mkdir -p "internal_router"

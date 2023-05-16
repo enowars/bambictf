@@ -1,7 +1,7 @@
 ---
   - name: Install bambixploit
     get_url:
-      url: "https://github.com/enowars/bambiXploit-dotnet/releases/download/v0.0.9/bambixploit-linux-x64"
+      url: "https://github.com/enowars/bambiXploit-dotnet/releases/download/v0.0.10/bambixploit-linux-x64"
       dest: /usr/local/bin/bambixploit
       mode: 0755
 

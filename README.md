@@ -30,8 +30,6 @@ github_ssh_keys:
     - domenukk
     - ldruschk
     - MMunier
-elk_address: ip or url
-moloch_internal_ip: ip or url
 ```
 2. Create `./terraform/terraform.tfvars`:
 ```
@@ -69,7 +67,7 @@ export HCLOUD_TOKEN="..."
 ```
 
 ## Docker
-- Have at least one ssh key with the label `type=admin` in your project
+- Have at least one ssh key with the label `type=admin` in your project **(HETZNER's WEBSITE)**
 - Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
 - Create `./ansible/config_bambi.yml`
 - Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
@@ -88,7 +86,7 @@ export HCLOUD_TOKEN="..."
 - Create `./terraform/terraform.tfvars`
     - set `vpn_floating_ip_only = false`
     - set `internal_floating_ip_only = false`
-- `cd ./terraform`
+- `cd /bambictf/terraform`
 - `terraform init`
 - `terraform apply`
 

@@ -13,14 +13,15 @@
     "builders": [
         {
             "type": "hcloud",
-            "image": "ubuntu-20.04",
+            "image": "ubuntu-22.04",
             "location": "fsn1",
             "server_type": "cx11",
             "ssh_username": "root",
             "snapshot_name": "bambiengine-{{timestamp}}",
             "snapshot_labels": {
                 "type": "bambiengine"
-            }
+            },
+            "user_data": "#!/bin/sh\necho PubkeyAcceptedKeyTypes=+ssh-rsa >> /etc/ssh/sshd_config; service ssh reload"
         }
     ]
 }

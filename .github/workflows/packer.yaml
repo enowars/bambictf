@@ -1,0 +1,58 @@
+name: Packer build
+
+# prevent mutliple concurrent workflow executions to avoid hcloud resources interfering with each other
+concurrency: hcloud
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and save Docker image
+        run: |
+          docker build -t ghcr.io/enowars/bambictf:latest .
+          docker save --output /tmp/bambictf.tar ghcr.io/enowars/bambictf:latest
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bambictf
+          path: /tmp/bambictf.tar
+
+  packer-build:
+    strategy:
+      # fail-fast needs to be disabled, otherwise packer processes may be ungracefully killed and leave stale builder VMs
+      fail-fast: false
+      matrix:
+        image: ["bambichecker", "bambielk", "bambiengine", "bambirouter", "bambivulnbox"]
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: bambictf
+          path: /tmp
+      - name: Load Docker image
+        run: docker load --input /tmp/bambictf.tar
+      - name: start docker-compose setup
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        run: docker-compose up -d
+      - name: prepare ansible config
+        run: docker-compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
+      - name: generate config files
+        run: docker-compose exec -T bambictf sh -c 'cd config; TEAM_COUNT=4 GATEWAY_COUNT=2 CHECKER_COUNT=2 ./gen_config.sh'
+      - name: build packer image
+        run: docker-compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
