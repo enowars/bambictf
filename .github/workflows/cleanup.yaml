@@ -20,8 +20,8 @@ jobs:
       - name: setup hcloud
         run: |
           curl -o hcloud-linux-amd64.tar.gz -L https://github.com/hetznercloud/cli/releases/download/v1.34.0/hcloud-linux-amd64.tar.gz
-          tar xf hcloud-linux-amd64.tar.gz -C /usr/bin hcloud
-          chmod +x /usr/bin/hcloud
+          sudo tar xf hcloud-linux-amd64.tar.gz -C /usr/bin hcloud
+          sudo chmod +x /usr/bin/hcloud
       - name: clean up resources
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
