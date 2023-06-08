@@ -54,5 +54,7 @@ jobs:
         run: docker-compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: generate config files
         run: docker-compose exec -T bambictf sh -c 'cd config; TEAM_COUNT=4 GATEWAY_COUNT=2 CHECKER_COUNT=2 ./gen_config.sh'
+      - name: run packer init
+        run: docker-compose exec -T bambictf sh -c 'cd packer; packer init'
       - name: build packer image
         run: docker-compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
