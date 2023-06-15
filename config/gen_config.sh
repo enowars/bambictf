@@ -26,6 +26,10 @@ mkdir -p "passwords"
     cd "passwords"
     ./gen_passwords.sh $TEAM_COUNT
 )
+(
+    cd "phreaking_secrets"
+    ./gen_phreaking_secrets.sh $TEAM_COUNT
+)
 
 for i in $(seq 1 ${TEAM_COUNT}); do
     mkdir -p "export/team$i"
