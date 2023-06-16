@@ -94,6 +94,13 @@ export HCLOUD_TOKEN="..."
 ## Open game network
 - `iptables -A FORWARD -o router -j ACCEPT` (on *every* gateway)
 
+## Emergency Port Forwards
+`iptables -A INPUT -i internal -p tcp -m tcp --dport 5001 -j ACCEPT` on engine
+```
+iptables -A FORWARD -d 192.168.1.0/32 -i team+ -o internal -p tcp -m tcp --dport 5001 -j ACCEPT
+iptables -A FORWARD -d 192.168.1.0/32 -i router -o internal -p tcp -m tcp --dport 5001 -j ACCEPT
+```
+on every router
 
 ## Rsync stuff
 - `while true; do rsync /services/data/*.json benni@bambi.enoflag.de:/services/EnoCTFPortal_bambi7/scoreboard; sleep 5; done` TODO ask Lucas about loops and stuff
