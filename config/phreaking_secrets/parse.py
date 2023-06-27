@@ -11,5 +11,5 @@ for i in range(1, n + 1):
         parsed_env_secrets.append(lines[1].replace("PHREAKING_", f"PHREAKING_{i}_"))
 
 
-with open("checker_env.txt", "w") as fp:
+with open("checker.env", "w") as fp:
     fp.writelines(parsed_env_secrets)
