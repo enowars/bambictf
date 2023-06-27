@@ -41,6 +41,11 @@ EOF
 systemctl enable wg-quick@game
 systemctl start wg-quick@game
 
+cat <<EOF > /services/phreaking/.env
+COMPOSE_PROJECT_NAME=phreaking_service
+$(cat "phreaking_secrets/team$i.phreaking.secrets.txt")
+EOF
+
 for service in \$(ls /services/); do
     cd "/services/\$service"
     if [ -f "/services/\$service/setup.sh" ]; then
