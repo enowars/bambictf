@@ -1,6 +1,6 @@
 # Bambi CTF Infrastructure
 
-This is the setup used for our Bambi CTF training competitions. It was also used to host [ENOWARS4](https://enowars.com).
+This is the setup used in our BambiCTF and ENOWARS competitions.
 
 It uses ansible and packer to prepare images for Hetzner Cloud and terraform to create the infrastructure.
 
@@ -89,7 +89,6 @@ export HCLOUD_TOKEN="..."
 - `cd /bambictf/terraform`
 - `terraform init`
 - `terraform apply`
-
 
 ## Open game network
 - `iptables -A FORWARD -o router -j ACCEPT` (on *every* gateway)
