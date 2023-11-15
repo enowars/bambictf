@@ -1,4 +1,3 @@
 dependencies:
 - role: "docker"
-- role: "programs"
 - role: "bambi-ssh-keys"

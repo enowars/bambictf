@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${router_ips[index].ip_address}/32
+EOF
+netplan apply
+
+%{ for router_index, router in router_ips ~}
+  %{ if router_index != index }
+    rm "/etc/wireguard/router${router_index+1}_internal.conf"
+    rm "/etc/wireguard/router${router_index+1}_game.conf"
+    sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/router${id}_internal.conf"
+    sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/router${id}_game.conf"
+  %{ endif }
+%{ endfor ~}
+
+mv "/etc/wireguard/router${id}_internal.conf" "/etc/wireguard/internal.conf"
+mv "/etc/wireguard/router${id}_game.conf" "/etc/wireguard/router.conf"
+
+sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine.ip_address}#g" "/etc/wireguard/internal.conf"
+sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk.ip_address}#g" "/etc/wireguard/internal.conf"
+
+systemctl enable "wg-quick@internal"
+systemctl start "wg-quick@internal"
+systemctl enable "wg-quick@router"
+systemctl start "wg-quick@router"

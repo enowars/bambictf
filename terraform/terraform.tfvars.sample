@@ -1,7 +1,8 @@
-hetznerdns_zone  = "bambi.ovh"
-home_location    = "fsn1"
+hetznerdns_zone     = "bambi.ovh"
+hetznerdns_suffix   = "prod.bambi.ovh"
+home_location       = "fsn1"
 
-gateway_count = 2
+router_count  = 2
 checker_count = 1
 engine_count  = 1
 elk_count     = 1

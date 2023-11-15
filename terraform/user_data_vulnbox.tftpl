@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+# Network
+cat > /etc/wireguard/game.conf <<EOF
+${wgconf}
+EOF
+%{ for router_index, router in router_ips ~}
+  sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/game.conf"
+%{ endfor ~}
+systemctl enable "wg-quick@game"
+systemctl start "wg-quick@game"
+
+# Services
+for service in $(ls /services/); do
+    cd "/services/$service"
+    if [ -f "/services/$service/setup.sh" ]; then
+        /services/$service/setup.sh 2
+    fi
+    docker compose up -d &
+done

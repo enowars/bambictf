@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "configgen"
+version = "0.1.0"
+description = ""
+authors = ["Benedikt Radtke <benediktradtke@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+argparse = "^1.4.0"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.6.1"
+ruff = "^0.1.5"
+black = "^23.11.0"
+isort = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+configgen = "configgen:main"
+
+[tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+
+# Untyped Definitions and Calls
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true

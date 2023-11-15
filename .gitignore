@@ -16,3 +16,4 @@ config*.yml
 id_ed25519
 .secrets
 ctf*json
+*.pyc
