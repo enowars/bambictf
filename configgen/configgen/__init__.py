@@ -35,7 +35,7 @@ def prepare_directories(teams: int) -> None:
     Path(f"{DATA_DIR}/passwords/").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/wg_game/").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/wg_internal/").mkdir(parents=True, exist_ok=True)
-    shutil.rmtree(DATA_DIR / "export")
+    shutil.rmtree(DATA_DIR / "export", ignore_errors=True)
     Path(f"{DATA_DIR}/export/ansible/checkers").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/routers").mkdir(parents=True, exist_ok=True)
     for team in range(1, teams + 1):
