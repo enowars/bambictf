@@ -52,6 +52,11 @@ data "hcloud_image" "bambiengine" {
   most_recent   = true
 }
 
+data "hcloud_image" "bambielk" {
+  with_selector =  "type=bambielk"
+  most_recent   = true
+}
+
 data "hcloud_image" "bambichecker" {
   with_selector = var.checker_count > 0 ? "type=bambichecker" : null
   name          = var.checker_count > 0 ? null : "debian-10"
@@ -144,6 +149,15 @@ resource "hcloud_server" "bambiengine" {
   )
 }
 
+resource "hetznerdns_record" "bambchecker_dns" {
+  count   = var.checker_count
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "checker${count.index + 1}${var.hetznerdns_suffix}"
+  value   = hcloud_server.bambichecker[count.index].ipv4_address
+  type    = "A"
+  ttl     = 60
+}
+
 resource "hcloud_server" "bambichecker" {
   name        = "bambichecker"
   image       = data.hcloud_image.bambichecker.id
@@ -162,19 +176,39 @@ resource "hcloud_server" "bambichecker" {
   )
 }
 
-resource "hetznerdns_record" "bambchecker_dns" {
-  count   = var.checker_count
-  zone_id = data.hetznerdns_zone.zone.id
-  name    = "checker${count.index + 1}${var.hetznerdns_suffix}"
-  value   = hcloud_server.bambichecker[count.index].ipv4_address
-  type    = "A"
-  ttl     = 60
-}
-
 resource "hcloud_floating_ip" "bambielk_ip" {
   type          = "ipv4"
   name          = "elk"
   home_location = var.home_location
+}
+
+resource "hcloud_floating_ip_assignment" "bambielk_ipa" {
+  floating_ip_id = hcloud_floating_ip.bambielk_ip.id
+  server_id      = hcloud_server.bambielk.id
+}
+
+resource "hetznerdns_record" "bambielk_dns" {
+  zone_id = data.hetznerdns_zone.zone.id
+  name    = "elk${var.hetznerdns_suffix}"
+  value   = hcloud_server.bambielk.ipv4_address
+  type    = "A"
+  ttl     = 60
+}
+
+resource "hcloud_server" "bambielk" {
+  name        = "bambielk"
+  image       = data.hcloud_image.bambielk.id
+  location    = var.home_location
+  server_type = var.elk_type
+  ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
+
+  user_data = templatefile(
+    "user_data_elk.tftpl", {
+      router_ips  = hcloud_floating_ip.bambirouter_ip,
+      elk         = hcloud_floating_ip.bambielk_ip,
+      engine      = hcloud_floating_ip.bambiengine_ip,
+    }
+  )
 }
 
 resource "hcloud_server" "bambivulnbox" {
@@ -183,7 +217,7 @@ resource "hcloud_server" "bambivulnbox" {
   location    = var.home_location
   server_type = var.vulnbox_type
   count       = var.vulnbox_count
-  ssh_keys = data.hcloud_ssh_keys.all_keys.*.id
+  ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
 
   user_data = templatefile(
     "user_data_vulnbox.tftpl", {

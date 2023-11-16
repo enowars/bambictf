@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+# Network
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${elk.ip_address}/32
+EOF
+netplan apply
+
+sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine.ip_address}#g" "/etc/wireguard/internal.conf"
+%{ for router_index, router in router_ips ~}
+  sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
+  sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
+%{ endfor ~}
+systemctl enable "wg-quick@internal"
+systemctl start "wg-quick@internal"
+
+# Checkers
+for service in $(ls /services/); do
+    cd "/services/$service"
+    docker compose up -d &
+done

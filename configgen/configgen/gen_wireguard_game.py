@@ -52,7 +52,9 @@ def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
         x, y = (team // 250), (team % 250)
         router_index = (team - 1) % routers
         router_config = router_configs[router_index]
-        team_portal_configs.append(gen_team_config(private_key, public_key, team, router_config, dns))
+        team_portal_configs.append(
+            gen_team_config(private_key, public_key, team, router_config, dns)
+        )
         team_terraform_configs.append(
             gen_team_config(private_key, public_key, team, router_config, None)
         )
