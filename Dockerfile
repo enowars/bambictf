@@ -7,7 +7,7 @@ RUN apt-get install -y --no-install-recommends rsync git less tmux python3 curl 
     software-properties-common gpg-agent # for ansible and packer install
 
 # Poetry
-RUN pip install poetry && poetry config settings.virtualenvs.in-project true
+RUN pip install poetry && poetry config virtualenvs.in-project true
 
 # Ansible
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
