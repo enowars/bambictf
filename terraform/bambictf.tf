@@ -12,21 +12,29 @@ terraform {
   required_version = ">= 1.0"
 }
 
-variable "HETZNERDNS_TOKEN" {}
-variable "hetznerdns_zone" {}
+variable "HCLOUD_TOKEN" {
+  type      = string
+  nullable  = false
+  sensitive = true
+}
+variable "HETZNERDNS_TOKEN" {
+  type      = string
+  sensitive = true
+}
+variable "hetznerdns_zone" {
+  type      = string
+}
 variable "hetznerdns_suffix" {}
-variable "HCLOUD_TOKEN" {}
-
 variable "router_count" {}
 variable "checker_count" {}
-variable "vulnbox_count" {}
-
-variable "router_type" {}
+variable "router_type" {
+  type      = string
+  default   = "cpx31"
+  nullable  = false
+}
 variable "checker_type" {}
 variable "engine_type" {}
 variable "elk_type" {}
-variable "vulnbox_type" {}
-
 variable "home_location" {}
 
 provider "hcloud" {
@@ -60,12 +68,6 @@ data "hcloud_image" "bambielk" {
 data "hcloud_image" "bambichecker" {
   with_selector = var.checker_count > 0 ? "type=bambichecker" : null
   name          = var.checker_count > 0 ? null : "debian-10"
-  most_recent   = true
-}
-
-data "hcloud_image" "bambivulnbox" {
-  with_selector = var.vulnbox_count > 0 ? "type=bambivulnbox" : null
-  name          = var.vulnbox_count > 0 ? null : "debian-10"
   most_recent   = true
 }
 
@@ -211,29 +213,3 @@ resource "hcloud_server" "bambielk" {
   )
 }
 
-resource "hcloud_server" "bambivulnbox" {
-  name        = "vulnbox${count.index + 1}"
-  image       = data.hcloud_image.bambivulnbox.id
-  location    = var.home_location
-  server_type = var.vulnbox_type
-  count       = var.vulnbox_count
-  ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
-
-  user_data = templatefile(
-    "user_data_vulnbox.tftpl", {
-      wgconf      = file("../config/export/terraform/team${count.index + 1}/game.conf"),
-      index       = count.index,
-      id          = "${count.index + 1}",
-      router_ips  = hcloud_floating_ip.bambirouter_ip
-    }
-  )
-}
-
-resource "hetznerdns_record" "bambivulnbox_dns" {
-  count   = var.vulnbox_count
-  zone_id = data.hetznerdns_zone.zone.id
-  name    = "team${count.index + 1}${var.hetznerdns_suffix}"
-  value   = hcloud_server.bambivulnbox[count.index].ipv4_address
-  type    = "A"
-  ttl     = 60
-}

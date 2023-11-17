@@ -46,13 +46,13 @@ jobs:
           path: /tmp
       - name: Load Docker image
         run: docker load --input /tmp/bambictf.tar
-      - name: start docker-compose setup
+      - name: start docker compose setup
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-        run: docker-compose up -d
+        run: docker compose up -d
       - name: prepare ansible config
-        run: docker-compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
+        run: docker compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: generate config files
-        run: docker-compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns bambi.ovh'
+        run: docker compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns bambi.ovh'
       - name: build packer image
-        run: docker-compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
+        run: docker compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
