@@ -14,7 +14,7 @@ RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y 
 
 # Terrorform
 RUN ls -alh /usr/local/bin
-RUN curl https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip > terraform.zip && \
+RUN curl https://releases.hashicorp.com/terraform/1.6.4/terraform_1.6.4_linux_amd64.zip > terraform.zip && \
     unzip terraform.zip && \
     mv terraform /usr/local/bin/
 

@@ -7,7 +7,7 @@ network:
   ethernets:
     eth0:
       addresses:
-      - ${engine.ip_address}/32
+      - ${engine}/32
 EOF
 netplan apply
 
@@ -15,7 +15,7 @@ netplan apply
   sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
 %{ endfor ~}
 
-sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk.ip_address}#g" "/etc/wireguard/internal.conf"
+sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
 
 systemctl enable "wg-quick@internal"
 systemctl start "wg-quick@internal"

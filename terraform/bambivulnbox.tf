@@ -1,5 +1,14 @@
-variable "vulnbox_type" {}
-variable "vulnbox_count" {}
+variable "vulnbox_type" {
+  type      = string
+  default   = "cpx21"
+  nullable  = false
+}
+
+variable "vulnbox_count" {
+  type      = number
+  default   = 0
+  nullable  = false
+}
 
 data "hcloud_image" "bambivulnbox" {
   with_selector = var.vulnbox_count > 0 ? "type=bambivulnbox" : null
@@ -8,9 +17,9 @@ data "hcloud_image" "bambivulnbox" {
 }
 
 resource "hetznerdns_record" "bambivulnbox_dns" {
-  count   = var.vulnbox_count
-  zone_id = data.hetznerdns_zone.zone.id
-  name    = "team${count.index + 1}${var.hetznerdns_suffix}"
+  count   = var.hetznerdns_zone != null ? var.vulnbox_count : 0
+  zone_id = data.hetznerdns_zone.zone[0].id
+  name    = "team${count.index + 1}${local.subdomain}"
   value   = hcloud_server.bambivulnbox[count.index].ipv4_address
   type    = "A"
   ttl     = 60
@@ -33,4 +42,3 @@ resource "hcloud_server" "bambivulnbox" {
     }
   )
 }
-
