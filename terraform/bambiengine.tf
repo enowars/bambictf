@@ -45,7 +45,7 @@ resource "hetznerdns_record" "bambiengine_dns" {
 
 resource "hcloud_server" "bambiengine" {
   count       = var.engine_count
-  name        = "bambiengine"
+  name        = "engine"
   image       = data.hcloud_image.bambiengine[0].id
   location    = var.home_location
   server_type = var.engine_type

@@ -27,7 +27,7 @@ resource "hetznerdns_record" "bambchecker_dns" {
 
 resource "hcloud_server" "bambichecker" {
   count       = var.checker_count
-  name        = "bambichecker"
+  name        = "checker${count.index + 1}"
   image       = data.hcloud_image.bambichecker.id
   location    = var.home_location
   server_type = var.checker_type

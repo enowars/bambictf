@@ -17,6 +17,7 @@ variable "HCLOUD_TOKEN" {
   nullable  = false
   sensitive = true
 }
+
 variable "HETZNERDNS_TOKEN" {
   type      = string
   sensitive = true
@@ -32,6 +33,7 @@ variable "hetznerdns_zone" {
   type      = string
   default   = null
 }
+
 variable "subdomain" {
   type      = string
   default   = ""
