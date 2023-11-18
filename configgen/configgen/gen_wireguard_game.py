@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 from configgen.util import (
     CIDR_GAME,
@@ -13,10 +13,9 @@ from configgen.util import (
     TeamConfig,
     WireguardRouterConfig,
     create_config_file,
-    gen_wg_priv,
-    gen_wg_pub,
     get_router_cidr_game,
     get_vulnbox_cidr,
+    get_wg,
 )
 
 logger = logging.getLogger(__file__)
@@ -30,10 +29,10 @@ def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
     team_portal_configs: list[TeamConfig] = []
     team_terraform_configs: list[TeamConfig] = []
 
-    # Generate gw configs
+    # Generate router configs
     for router_id in range(1, routers + 1):
         local_ip = get_router_cidr_game(router_id)
-        private_key, public_key = get_router_wg(router_id)
+        private_key, public_key = get_wg(Path(f"wg_game/router{router_id}.key"))
         router_configs.append(
             WireguardRouterConfig(
                 router_id=router_id,
@@ -46,9 +45,9 @@ def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
             )
         )
 
-    # Generate team configs and add the peers to gw configs
+    # Generate team configs and add the peers to router configs
     for team in range(1, teams + 1):
-        private_key, public_key = get_team_wg(team)
+        private_key, public_key = get_wg(Path(f"wg_game/team{team}.key"))
         x, y = (team // 250), (team % 250)
         router_index = (team - 1) % routers
         router_config = router_configs[router_index]
@@ -102,32 +101,6 @@ def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
         Path(
             f"{DATA_DIR}/export/ansible/routers/router{router_config.router_id}_game.conf"
         ).write_text(create_config_file(router_config))
-
-
-def get_team_wg(team: int) -> Tuple[str, str]:
-    try:
-        priv = Path(f"{DATA_DIR}/wg_game/team{team}.key").read_text()
-        return priv, gen_wg_pub(priv)
-    except FileNotFoundError:
-        pass
-
-    logger.debug(f"Generating fresh privkey for team{team}")
-    priv = gen_wg_priv()
-    Path(f"{DATA_DIR}/wg_game/team{team}.key").write_text(priv)
-    return priv, gen_wg_pub(priv)
-
-
-def get_router_wg(gw: int) -> Tuple[str, str]:
-    try:
-        priv = Path(f"{DATA_DIR}/wg_game/router{gw}.key").read_text()
-        return priv, gen_wg_pub(priv)
-    except FileNotFoundError:
-        pass
-
-    logger.debug(f"Generating fresh privkey for gw{gw}")
-    priv = gen_wg_priv()
-    Path(f"{DATA_DIR}/wg_game/router{gw}.key").write_text(priv)
-    return priv, gen_wg_pub(priv)
 
 
 def gen_team_config(

@@ -23,7 +23,7 @@ def main() -> None:
     dns: str = args.dns
     routers: int = args.routers
     checkers: int = args.checkers
-    logger.info(f"Generating for {teams} teams, {routers} gws and {checkers} checkers")
+    logger.info(f"Generating for {teams} teams, {routers} routers and {checkers} checkers")
     prepare_directories(teams)
     gen_wireguard_game(teams, dns, routers)
     gen_wireguard_internal(teams, checkers, routers)
