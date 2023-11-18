@@ -3,6 +3,7 @@ import logging
 import secrets
 import shutil
 from pathlib import Path
+from typing import Optional
 
 from configgen.gen_wireguard_game import gen_wireguard_game
 from configgen.gen_wireguard_internal import gen_wireguard_internal
@@ -15,12 +16,12 @@ logger = logging.getLogger(__file__)
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--teams", type=int, required=True)
-    parser.add_argument("--dns", type=str, required=True)
+    parser.add_argument("--dns", type=str, default=None)
     parser.add_argument("--routers", type=int, default=2)
     parser.add_argument("--checkers", type=int, default=10)
     args = parser.parse_args()
     teams: int = args.teams
-    dns: str = args.dns
+    dns: Optional[str] = args.dns
     routers: int = args.routers
     checkers: int = args.checkers
     logger.info(f"Generating for {teams} teams, {routers} routers and {checkers} checkers")
@@ -28,7 +29,8 @@ def main() -> None:
     gen_wireguard_game(teams, dns, routers)
     gen_wireguard_internal(teams, checkers, routers)
     gen_passwords(teams)
-    gen_userdata_portal(teams)
+    if dns:
+        gen_userdata_portal(teams)
 
 
 def prepare_directories(teams: int) -> None:

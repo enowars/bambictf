@@ -21,7 +21,7 @@ from configgen.util import (
 logger = logging.getLogger(__file__)
 
 
-def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
+def gen_wireguard_game(teams: int, dns: Optional[str], routers: int) -> None:
     """
     Generates the game wireguard config files as needed, reusing keys (if present)
     """
@@ -51,9 +51,10 @@ def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
         x, y = (team // 250), (team % 250)
         router_index = (team - 1) % routers
         router_config = router_configs[router_index]
-        team_portal_configs.append(
-            gen_team_config(private_key, public_key, team, router_config, dns)
-        )
+        if dns != None:
+            team_portal_configs.append(
+                gen_team_config(private_key, public_key, team, router_config, dns)
+            )
         team_terraform_configs.append(
             gen_team_config(private_key, public_key, team, router_config, None)
         )
@@ -87,10 +88,11 @@ def gen_wireguard_game(teams: int, dns: str, routers: int) -> None:
                 )
             )
 
-    for team_portal_config in team_portal_configs:
-        Path(
-            f"{DATA_DIR}/export/portal/team{team_portal_config.team_id}/game.conf"
-        ).write_text(create_config_file(team_portal_config))
+    if dns != None:
+        for team_portal_config in team_portal_configs:
+            Path(
+                f"{DATA_DIR}/export/portal/team{team_portal_config.team_id}/game.conf"
+            ).write_text(create_config_file(team_portal_config))
 
     for team_terraform_config in team_terraform_configs:
         Path(
