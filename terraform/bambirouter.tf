@@ -30,7 +30,7 @@ resource "hcloud_floating_ip_assignment" "bambirouter_ipa" {
 }
 
 resource "hetznerdns_record" "bambirouter_dns" {
-  count   = var.router_count
+  count   = var.hetznerdns_zone != null ? var.router_count : 0
   zone_id = data.hetznerdns_zone.zone[0].id
   name    = "router${count.index + 1}${local.subdomain}"
   value   = hcloud_floating_ip.bambirouter_ip[count.index].ip_address

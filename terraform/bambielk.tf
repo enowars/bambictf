@@ -8,6 +8,10 @@ variable "elk_count" {
   type      = number
   default   = 0
   nullable  = false
+  validation {
+    condition     = var.elk_count == 0 || var.elk_count == 1
+    error_message = "elk_count must be 1 or 0"
+  }
 }
 
 data "hcloud_image" "bambielk" {
@@ -31,7 +35,7 @@ resource "hcloud_floating_ip_assignment" "bambielk_ipa" {
 }
 
 resource "hetznerdns_record" "bambielk_dns" {
-  count   = var.elk_count
+  count   = var.hetznerdns_zone != null ? var.elk_count : 0
   zone_id = data.hetznerdns_zone.zone[0].id
   name    = "elk${local.subdomain}"
   value   = hcloud_server.bambielk[0].ipv4_address

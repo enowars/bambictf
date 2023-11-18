@@ -17,7 +17,7 @@ data "hcloud_image" "bambichecker" {
 }
 
 resource "hetznerdns_record" "bambchecker_dns" {
-  count   = var.checker_count
+  count   = var.hetznerdns_zone != null ? var.checker_count : 0
   zone_id = data.hetznerdns_zone.zone[0].id
   name    = "checker${count.index + 1}${local.subdomain}"
   value   = hcloud_server.bambichecker[count.index].ipv4_address

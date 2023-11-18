@@ -8,6 +8,10 @@ variable "engine_count" {
   type      = number
   default   = 0
   nullable  = false
+  validation {
+    condition     = var.engine_count == 0 || var.engine_count == 1
+    error_message = "engine_count must be 1 or 0"
+  }
 }
 
 data "hcloud_image" "bambiengine" {
@@ -31,7 +35,7 @@ resource "hcloud_floating_ip_assignment" "bambiengine_ipa" {
 }
 
 resource "hetznerdns_record" "bambiengine_dns" {
-  count   = var.engine_count
+  count   = var.hetznerdns_zone != null ? var.engine_count : 0
   zone_id = data.hetznerdns_zone.zone[0].id
   name    = "engine${local.subdomain}"
   value   = hcloud_floating_ip.bambiengine_ip[0].ip_address
