@@ -7,10 +7,12 @@ from configgen.util import (
     DATA_DIR,
     WG_LISTEN_PORT_INTERNAL,
     Peer,
+    WireguardArkimeConfig,
     WireguardCheckerConfig,
     WireguardConfig,
     WireguardRouterConfig,
     create_config_file,
+    get_arkime_cidr,
     get_checker_cidr,
     get_router_cidr_internal,
     get_router_index,
@@ -21,7 +23,7 @@ from configgen.util import (
 logger = logging.getLogger(__file__)
 
 
-def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
+def gen_wireguard_internal(teams: int, checkers: int, routers: int, arkimes: int) -> None:
     """
     Generates the internal wireguard config files as needed, reusing keys (if present)
     """
@@ -57,9 +59,11 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
 
     elk_config.peers.append(engine_peer)
     engine_config.peers.append(elk_peer)
+    arkime_configs: list[WireguardArkimeConfig] = []
     router_configs: list[WireguardRouterConfig] = []
     checker_configs: list[WireguardCheckerConfig] = []
     checker_peer_list: list[Peer] = [elk_peer, engine_peer]
+    arkime_peer_list: list[Peer] = []
     for router_id in range(1, routers + 1):
         local_cidr = get_router_cidr_internal(router_id)
         private_key, public_key = get_wg(Path(f"wg_internal/router{router_id}.key"))
@@ -74,6 +78,7 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
                 listen_port=WG_LISTEN_PORT_INTERNAL,
             )
         )
+    router_configs[0].responsible_ips.append("192.168.2.0/24")
 
     # Route traffic to teams through the correct router
     for team in range(1, teams + 1):
@@ -91,6 +96,7 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
         elk_config.peers.append(peer)
         engine_config.peers.append(peer)
         checker_peer_list.append(peer)
+        arkime_peer_list.append(peer)
 
     for checker in range(1, checkers + 1):
         private_key, public_key = get_wg(Path(f"wg_internal/checker{checker}.key"))
@@ -111,9 +117,30 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
         )
         elk_config.peers.append(checker_peer)
         engine_config.peers.append(checker_peer)
-        for gateway_config in router_configs:
-            gateway_config.peers.append(checker_peer)
+        for router_config in router_configs:
+            router_config.peers.append(checker_peer)
         checker_configs.append(checker_config)
+
+    for arkime in range(1, arkimes + 1):
+        private_key, public_key = get_wg(Path(f"wg_internal/arkime{arkime}.key"))
+        arkime_cidr = get_arkime_cidr(arkime)
+        arkime_config = WireguardArkimeConfig(
+            arkime_id=arkime,
+            private_key=private_key,
+            public_key=public_key,
+            cidr=get_arkime_cidr(arkime),
+            peers=arkime_peer_list,
+            listen_port=None
+        )
+        arkime_peer = Peer(
+            public_key=public_key,
+            allowed_ips=[arkime_cidr],
+            endpoint=None,
+            comment=f"arkime{arkime}",
+        )
+        for router_config in router_configs:
+            router_config.peers.append(arkime_peer)
+        arkime_configs.append(arkime_config)
 
     # Save all to disk
     for router_config in router_configs:
@@ -125,6 +152,11 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
         Path(
             f"{DATA_DIR}/export/ansible/checkers/checker{checker_config.checker_id}.conf"
         ).write_text(create_config_file(checker_config))
+
+    for arkime_config in arkime_configs:
+        Path(
+            f"{DATA_DIR}/export/ansible/arkimes/arkime{arkime_config.arkime_id}.conf"
+        ).write_text(create_config_file(arkime_config))
 
     Path(f"{DATA_DIR}/export/ansible/engine.conf").write_text(
         create_config_file(engine_config)

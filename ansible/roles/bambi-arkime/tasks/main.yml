@@ -1,0 +1,56 @@
+---
+  - name: Increase max_map_count
+    sysctl:
+      name: vm.max_map_count
+      value: "262144"
+      sysctl_set: yes
+
+  - name: Create /services/BambiArkimeElasticsearch
+    file:
+      path: /services/BambiArkimeElasticsearch
+      state: directory
+
+  - name: docker-compose.elasticsearch.yml
+    copy:
+      src: docker-compose.elasticsearch.yml
+      dest: /services/BambiArkimeElasticsearch/docker-compose.yml
+  
+  - name: Pull ES
+    shell: docker compose pull
+    args:
+      chdir: /services/BambiArkimeElasticsearch
+
+  - name: Create /services/BambiArkime
+    file:
+      path: /services/BambiArkime
+      state: directory
+
+  - name: Copy docker-compose.arkime.yml
+    copy:
+      src: docker-compose.arkime.yml
+      dest: /services/BambiArkime/docker-compose.yml
+
+  - name: Copy config.ini
+    copy:
+      src: config.ini
+      dest: /services/BambiArkime/config.ini
+
+  - name: Copy Dockerfile
+    copy:
+      src: Dockerfile
+      dest: /services/BambiArkime/Dockerfile
+
+  - name: Copy arkime-capture.sh
+    copy:
+      src: arkime-capture.sh
+      dest: /services/BambiArkime/arkime-capture.sh
+
+  - name: Copy arkime-viewer.sh
+    copy:
+      src: arkime-viewer.sh
+      dest: /services/BambiArkime/arkime-viewer.sh
+
+  - name: Copy init.sh
+    copy:
+      src: init.sh
+      dest: /services/BambiArkime/init.sh

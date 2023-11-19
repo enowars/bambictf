@@ -1,0 +1,11 @@
+services:
+  arkime:
+    #image: ghcr.io/enoflag/enoarkime:nightly
+    build: .
+    restart: unless-stopped
+    ports:
+    - 80:8005
+    volumes:
+    - "/pcaps:/opt/arkime/raw"
+    - ".:/BambiArkime:ro"
+    - "./config.ini:/opt/arkime/etc/config.ini:ro"

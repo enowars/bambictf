@@ -10,7 +10,7 @@ from configgen.util import (
     TEAM_IP_WG_SUBNET,
     WG_LISTEN_PORT_GAME,
     Peer,
-    TeamConfig,
+    WireguardTeamConfig,
     WireguardRouterConfig,
     create_config_file,
     get_router_cidr_game,
@@ -26,8 +26,8 @@ def gen_wireguard_game(teams: int, dns: Optional[str], routers: int) -> None:
     Generates the game wireguard config files as needed, reusing keys (if present)
     """
     router_configs: list[WireguardRouterConfig] = []
-    team_portal_configs: list[TeamConfig] = []
-    team_terraform_configs: list[TeamConfig] = []
+    team_portal_configs: list[WireguardTeamConfig] = []
+    team_terraform_configs: list[WireguardTeamConfig] = []
 
     # Generate router configs
     for router_id in range(1, routers + 1):
@@ -111,13 +111,13 @@ def gen_team_config(
     team_id: int,
     router_config: WireguardRouterConfig,
     dns_suffix: Optional[str],
-) -> TeamConfig:
+) -> WireguardTeamConfig:
     if dns_suffix:
         endpoint = f"router{router_config.router_id}.{dns_suffix}:{WG_LISTEN_PORT_GAME}"
     else:
         endpoint = f"[[ROUTER_ADDRESS_{router_config.router_id}]]:{WG_LISTEN_PORT_GAME}"
 
-    return TeamConfig(
+    return WireguardTeamConfig(
         private_key=private_key,
         public_key=public_key,
         cidr=get_vulnbox_cidr(team_id),

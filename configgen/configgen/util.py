@@ -34,13 +34,18 @@ class WireguardConfig:
 
 
 @dataclass
+class WireguardArkimeConfig(WireguardConfig):
+    arkime_id: int
+
+
+@dataclass
 class WireguardRouterConfig(WireguardConfig):
     router_id: int
     responsible_ips: list[str]
 
 
 @dataclass
-class TeamConfig(WireguardConfig):
+class WireguardTeamConfig(WireguardConfig):
     team_id: int
 
 
@@ -134,6 +139,10 @@ def get_team_cidr(team_id: int) -> str:
 
 def get_checker_cidr(checker_id: int) -> str:
     return f"192.168.1.{checker_id}/32"
+
+
+def get_arkime_cidr(arkime_id: int) -> str:
+    return f"192.168.2.{arkime_id}/32"
 
 
 def get_router_cidr_game(router_id: int) -> str:

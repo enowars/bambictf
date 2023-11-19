@@ -1,0 +1,16 @@
+services:
+  elasticsearch:
+    restart: unless-stopped
+    image: elasticsearch:8.11.1
+    environment:
+    - xpack.security.enabled=false
+    - node.name=[[ARKIME]]
+    - cluster.name=bambiarkime
+    - cluster.initial_master_nodes=[[INITIAL_MASTER_NODES]]
+    - discovery.seed_hosts=[[SEED_HOSTS]]
+    - network.publish_host=[[ARKIME]]
+    - http.publish_host=[[ARKIME]]
+    - transport.publish_host=[[ARKIME]]
+    ports:
+    - "9200:9200"
+    - "9300:9300"

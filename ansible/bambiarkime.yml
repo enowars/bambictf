@@ -1,0 +1,26 @@
+---
+  - hosts: all
+    become: yes
+    become_method: sudo
+    vars_files:
+      - config_bambi.yml
+
+    roles:
+      - bambi-ssh-keys
+      - firewall
+      - bambi-arkime
+      - wireguard
+      - wireguard_arkime
+      - docker
+      - role: journalbeat
+        vars:
+          elk: 192.168.3.0
+      - role: metricbeat
+        vars:
+          elk: 192.168.3.0
+      - docker-block-external
+      - role: programs
+        vars:
+          program_list:
+            - "tmux"
+            - "git"

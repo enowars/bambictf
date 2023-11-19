@@ -1,5 +1,5 @@
 hetznerdns_zone     = "bambi.ovh"
-hetznerdns_suffix   = "prod.bambi.ovh"
+hetznerdns_suffix   = "prod"
 home_location       = "fsn1"
 
 router_count  = 2
@@ -13,6 +13,3 @@ checker_type = "cpx31"
 engine_type  = "cpx31"
 elk_type     = "cpx31"
 vulnbox_type = "cpx21"
-
-vpn_floating_ip_only      = true
-internal_floating_ip_only = true

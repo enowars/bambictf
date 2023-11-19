@@ -1,0 +1,5 @@
+---
+  - name: Copy wg configs
+    copy:
+      src: "{{ playbook_dir }}/../config/export/ansible/arkimes/"
+      dest: /etc/wireguard/

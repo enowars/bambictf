@@ -1,0 +1,26 @@
+{
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "../ansible/bambiarkime.yml",
+            "host_alias": "packer-arkime",
+            "extra_arguments": [
+                "--extra-vars",
+                "ansible_python_interpreter=/usr/bin/python3"
+            ]
+        }
+    ],
+    "builders": [
+        {
+            "type": "hcloud",
+            "image": "ubuntu-22.04",
+            "location": "fsn1",
+            "server_type": "cx11",
+            "ssh_username": "root",
+            "snapshot_name": "bambiarkime-{{timestamp}}",
+            "snapshot_labels": {
+                "type": "bambiarkime"
+            }
+        }
+    ]
+}
