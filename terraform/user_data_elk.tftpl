@@ -17,8 +17,7 @@ sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine}#g" "/etc/wireguard/internal.conf"
   sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
   sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
 %{ endfor ~}
-systemctl enable "wg-quick@internal"
-systemctl start "wg-quick@internal"
+systemctl enable --now "wg-quick@internal"
 
 # Checkers
 for service in $(ls /services/); do

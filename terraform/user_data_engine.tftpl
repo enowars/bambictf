@@ -17,5 +17,4 @@ netplan apply
 
 sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
 
-systemctl enable "wg-quick@internal"
-systemctl start "wg-quick@internal"
+systemctl enable --now "wg-quick@internal"

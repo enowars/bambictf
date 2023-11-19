@@ -26,7 +26,9 @@ def main() -> None:
     routers: int = args.routers
     checkers: int = args.checkers
     arkimes: int = args.arkimes
-    logger.info(f"Generating for {teams} teams, {routers} routers and {checkers} checkers")
+    logger.info(
+        f"Generating for {teams} teams, {routers} routers and {checkers} checkers"
+    )
     prepare_directories(teams)
     gen_wireguard_game(teams, dns, routers)
     gen_wireguard_internal(teams, checkers, routers, arkimes)

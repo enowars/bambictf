@@ -23,7 +23,9 @@ from configgen.util import (
 logger = logging.getLogger(__file__)
 
 
-def gen_wireguard_internal(teams: int, checkers: int, routers: int, arkimes: int) -> None:
+def gen_wireguard_internal(
+    teams: int, checkers: int, routers: int, arkimes: int
+) -> None:
     """
     Generates the internal wireguard config files as needed, reusing keys (if present)
     """
@@ -130,7 +132,7 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int, arkimes: int
             public_key=public_key,
             cidr=get_arkime_cidr(arkime),
             peers=arkime_peer_list,
-            listen_port=None
+            listen_port=None,
         )
         arkime_peer = Peer(
             public_key=public_key,
