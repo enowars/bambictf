@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# TODO make this reboot-safe
+iptables -A INPUT -i br-+ -p tcp -m tcp --dport 9200 -j ACCEPT
+
 # Network
 mv "/etc/wireguard/arkime${id}.conf" "/etc/wireguard/internal.conf"
 sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine}#g" "/etc/wireguard/internal.conf"
@@ -15,17 +18,22 @@ systemctl enable --now "wg-quick@internal"
 sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
 sed -i -e "s#\[\[INITIAL_MASTER_NODES\]\]#${masters}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
 sed -i -e "s#\[\[SEED_HOSTS\]\]#${seeds}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
-cd /services/BamiArkimeElasticsearch/
+cd /services/BambiArkimeElasticsearch/
 docker compose up -d
 
 # Start Arkime cluster
 sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkime/config.ini
-cd /services/BamiArkime/
+sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkime/docker-entrypoint.sh
+cd /services/BambiArkime/
 docker compose build
+
+
 if [ ${id} -eq 1 ]
-  #/opt/arkime/db/db.pl "http://192.168.2.${id}:9200" init
-  #/opt/arkime/bin/arkime_add_user.sh admin "Admin User" admin --admin
 then
+  docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://192.168.2.${id}:9200" init
+  docker compose run --entrypoint="/opt/arkime/bin/arkime_add_user.sh" arkime admin "Admin" admin --admin
+  # TODO create marker
 fi
 
+# TODO wait for marker
 #docker compose up -d

@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
 
-sh ./arkime-capture.sh bambiarkime1 &
-sh ./arkime-viewer.sh bambiarkime1 &
+sh ./arkime-capture.sh [[ARKIME]] &
+sh ./arkime-viewer.sh [[ARKIME]] &
 wait

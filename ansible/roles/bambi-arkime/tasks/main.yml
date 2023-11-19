@@ -50,7 +50,7 @@
       src: arkime-viewer.sh
       dest: /services/BambiArkime/arkime-viewer.sh
 
-  - name: Copy init.sh
+  - name: Copy docker-entrypoint.sh
     copy:
-      src: init.sh
-      dest: /services/BambiArkime/init.sh
+      src: docker-entrypoint.sh
+      dest: /services/BambiArkime/docker-entrypoint.sh
