@@ -8,4 +8,4 @@ RUN dpkg -i ./*.deb; apt-get install -fy
 RUN touch /opt/arkime/etc/oui.txt
 RUN touch /opt/arkime/etc/ipv4-address-space.csv
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT /BambiArkime/docker-entrypoint.sh

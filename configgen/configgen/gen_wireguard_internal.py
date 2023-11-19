@@ -80,7 +80,9 @@ def gen_wireguard_internal(
                 listen_port=WG_LISTEN_PORT_INTERNAL,
             )
         )
-    router_configs[0].responsible_ips.append("192.168.2.0/24")
+    # TODO replace with peers?
+    if routers > 0:
+        router_configs[0].responsible_ips.append("192.168.2.0/24")
 
     # Route traffic to teams through the correct router
     for team in range(1, teams + 1):

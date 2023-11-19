@@ -13,6 +13,19 @@ systemctl enable --now "wg-quick@internal"
 
 # Start elasticsearch cluster
 sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[INITIAL_MASTER_NODES\]\]#${masters}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[SEED_HOSTS\]\]#${seeds}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+cd /services/BamiArkimeElasticsearch/
+docker compose up -d
 
 # Start Arkime cluster
 sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkime/config.ini
+cd /services/BamiArkime/
+docker compose build
+if [ ${id} -eq 1 ]
+  #/opt/arkime/db/db.pl "http://192.168.2.${id}:9200" init
+  #/opt/arkime/bin/arkime_add_user.sh admin "Admin User" admin --admin
+then
+fi
+
+#docker compose up -d
