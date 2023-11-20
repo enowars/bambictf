@@ -27,13 +27,21 @@ sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkime/docker-entr
 cd /services/BambiArkime/
 docker compose build
 
+while ! curl -sq "http://192.168.2.${id}:9200"; do
+    echo "Waiting for elastic search to start...";
+    sleep 3;
+done
 
 if [ ${id} -eq 1 ]
 then
   docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://192.168.2.${id}:9200" init
   docker compose run --entrypoint="/opt/arkime/bin/arkime_add_user.sh" arkime admin "Admin" admin --admin
-  # TODO create marker
+  curl -X PUT "http://192.168.2.${id}:9200/bambi-arkime-init?pretty"
 fi
 
-# TODO wait for marker
-#docker compose up -d
+while ! curl -s --head --show-error --fail "http://192.168.2.${id}:9200/bambi-arkime-init/"; do
+  echo "Waiting for marker index to exist...";
+  sleep 3;
+done
+
+docker compose up -d

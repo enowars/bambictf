@@ -44,13 +44,16 @@
     copy:
       src: arkime-capture.sh
       dest: /services/BambiArkime/arkime-capture.sh
+      mode: '755'
 
   - name: Copy arkime-viewer.sh
     copy:
       src: arkime-viewer.sh
       dest: /services/BambiArkime/arkime-viewer.sh
+      mode: '755'
 
   - name: Copy docker-entrypoint.sh
     copy:
       src: docker-entrypoint.sh
       dest: /services/BambiArkime/docker-entrypoint.sh
+      mode: '755'
