@@ -113,7 +113,7 @@ def get_dh() -> str:
         pass
 
     logger.debug(f"Generating {dh_file}")
-    run_subprocess(["openssl", "dhparam", "-out", "dh.pem", "2048"])
+    run_subprocess(["openssl", "dhparam", "-out", f"{DATA_DIR}/openvpn/dh.pem", "2048"])
     return dh_file.read_text()
 
 
