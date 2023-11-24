@@ -51,7 +51,7 @@ def gen_wireguard_game(teams: int, dns: Optional[str], routers: int) -> None:
         x, y = (team // 250), (team % 250)
         router_index = (team - 1) % routers
         router_config = router_configs[router_index]
-        if dns != None:
+        if dns is not None:
             team_portal_configs.append(
                 gen_team_config(private_key, public_key, team, router_config, dns)
             )
@@ -88,7 +88,7 @@ def gen_wireguard_game(teams: int, dns: Optional[str], routers: int) -> None:
                 )
             )
 
-    if dns != None:
+    if dns is not None:
         for team_portal_config in team_portal_configs:
             Path(
                 f"{DATA_DIR}/export/portal/team{team_portal_config.team_id}/game.conf"

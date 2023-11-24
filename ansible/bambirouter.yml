@@ -23,4 +23,4 @@
           program_list:
             - "tmux"
             - "git"
-      #- teamvpn-configs
+      - teamvpn-configs

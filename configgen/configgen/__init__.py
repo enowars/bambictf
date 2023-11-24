@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from typing import Optional
 
+from configgen.gen_openvpn import gen_openvpn
 from configgen.gen_wireguard_game import gen_wireguard_game
 from configgen.gen_wireguard_internal import gen_wireguard_internal
 from configgen.util import DATA_DIR
@@ -35,16 +36,21 @@ def main() -> None:
     gen_passwords(teams)
     if dns:
         gen_userdata_portal(teams)
+        gen_openvpn(teams, routers, dns)
 
 
 def prepare_directories(teams: int) -> None:
     Path(f"{DATA_DIR}/passwords/").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/wg_game/").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/wg_internal/").mkdir(parents=True, exist_ok=True)
+    for team in range(1, teams + 1):
+        Path(f"{DATA_DIR}/openvpn/team{team}/").mkdir(parents=True, exist_ok=True)
     shutil.rmtree(DATA_DIR / "export", ignore_errors=True)
     Path(f"{DATA_DIR}/export/ansible/arkimes").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/checkers").mkdir(parents=True, exist_ok=True)
-    Path(f"{DATA_DIR}/export/ansible/routers").mkdir(parents=True, exist_ok=True)
+    Path(f"{DATA_DIR}/export/ansible/routers/openvpn").mkdir(
+        parents=True, exist_ok=True
+    )
     for team in range(1, teams + 1):
         Path(f"{DATA_DIR}/export/portal/team{team}").mkdir(parents=True, exist_ok=True)
         Path(f"{DATA_DIR}/export/terraform/team{team}").mkdir(
@@ -95,7 +101,3 @@ def gen_passwords(teams: int) -> None:
             pw_file.write_text(secrets.token_hex(32))
         export_file = Path(f"{DATA_DIR}/export/portal/team{team}/password.txt")
         export_file.write_text(pw_file.read_text())
-
-
-def gen_openvpn() -> None:
-    pass

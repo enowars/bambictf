@@ -25,4 +25,3 @@
         vars:
           pip_list:
             - pwntools
-      #- bambi-openvpn-team-server

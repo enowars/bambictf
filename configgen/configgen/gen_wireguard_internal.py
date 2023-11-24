@@ -80,9 +80,6 @@ def gen_wireguard_internal(
                 listen_port=WG_LISTEN_PORT_INTERNAL,
             )
         )
-    # TODO replace with peers?
-    if routers > 0:
-        router_configs[0].responsible_ips.append("192.168.2.0/24")
 
     # Route traffic to teams through the correct router
     for team in range(1, teams + 1):
@@ -133,7 +130,7 @@ def gen_wireguard_internal(
             private_key=private_key,
             public_key=public_key,
             cidr=get_arkime_cidr(arkime),
-            peers=arkime_peer_list,
+            peers=arkime_peer_list.copy(),
             listen_port=None,
         )
         arkime_peer = Peer(
@@ -145,6 +142,22 @@ def gen_wireguard_internal(
         for router_config in router_configs:
             router_config.peers.append(arkime_peer)
         arkime_configs.append(arkime_config)
+
+    # Add arkime peering (for elasticseach traffic)
+    for i in range(arkimes):
+        for j in range(arkimes):
+            if i == j:
+                continue
+            arkime_i = arkime_configs[i]
+            arkime_j = arkime_configs[j]
+            arkime_i.peers.append(
+                Peer(
+                    public_key=arkime_j.public_key,
+                    allowed_ips=[arkime_j.cidr],
+                    endpoint=f"[[ARKIME_ADDRESS_{arkime_j.arkime_id}]]:{WG_LISTEN_PORT_INTERNAL}",
+                    comment=f"arkime{arkime_j.arkime_id}",
+                )
+            )
 
     # Save all to disk
     for router_config in router_configs:

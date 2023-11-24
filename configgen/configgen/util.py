@@ -55,16 +55,28 @@ class WireguardCheckerConfig(WireguardConfig):
 
 
 def run_subprocess(args: list[str], input: Optional[str] = None) -> bytes:
-    return subprocess.run(args, stdout=subprocess.PIPE, input=input).stdout
+    if input:
+        bytes_input = input.encode()
+    else:
+        bytes_input = None
+    result = subprocess.run(
+        args, stderr=subprocess.PIPE, stdout=subprocess.PIPE, input=bytes_input
+    )
+    if result.returncode != 0:
+        raise Exception(f"{args} returned {result.returncode}")
+    return result.stdout
 
 
-def gen_wg_priv() -> str:
+def exec_openvpn_genkey_secret() -> str:
+    return run_subprocess(["openvpn", "--genkey", "secret"]).strip().decode()
+
+
+def exec_wg_priv() -> str:
     return run_subprocess(["wg", "genkey"]).strip().decode()
 
 
-def gen_wg_pub(priv: str) -> str:
-    return run_subprocess(["wg", "pubkey"], input=priv.encode()).strip().decode()  # type: ignore
-    # TODO fix typeshed?
+def exec_wg_pub(priv: str) -> str:
+    return run_subprocess(["wg", "pubkey"], input=priv).strip().decode()
 
 
 def create_config_file(config: WireguardConfig) -> str:
@@ -104,14 +116,14 @@ def get_wg(path: Path) -> Tuple[str, str]:
     relative_path = DATA_DIR / path
     try:
         priv = relative_path.read_text()
-        return priv, gen_wg_pub(priv)
+        return priv, exec_wg_pub(priv)
     except FileNotFoundError:
         pass
 
     logger.debug(f"Generating fresh privkey for {path}")
-    priv = gen_wg_priv()
+    priv = exec_wg_priv()
     relative_path.write_text(priv)
-    return priv, gen_wg_pub(priv)
+    return priv, exec_wg_pub(priv)
 
 
 def _get_team_octets(team_id: int) -> Tuple[int, int]:

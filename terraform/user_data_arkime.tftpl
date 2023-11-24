@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e
 
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${arkime_ips[index].ip_address}/32
+EOF
+netplan apply
+
 # TODO make this reboot-safe
 iptables -A INPUT -i br-+ -p tcp -m tcp --dport 9200 -j ACCEPT
 
@@ -11,6 +21,10 @@ sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
 %{ for router_index, router in router_ips ~}
   sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
   sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/internal.conf"
+%{ endfor ~}
+%{ for arkime_index, arkime in arkime_ips ~}
+  sed -i -e "s#\[\[ARKIME_ADDRESS_${arkime_index+1}\]\]#${arkime.ip_address}#g" "/etc/wireguard/internal.conf"
+  sed -i -e "s#\[\[ARKIME_ADDRESS_${arkime_index+1}\]\]#${arkime.ip_address}#g" "/etc/wireguard/internal.conf"
 %{ endfor ~}
 systemctl enable --now "wg-quick@internal"
 

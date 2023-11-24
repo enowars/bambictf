@@ -36,7 +36,7 @@ variable "hetznerdns_zone" {
 
 variable "subdomain" {
   type      = string
-  default   = ""
+  default   = null
 }
 
 locals {
