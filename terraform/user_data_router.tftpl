@@ -28,3 +28,36 @@ sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
 
 systemctl enable --now "wg-quick@internal"
 systemctl enable --now "wg-quick@router"
+
+# Arkime
+# Start elasticsearch cluster
+sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[INITIAL_MASTER_NODES\]\]#${masters}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[SEED_HOSTS\]\]#${seeds}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+cd /services/BambiArkimeElasticsearch/
+docker compose up -d
+
+# Start Arkime cluster
+sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkime/config.ini
+sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkime/docker-entrypoint.sh
+cd /services/BambiArkime/
+docker compose build
+
+while ! curl -sq "http://10.13.0.${id}:9200/_cat/health"; do
+  echo "Waiting for elastic search to start... TODO: wait until green!";
+  sleep 3;
+done
+
+if [ ${id} -eq 1 ]
+then
+  docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://10.13.0.${id}:9200" init
+  docker compose run --entrypoint="/opt/arkime/bin/arkime_add_user.sh" arkime admin "Admin" admin --admin
+  curl -X PUT "http://10.13.0.${id}:9200/bambi-arkime-init?pretty"
+fi
+
+while ! curl -s --head --show-error --fail "http://10.13.0.${id}:9200/bambi-arkime-init/"; do
+  echo "Waiting for marker index to exist...";
+  sleep 3;
+done
+
+docker compose up -d

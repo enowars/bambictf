@@ -10,6 +10,10 @@ variable "router_count" {
   nullable  = false
 }
 
+locals {
+  subnet  = "10.13.0.0/24"
+}
+
 data "hcloud_image" "bambirouter" {
   with_selector = var.router_count > 0 ? "type=bambirouter" : null
   name          = var.router_count > 0 ? null : "debian-10"
@@ -50,6 +54,8 @@ resource "hcloud_server" "bambirouter" {
     "user_data_router.tftpl", {
       index       = count.index,
       id          = "${count.index + 1}",
+      masters     = join(",", [for i in range(var.router_count) : cidrhost(local.subnet, i+1)]),
+      seeds       = join(",", setsubtract([for i in range(var.router_count) : cidrhost(local.subnet, i+1)], [cidrhost(local.subnet, count.index+1)])) 
       router_ips  = hcloud_floating_ip.bambirouter_ip,
       elk         = var.elk_count > 0 ? hcloud_floating_ip.bambielk_ip[0].ip_address : "127.0.0.1",
       engine      = var.engine_count > 0 ? hcloud_floating_ip.bambiengine_ip[0].ip_address : "127.0.0.1",

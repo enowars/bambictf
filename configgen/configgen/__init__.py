@@ -20,19 +20,17 @@ def main() -> None:
     parser.add_argument("--dns", type=str, default=None)
     parser.add_argument("--routers", type=int, default=2)
     parser.add_argument("--checkers", type=int, default=10)
-    parser.add_argument("--arkimes", type=int, default=2)
     args = parser.parse_args()
     teams: int = args.teams
     dns: Optional[str] = args.dns
     routers: int = args.routers
     checkers: int = args.checkers
-    arkimes: int = args.arkimes
     logger.info(
         f"Generating for {teams} teams, {routers} routers and {checkers} checkers"
     )
     prepare_directories(teams)
     gen_wireguard_game(teams, dns, routers)
-    gen_wireguard_internal(teams, checkers, routers, arkimes)
+    gen_wireguard_internal(teams, checkers, routers)
     gen_passwords(teams)
     if dns:
         gen_userdata_portal(teams)
@@ -46,7 +44,6 @@ def prepare_directories(teams: int) -> None:
     for team in range(1, teams + 1):
         Path(f"{DATA_DIR}/openvpn/team{team}/").mkdir(parents=True, exist_ok=True)
     shutil.rmtree(DATA_DIR / "export", ignore_errors=True)
-    Path(f"{DATA_DIR}/export/ansible/arkimes").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/checkers").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/routers/openvpn").mkdir(
         parents=True, exist_ok=True

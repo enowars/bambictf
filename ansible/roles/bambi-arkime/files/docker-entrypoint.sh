@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
 
-sh ./arkime-capture.sh [[ARKIME]] &
-sh ./arkime-viewer.sh [[ARKIME]] &
+sh ./arkime-capture.sh [[ROUTER]] &
+sh ./arkime-viewer.sh [[ROUTER]] &
 wait

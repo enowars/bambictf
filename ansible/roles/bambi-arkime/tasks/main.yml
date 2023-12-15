@@ -73,25 +73,8 @@
     dest: /services/BambiArkime/docker-entrypoint.sh
     mode: '755'
 
+# TODO once wait for elasticsearch green works
 # - name: build
 #   shell: "docker compose build"
 #   args:
 #     chdir: /services/BambiArkime
-
-- name: "install autofs and nfs-client"
-  apt:
-    name:
-    - autofs
-    - nfs-client
-
-- name: "create /etc/auto.nfs"
-  shell: echo "pcaps    192.168.0.[[ARKIME_ID]]:/pcaps" >> /etc/auto.nfs
-
-- lineinfile:
-    path: /etc/auto.master
-    line: "/pcaps /etc/auto.nfs"
-
-- name: "Create /pcaps directory"
-  file:
-    path: /pcaps
-    state: directory

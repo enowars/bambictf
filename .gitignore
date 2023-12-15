@@ -6,6 +6,7 @@ config*.yml
 *.tfvars
 .terraform
 *.tfstate
+*.tfstate.lock.info
 *.backup
 .vagrant
 .retry
