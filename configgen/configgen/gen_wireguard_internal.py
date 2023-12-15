@@ -131,7 +131,7 @@ def gen_wireguard_internal(
             public_key=public_key,
             cidr=get_arkime_cidr(arkime),
             peers=arkime_peer_list.copy(),
-            listen_port=None,
+            listen_port=WG_LISTEN_PORT_INTERNAL,
         )
         arkime_peer = Peer(
             public_key=public_key,

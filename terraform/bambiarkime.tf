@@ -33,7 +33,7 @@ resource "hcloud_floating_ip_assignment" "bambiarkime_ipa" {
   server_id      = hcloud_server.bambiarkime[count.index].id
 }
 
-resource "hetznerdns_record" "bambarkime_dns" {
+resource "hetznerdns_record" "bambirkime_dns" {
   count   = var.hetznerdns_zone != null && var.use_arkime ? var.router_count : 0
   zone_id = data.hetznerdns_zone.zone[0].id
   name    = "arkime${count.index + 1}${local.subdomain}"

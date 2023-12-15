@@ -11,9 +11,6 @@ network:
 EOF
 netplan apply
 
-# TODO make this reboot-safe
-iptables -A INPUT -i br-+ -p tcp -m tcp --dport 9200 -j ACCEPT
-
 # Network
 mv "/etc/wireguard/arkime${id}.conf" "/etc/wireguard/internal.conf"
 sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine}#g" "/etc/wireguard/internal.conf"
@@ -28,6 +25,10 @@ sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
 %{ endfor ~}
 systemctl enable --now "wg-quick@internal"
 
+# NFS
+sed -i -e "s#\[\[ARKIME_ID\]\]#${id}#g" "/etc/auto.nfs"
+systemctl enable --now autofs
+
 # Start elasticsearch cluster
 sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
 sed -i -e "s#\[\[INITIAL_MASTER_NODES\]\]#${masters}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
@@ -41,9 +42,9 @@ sed -i -e "s#\[\[ARKIME\]\]#192.168.2.${id}#g" /services/BambiArkime/docker-entr
 cd /services/BambiArkime/
 docker compose build
 
-while ! curl -sq "http://192.168.2.${id}:9200"; do
-    echo "Waiting for elastic search to start...";
-    sleep 3;
+while ! curl -sq "http://192.168.2.${id}:9200/_cat/health"; do
+  echo "Waiting for elastic search to start... TODO: wait until green!";
+  sleep 3;
 done
 
 if [ ${id} -eq 1 ]

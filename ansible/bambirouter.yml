@@ -18,6 +18,7 @@
       - bambi-ssh-keys
       - firewall
       - bambi-wireguard-router
+      - router_trafficcapture
       - role: programs
         vars:
           program_list:
