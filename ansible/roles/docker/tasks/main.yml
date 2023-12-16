@@ -1,75 +1,23 @@
 ---
-  - name: Get release name
-    command: lsb_release -cs
-    register: release
-    changed_when: false
+  # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+  - name: Install docker
+    shell: |
+      apt-get update -y
+      apt-get install -y ca-certificates curl gnupg
+      install -m 0755 -d /etc/apt/keyrings
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      chmod a+r /etc/apt/keyrings/docker.gpg
 
-  - name: Get OS name
-    command: uname -s
-    register: uns
-    changed_when: false
+      # Add the repository to Apt sources:
+      echo \
+        "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+        "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+        tee /etc/apt/sources.list.d/docker.list > /dev/null
+      apt-get -y update
 
-  - name: Get OS arch
-    command: uname -m
-    register: unm
-    changed_when: false
-
-  - name: Install docker dependencies
-    apt:
-      name: ["apt-transport-https", "ca-certificates", "gnupg2", "software-properties-common"]
-      state: present
-
-  - name: Copy over the docker gpg key
-    copy:
-      src: docker.gpg
-      dest: /tmp/
-    changed_when: false
-
-  - name: Import Docker GPG key
-    apt_key:
-      file: /tmp/docker.gpg
-      state: present
-
-  - name: Delete the docker key
-    file:
-      path: /tmp/docker.gpg
-      state: absent
-    changed_when: false
-
-  - name: Add docker repository
-    apt_repository:
-      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ release.stdout }} stable"
-      state: present
-
-  - name: Update and install docker
-    apt:
-      name: docker-ce
-      state: present
-      update_cache: yes
-
-  - name: Install docker-compose
-    get_url:
-      url: "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-{{ uns.stdout }}-{{ unm.stdout }}"
-      dest: /usr/local/bin/docker-compose
-      mode: 0755
-
-  - name: Create /services
-    file:
-      path: /services
-      state: directory
+      apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
   - name: Copy daemon.json
     copy:
       src: daemon.json
       dest: /etc/docker/daemon.json
-
-  - name: Restart docker
-    service:
-      name: docker
-      state: restarted
-      enabled: yes
-
-  - name: Reload system daemon
-    systemd:
-      name: "docker" # ansible <2.4 always requires 'name'
-      daemon_reload: yes

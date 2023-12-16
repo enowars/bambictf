@@ -1,4 +1,9 @@
 ---
+  - name: Create /services
+    file:
+      path: /services
+      state: directory
+
   - name: Clean local services cache
     become: no
     local_action:
@@ -23,7 +28,7 @@
     with_dict: "{{ vulnerable_services }}"
 
   - name: pull/build service
-    shell: docker-compose pull && docker-compose build
+    shell: docker compose pull && docker compose build
     args:
       chdir: /services/{{ item.key }}
     with_dict: "{{ vulnerable_services }}"

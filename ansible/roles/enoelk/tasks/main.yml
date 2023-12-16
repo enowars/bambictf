@@ -16,7 +16,7 @@
       dest: /services/EnoELK
 
   - name: Pull ELK images
-    shell: docker-compose pull
+    shell: docker compose pull
     args:
       chdir: /services/EnoELK
 

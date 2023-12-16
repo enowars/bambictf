@@ -6,12 +6,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tz
 RUN apt-get install -y --no-install-recommends rsync git less tmux python3 curl wireguard python3-pip unzip file nano dnsutils jq \
     software-properties-common gpg-agent # for ansible and packer install
 
+# Poetry
+RUN pip install poetry && poetry config virtualenvs.in-project false
+
 # Ansible
 RUN add-apt-repository --yes --update ppa:ansible/ansible && apt-get install -y ansible
 
 # Terrorform
 RUN ls -alh /usr/local/bin
-RUN curl https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip > terraform.zip && \
+RUN curl https://releases.hashicorp.com/terraform/1.6.4/terraform_1.6.4_linux_amd64.zip > terraform.zip && \
     unzip terraform.zip && \
     mv terraform /usr/local/bin/
 

@@ -1,0 +1,124 @@
+---
+- name: install nfs-server
+  apt:
+    name:
+    - nfs-server
+
+- name: Enable enorouterdump
+  service:
+    name: nfs-server
+    enabled: yes
+
+- name: "Create /pcaps directory"
+  file:
+    path: /pcaps
+    state: directory
+
+- name: Install tcpdump
+  apt:
+    name: tcpdump
+    state: present
+    update_cache: yes
+
+- name: Copy over the enorouterdump unit
+  copy:
+    src: enorouterdump.service
+    dest: /etc/systemd/system/enorouterdump.service
+
+- name: Disable tcpdump apparmor profile
+  file:
+    path: /etc/apparmor.d/disable/usr.sbin.tcpdump
+    src: /etc/apparmor.d/usr.sbin.tcpdump
+    state: link
+    force: yes
+    follow: no
+
+- name: Reload system daemon
+  systemd:
+    name: "enorouterdump" # ansible <2.4 always requires 'name'
+    daemon_reload: yes
+
+- name: Enable enorouterdump
+  service:
+    name: enorouterdump
+    enabled: yes
+    
+- name: "add pcaps to /etc/exports"
+  lineinfile:
+    path: /etc/exports
+    line: "/pcaps 192.168.2.0/255.255.255.0(ro,subtree_check)"
+
+- name: "run exportfs -a"
+  shell: exportfs -a
+
+- name: "specify mountd port to always be 33599"
+  lineinfile:
+    path: /etc/default/nfs-kernel-server
+    regexp: "^RPCMOUNTDOPTS"
+    line: 'RPCMOUNTDOPTS="--manage-gids --port 33599"'
+
+- name: allow NFS traffic (tcp port 111)
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: tcp
+    source: "192.168.2.0/24"
+    destination_port: "111"
+    ctstate: NEW
+    syn: match
+    jump: ACCEPT
+
+- name: allow NFS traffic (tcp port 2049)
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: tcp
+    source: "192.168.2.0/24"
+    destination_port: "2049"
+    ctstate: NEW
+    syn: match
+    jump: ACCEPT
+
+- name: allow NFS traffic (udp port 111)
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: udp
+    source: "192.168.2.0/24"
+    destination_port: "111"
+    ctstate: NEW
+    jump: ACCEPT
+
+- name: allow NFS traffic (udp port 2049)
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: udp
+    source: "192.168.2.0/24"
+    destination_port: "2049"
+    ctstate: NEW
+    jump: ACCEPT
+
+- name: allow NFS mountd traffic (udp port 33599)
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: udp
+    source: "192.168.2.0/24"
+    destination_port: "33599"
+    ctstate: NEW
+    jump: ACCEPT
+
+- name: allow NFS mountd traffic (tcp port 33599)
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: tcp
+    source: "192.168.2.0/24"
+    destination_port: "33599"
+    ctstate: NEW
+    syn: match
+    jump: ACCEPT
+
+- name: persist iptables config
+  shell: "iptables-save > /etc/iptables/rules.v4"

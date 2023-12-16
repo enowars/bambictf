@@ -1,4 +1,9 @@
 ---
+  - name: Copy wg configs
+    copy:
+      src: "{{ playbook_dir }}/../config/export/ansible/routers/"
+      dest: /etc/wireguard/
+
   - name: allow wireguard input traffic (game)
     iptables:
       chain: INPUT

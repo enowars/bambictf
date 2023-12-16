@@ -10,6 +10,7 @@
       - firewall
       - wireguard
       - enoengine
+      - wireguard_engine
       - role: filebeat
         vars:
           elk: 192.168.3.0

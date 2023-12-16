@@ -15,7 +15,7 @@
       chdir: /services/EnoEngine
 
   - name: Start EnoEngine Postgres
-    shell: "docker-compose up -d"
+    shell: "docker compose up -d"
     args:
       chdir: /services/EnoEngine
 
@@ -31,7 +31,7 @@
     changed_when: false
 
   - name: Start EnoCTFPortal
-    shell: "docker-compose up -d"
+    shell: "docker compose up -d"
     args:
       chdir: /services/EnoCTFPortal
 
