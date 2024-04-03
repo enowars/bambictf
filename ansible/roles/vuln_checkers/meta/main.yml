@@ -1,3 +1,7 @@
 dependencies:
 - role: "docker"
+- role: "programs"
+  vars:
+    program_list:
+      - git
 - role: "bambi-ssh-keys"

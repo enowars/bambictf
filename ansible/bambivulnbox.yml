@@ -4,6 +4,7 @@
     become_method: sudo
     vars_files:
       - config_bambi.yml
+      - static.yml
 
     roles:
       - docker

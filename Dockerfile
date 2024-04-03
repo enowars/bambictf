@@ -22,7 +22,8 @@ RUN curl https://releases.hashicorp.com/terraform/1.6.4/terraform_1.6.4_linux_am
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
     apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
     apt-get update && apt-get install packer && \
-    packer plugins install github.com/hashicorp/hcloud
+    packer plugins install github.com/hashicorp/hcloud && \
+    packer plugins install github.com/hashicorp/ansible
 
 # OpenVPN
 RUN apt-get install -y openvpn easy-rsa zip unzip

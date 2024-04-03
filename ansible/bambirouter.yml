@@ -4,17 +4,12 @@
     become_method: sudo
     vars_files:
       - config_bambi.yml
+      - static.yml
 
     roles:
-      - role: filebeat
-        vars:
-          elk: 192.168.3.0
-      - role: journalbeat
-        vars:
-          elk: 192.168.3.0
-      - role: metricbeat
-        vars:
-          elk: 192.168.3.0
+      - filebeat
+      - journalbeat
+      - metricbeat
       - bambi-ssh-keys
       - firewall
       - bambi-wireguard-router
