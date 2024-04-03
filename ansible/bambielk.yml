@@ -4,6 +4,7 @@
     become_method: sudo
     vars_files:
       - config_bambi.yml
+      - static.yml
 
     roles:
       - bambi-ssh-keys
@@ -11,15 +12,9 @@
       - wireguard
       - enoelk
       - docker-block-external
-      - role: filebeat
-        vars:
-          elk: 192.168.3.0
-      - role: journalbeat
-        vars:
-          elk: 192.168.3.0
-      - role: metricbeat
-        vars:
-          elk: 192.168.3.0
+      - filebeat
+      - journalbeat
+      - metricbeat
       - role: programs
         vars:
           program_list:
