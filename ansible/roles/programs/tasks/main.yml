@@ -6,8 +6,3 @@
       autoremove: yes
       cache_valid_time: 3000
       state: present
-
-  - name: Copy tmux conf
-    copy:
-      src: .tmux.conf
-      dest: /root/.tmux.conf

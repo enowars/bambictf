@@ -16,8 +16,4 @@
       - filebeat
       - journalbeat
       - metricbeat
-      - role: programs
-        vars:
-          program_list:
-            - "tmux"
-            - "git"
+      - tmux

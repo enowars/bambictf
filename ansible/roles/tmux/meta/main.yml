@@ -1,6 +1,5 @@
-dependencies: 
-- role: "docker"
+dependencies:
 - role: "programs"
   vars:
     program_list:
-      - git
+      - tmux

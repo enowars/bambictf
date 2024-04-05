@@ -16,8 +16,4 @@
       - metricbeat
       - vuln_checkers
       - docker-block-external
-      - role: programs
-        vars:
-          program_list:
-            - "tmux"
-            - "git"
+      - tmux

@@ -1,0 +1,5 @@
+---
+  - name: Copy tmux conf
+    copy:
+      src: .tmux.conf
+      dest: /root/.tmux.conf

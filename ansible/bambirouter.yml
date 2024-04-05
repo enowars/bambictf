@@ -14,10 +14,6 @@
       - firewall
       - bambi-wireguard-router
       - router_trafficcapture
-      - role: programs
-        vars:
-          program_list:
-            - "tmux"
-            - "git"
+      - tmux
       - teamvpn-configs
       - bambi-arkime
