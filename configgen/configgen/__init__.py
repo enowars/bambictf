@@ -45,6 +45,8 @@ def prepare_directories(teams: int) -> None:
         Path(f"{DATA_DIR}/openvpn/team{team}/").mkdir(parents=True, exist_ok=True)
     shutil.rmtree(DATA_DIR / "export", ignore_errors=True)
     Path(f"{DATA_DIR}/export/ansible/checkers").mkdir(parents=True, exist_ok=True)
+    Path(f"{DATA_DIR}/export/ansible/elk").mkdir(parents=True, exist_ok=True)
+    Path(f"{DATA_DIR}/export/ansible/engine").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/routers/openvpn").mkdir(
         parents=True, exist_ok=True
     )
