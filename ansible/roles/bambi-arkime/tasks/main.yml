@@ -12,7 +12,8 @@
 - shell: iptables -A INPUT -i internal -p tcp -m tcp --dport 9300 -j ACCEPT
 
 - name: persist iptables config
-  shell: "iptables-save > /etc/iptables/rules.v4"
+  include_role:
+    name: "iptables-persistent"
 
 - name: Increase max_map_count
   sysctl:

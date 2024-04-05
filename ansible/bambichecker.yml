@@ -7,13 +7,12 @@
       - static.yml
 
     roles:
-      - bambi-ssh-keys
-      - firewall
-      - wireguard
-      - wireguard_checker
+      - base
+      - role: wireguard_configs
+        vars:
+          config_dir: checkers
       - filebeat
       - journalbeat
       - metricbeat
       - vuln_checkers
       - docker-block-external
-      - tmux

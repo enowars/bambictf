@@ -135,4 +135,5 @@
     with_sequence: start=1 end=255
 
   - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+    include_role:
+      name: "iptables-persistent"

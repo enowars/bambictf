@@ -7,15 +7,12 @@
       - static.yml
 
     roles:
+      - base
       - docker
       - vuln_services
-      - bambi-ssh-keys
-      - firewall
       - docker-block-external
-      - wireguard
       - enomoloch
       - bambixploit
-      - tmux
       - role: programs
         vars:
           program_list:

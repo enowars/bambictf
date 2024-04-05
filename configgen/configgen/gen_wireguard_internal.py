@@ -128,9 +128,9 @@ def gen_wireguard_internal(
             f"{DATA_DIR}/export/ansible/checkers/checker{checker_config.checker_id}.conf"
         ).write_text(create_config_file(checker_config))
 
-    Path(f"{DATA_DIR}/export/ansible/engine.conf").write_text(
+    Path(f"{DATA_DIR}/export/ansible/engine/engine.conf").write_text(
         create_config_file(engine_config)
     )
-    Path(f"{DATA_DIR}/export/ansible/elk.conf").write_text(
+    Path(f"{DATA_DIR}/export/ansible/elk/elk.conf").write_text(
         create_config_file(elk_config)
     )

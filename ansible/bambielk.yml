@@ -7,13 +7,12 @@
       - static.yml
 
     roles:
-      - bambi-ssh-keys
-      - firewall
-      - wireguard
+      - base
       - enoelk
       - docker-block-external
-      - wireguard_elk
+      - role: wireguard_configs
+        vars:
+          config_dir: elk
       - filebeat
       - journalbeat
       - metricbeat
-      - tmux

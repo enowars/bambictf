@@ -7,13 +7,11 @@
       - static.yml
 
     roles:
+      - base
       - filebeat
       - journalbeat
       - metricbeat
-      - bambi-ssh-keys
-      - firewall
       - bambi-wireguard-router
       - router_trafficcapture
-      - tmux
       - teamvpn-configs
       - bambi-arkime

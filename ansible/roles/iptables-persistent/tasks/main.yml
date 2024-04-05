@@ -1,6 +1,6 @@
 ---
-  - name: install iptables-persistent
-    apt:
-      name: iptables-persistent
-      state: present
-      update_cache: yes
+  - name: persist iptables config
+    shell: "iptables-save > /etc/iptables/rules.v4"
+
+  - name: persist ip6tables config
+    shell: "ip6tables-save > /etc/iptables/rules.v6"

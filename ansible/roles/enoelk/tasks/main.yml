@@ -29,4 +29,5 @@
       jump: ACCEPT
 
   - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+    include_role:
+      name: "iptables-persistent"

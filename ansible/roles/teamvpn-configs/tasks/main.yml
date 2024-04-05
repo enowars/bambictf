@@ -1,9 +1,4 @@
 ---
-- name: "Install openvpn"
-  apt:
-    package:
-    - openvpn
-
 - name: copy zipped team VPN configs
   copy:
     src: "{{ playbook_dir }}/../config/export/ansible/routers/openvpn/"
@@ -18,4 +13,5 @@
     jump: ACCEPT
 
 - name: persist iptables config
-  shell: "iptables-save > /etc/iptables/rules.v4"
+  include_role:
+    name: "iptables-persistent"
