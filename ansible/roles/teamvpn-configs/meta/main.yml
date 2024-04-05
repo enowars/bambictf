@@ -1,3 +1,4 @@
+dependencies:
 - role: "programs"
   vars:
     program_list:
