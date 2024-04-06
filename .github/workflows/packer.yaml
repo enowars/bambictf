@@ -120,5 +120,7 @@ jobs:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
           HETZNERDNS_TOKEN: ${{ secrets.HETZNERDNS_TOKEN }}
         run: docker compose up -d
+      - name: perform terraform init
+        run: docker compose exec -T bambictf sh -c 'cd terraform ; terraform init'
       - name: perform terraform apply
         run: docker compose exec -T bambictf sh -c 'cd terraform ; terraform plan'
