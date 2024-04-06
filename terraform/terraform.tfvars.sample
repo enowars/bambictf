@@ -1,15 +1,15 @@
 hetznerdns_zone     = "bambi.ovh"
-hetznerdns_suffix   = "prod"
+subdomain           = "prod"
 home_location       = "fsn1"
 
 router_count  = 2
 checker_count = 1
 engine_count  = 1
 elk_count     = 1
-vulnbox_count = 0
+vulnbox_count = 2
 
-gateway_type = "cpx31"
-checker_type = "cpx31"
-engine_type  = "cpx31"
-elk_type     = "cpx31"
-vulnbox_type = "cpx21"
+gateway_type = "cx21"
+checker_type = "cx21"
+engine_type  = "cx21"
+elk_type     = "cx21"
+vulnbox_type = "cx21"
