@@ -11,8 +11,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-  schedule:
-    - cron: "0 1 * * 4"
 
 jobs:
   docker-build:
@@ -24,18 +22,13 @@ jobs:
         run: |
           docker build -t ghcr.io/enowars/bambictf:latest .
           docker save --output /tmp/bambictf.tar ghcr.io/enowars/bambictf:latest
-      - name: Upload artifact
+      - name: Upload docker image artifact
         uses: actions/upload-artifact@v4
         with:
           name: bambictf
           path: /tmp/bambictf.tar
 
-  packer-build:
-    strategy:
-      # fail-fast needs to be disabled, otherwise packer processes may be ungracefully killed and leave stale builder VMs
-      fail-fast: false
-      matrix:
-        image: ["bambichecker", "bambielk", "bambiengine", "bambirouter", "bambivulnbox"]
+  configgen:
     runs-on: ubuntu-latest
     needs: docker-build
     steps:
@@ -55,6 +48,77 @@ jobs:
       - name: prepare ansible config
         run: docker compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: generate config files
-        run: docker compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns bambi.ovh'
+        run: docker compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns ci-${{ GITHUB_SHA }}.bambi.ovh'
+      - name: tar config files
+        run: tar cf /tmp/config.tar config
+      - name: Upload config artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: config
+          path: /tmp/config.tar
+
+  packer-build:
+    strategy:
+      # fail-fast needs to be disabled, otherwise packer processes may be ungracefully killed and leave stale builder VMs
+      fail-fast: false
+      matrix:
+        image: ["bambichecker", "bambielk", "bambiengine", "bambirouter", "bambivulnbox"]
+    runs-on: ubuntu-latest
+    needs: configgen
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: bambictf
+          path: /tmp
+      - name: Load Docker image
+        run: docker load --input /tmp/bambictf.tar
+      - name: Download config artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: config
+          path: /tmp
+      - name: untar config files
+        run: tar xf /tmp/config.tar
+      - name: start docker compose setup
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        run: docker compose up -d
+      - name: prepare ansible config
+        run: docker compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: build packer image
         run: docker compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
+
+  terraform-apply:
+    runs-on: ubuntu-latest
+    needs: packer-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: bambictf
+          path: /tmp
+      - name: Load Docker image
+        run: docker load --input /tmp/bambictf.tar
+      - name: Download config artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: config
+          path: /tmp
+      - name: untar config files
+        run: tar xf /tmp/config.tar
+      - name: copy terraform sample config
+        run: cp terraform/terraform.tfvars.sample terraform/terraform.tfvars
+      - name: prepare terraform config
+        run: sed -i s/prod/ci-${{ GITHUB_SHA }}/ terraform/terraform.tfvars
+      - name: start docker compose setup
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+          HETZNERDNS_TOKEN: ${{ secrets.HETZNERDNS_TOKEN }}
+        run: docker compose up -d
+      - name: perform terraform apply
+        run: docker compose exec -T bambictf sh -c 'terraform plan'
