@@ -6,6 +6,6 @@ services:
     ports:
     - 8005:8005
     volumes:
-    - "/pcaps:/pcaps"
+    - "/pcaps:/opt/arkime/raw"
     - ".:/BambiArkime:ro"
     - "./config.ini:/opt/arkime/etc/config.ini:ro"

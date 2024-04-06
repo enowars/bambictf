@@ -74,10 +74,11 @@ export HCLOUD_TOKEN="..."
 - Run the container (`docker compose up -d`)
 - Invoke a bash in the container (`docker compose exec bambictf bash`)
 - Build configs
-    - `cd /bambictf/config`
-    - `./gen_config.sh`
+    - `cd /bambictf/configgen`
+    - `poetry install` (once)
+    - `poetry run configgen --teams 4 --routers 2 --dns test.bambi.ovh`
 - Ship everything to the EnoCTFPortal:
-    - `cp -r ./export/ /services/EnoCTFPortal/data/teamdata` (or whereever it is)
+    - `cp -r ./export/portal /services/EnoCTFPortal/data/teamdata` (or whereever it is)
 - Builds VMs
     - `cd /bambictf/packer`
     - `packer build bambichecker.json`
