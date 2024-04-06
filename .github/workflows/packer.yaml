@@ -115,6 +115,17 @@ jobs:
         run: cp terraform/terraform.tfvars.sample terraform/terraform.tfvars
       - name: prepare terraform config
         run: sed -i s/prod/ci-${{ github.sha }}/ terraform/terraform.tfvars
+      - name: setup hcloud
+        run: |
+          curl -o hcloud-linux-amd64.tar.gz -L https://github.com/hetznercloud/cli/releases/download/v1.34.0/hcloud-linux-amd64.tar.gz
+          sudo tar xf hcloud-linux-amd64.tar.gz -C /usr/bin hcloud
+          sudo chmod +x /usr/bin/hcloud
+      - name: generate admin SSH key
+        run: ssh-keygen -t ed25519 -N "" -f adminkey
+      - name: add hcloud ssh key
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        run: hcloud ssh-key --name adminkey-${{ github.sha }} --label type=admin --public-key-from-file adminkey.pub
       - name: start docker compose setup
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
