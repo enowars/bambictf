@@ -125,7 +125,7 @@ jobs:
       - name: add hcloud ssh key
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-        run: hcloud ssh-key --name adminkey-${{ github.sha }} --label type=admin --public-key-from-file adminkey.pub
+        run: hcloud ssh-key create --name adminkey-${{ github.sha }} --label type=admin --public-key-from-file adminkey.pub
       - name: start docker compose setup
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
