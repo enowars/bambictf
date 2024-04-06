@@ -22,7 +22,6 @@ data "hcloud_image" "bambiengine" {
 }
 
 resource "hcloud_floating_ip" "bambiengine_ip" {
-  count         = var.engine_count
   type          = "ipv4"
   name          = "engine"
   home_location = var.home_location
@@ -30,7 +29,7 @@ resource "hcloud_floating_ip" "bambiengine_ip" {
 
 resource "hcloud_floating_ip_assignment" "bambiengine_ipa" {
   count           = var.engine_count
-  floating_ip_id  = hcloud_floating_ip.bambiengine_ip[0].id
+  floating_ip_id  = hcloud_floating_ip.bambiengine_ip.id
   server_id       = hcloud_server.bambiengine[0].id
 }
 
@@ -38,7 +37,7 @@ resource "hetznerdns_record" "bambiengine_dns" {
   count   = var.hetznerdns_zone != null ? var.engine_count : 0
   zone_id = data.hetznerdns_zone.zone[0].id
   name    = "engine${local.subdomain}"
-  value   = hcloud_floating_ip.bambiengine_ip[0].ip_address
+  value   = hcloud_floating_ip.bambiengine_ip.ip_address
   type    = "A"
   ttl     = 60
 }
@@ -54,8 +53,8 @@ resource "hcloud_server" "bambiengine" {
   user_data = templatefile(
     "user_data_engine.tftpl", {
       router_ips  = hcloud_floating_ip.bambirouter_ip,
-      elk         = var.elk_count > 0 ? hcloud_floating_ip.bambielk_ip[0].ip_address : "127.0.0.1",
-      engine      = var.engine_count > 0 ? hcloud_floating_ip.bambiengine_ip[0].ip_address : "127.0.0.1",
+      elk         = hcloud_floating_ip.bambielk_ip.ip_address,
+      engine      = hcloud_floating_ip.bambiengine_ip.ip_address,
     }
   )
 }

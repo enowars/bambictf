@@ -57,8 +57,8 @@ resource "hcloud_server" "bambirouter" {
       masters     = join(",", [for i in range(var.router_count) : cidrhost(local.subnet, i+1)]),
       seeds       = join(",", setsubtract([for i in range(var.router_count) : cidrhost(local.subnet, i+1)], [cidrhost(local.subnet, count.index+1)])) 
       router_ips  = hcloud_floating_ip.bambirouter_ip,
-      elk         = var.elk_count > 0 ? hcloud_floating_ip.bambielk_ip[0].ip_address : "127.0.0.1",
-      engine      = var.engine_count > 0 ? hcloud_floating_ip.bambiengine_ip[0].ip_address : "127.0.0.1",
+      elk         = hcloud_floating_ip.bambielk_ip.ip_address,
+      engine      = hcloud_floating_ip.bambiengine_ip.ip_address,
     }
   )
 }

@@ -22,7 +22,6 @@ data "hcloud_image" "bambielk" {
 }
 
 resource "hcloud_floating_ip" "bambielk_ip" {
-  count         = var.elk_count
   type          = "ipv4"
   name          = "elk"
   home_location = var.home_location
@@ -30,7 +29,7 @@ resource "hcloud_floating_ip" "bambielk_ip" {
 
 resource "hcloud_floating_ip_assignment" "bambielk_ipa" {
   count           = var.elk_count
-  floating_ip_id  = hcloud_floating_ip.bambielk_ip[0].id
+  floating_ip_id  = hcloud_floating_ip.bambielk_ip.id
   server_id       = hcloud_server.bambielk[0].id
 }
 
@@ -54,8 +53,8 @@ resource "hcloud_server" "bambielk" {
   user_data = templatefile(
     "user_data_elk.tftpl", {
       router_ips  = hcloud_floating_ip.bambirouter_ip,
-      elk         = var.elk_count > 0 ? hcloud_floating_ip.bambielk_ip[0].ip_address : "127.0.0.1",
-      engine      = var.engine_count > 0 ? hcloud_floating_ip.bambiengine_ip[0].ip_address : "127.0.0.1",
+      elk         = hcloud_floating_ip.bambielk_ip.ip_address,
+      engine      = hcloud_floating_ip.bambiengine_ip.ip_address,
     }
   )
 }
