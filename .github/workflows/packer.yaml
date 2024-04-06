@@ -48,7 +48,7 @@ jobs:
       - name: prepare ansible config
         run: docker compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: generate config files
-        run: docker compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns ci-${{ GITHUB_SHA }}.bambi.ovh'
+        run: docker compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns ci-${{ github.sha }}.bambi.ovh'
       - name: tar config files
         run: tar cf /tmp/config.tar config
       - name: Upload config artifact
@@ -114,7 +114,7 @@ jobs:
       - name: copy terraform sample config
         run: cp terraform/terraform.tfvars.sample terraform/terraform.tfvars
       - name: prepare terraform config
-        run: sed -i s/prod/ci-${{ GITHUB_SHA }}/ terraform/terraform.tfvars
+        run: sed -i s/prod/ci-${{ github.sha }}/ terraform/terraform.tfvars
       - name: start docker compose setup
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
