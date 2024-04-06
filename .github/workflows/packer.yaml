@@ -121,4 +121,4 @@ jobs:
           HETZNERDNS_TOKEN: ${{ secrets.HETZNERDNS_TOKEN }}
         run: docker compose up -d
       - name: perform terraform apply
-        run: docker compose exec -T bambictf sh -c 'terraform plan'
+        run: docker compose exec -T bambictf sh -c 'cd terraform ; terraform plan'
