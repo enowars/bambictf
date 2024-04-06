@@ -50,7 +50,7 @@ jobs:
       - name: generate config files
         run: docker compose exec -T bambictf sh -c 'cd configgen; poetry install; poetry run configgen --teams 4 --routers 2 --dns ci-${{ github.sha }}.bambi.ovh'
       - name: tar config files
-        run: tar cf /tmp/config.tar config
+        run: sudo tar cf /tmp/config.tar config
       - name: Upload config artifact
         uses: actions/upload-artifact@v4
         with:
