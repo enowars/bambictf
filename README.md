@@ -73,6 +73,7 @@ export HCLOUD_TOKEN="..."
 - Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
 - Run the container (`docker compose up -d`)
 - Invoke a bash in the container (`docker compose exec bambictf bash`)
+- If you use Windows: Fix the private key permissions with `chmod 400 ./id_ed25519`
 - Build configs
     - `cd /bambictf/configgen`
     - `poetry install` (once)

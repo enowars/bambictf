@@ -18,3 +18,4 @@ id_ed25519
 .secrets
 ctf*json
 *.pyc
+/docker-compose.override.yml

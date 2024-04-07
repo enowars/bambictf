@@ -11,5 +11,5 @@ vulnbox_count = 2
 gateway_type = "cx21"
 checker_type = "cx21"
 engine_type  = "cx21"
-elk_type     = "cx21"
-vulnbox_type = "cx21"
+elk_type     = "cpx31"
+vulnbox_type = "cpx31"

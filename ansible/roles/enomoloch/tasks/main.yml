@@ -19,8 +19,8 @@
 
   - name: Disable tcpdump apparmor profile
     file:
-      path: /etc/apparmor.d/disable/usr.sbin.tcpdump
-      src: /etc/apparmor.d/usr.sbin.tcpdump
+      path: /etc/apparmor.d/disable/usr.bin.tcpdump
+      src: /etc/apparmor.d/usr.bin.tcpdump
       state: link
       force: yes
       follow: no
