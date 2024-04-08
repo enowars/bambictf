@@ -43,11 +43,21 @@ sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkime/docker-entryp
 cd /services/BambiArkime/
 docker compose build
 
-while ! curl -sq "http://10.13.0.${id}:9200/_cat/health"; do
-  echo "Waiting for elastic search to start... TODO: wait until green!";
-  sleep 3;
+echo "Waiting for green elastic search";
+while : ; do
+  if health="$(curl -fsSL "http://10.13.0.${id}:9200/_cat/health?h=status")"; then
+    health="$(echo "$health" | sed -r 's/^[[:space:]]+|[[:space:]]+$//g')"
+    if [ "$health" = 'green' ]; then
+      echo "ES is green!"
+      break
+    fi
+    echo "ES is still $health"
+    sleep 3;
+  fi
+  sleep 1;
 done
 
+# Router 1 initializes the Arkime cluster
 if [ ${id} -eq 1 ]
 then
   docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://10.13.0.${id}:9200" init
