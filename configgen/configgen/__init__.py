@@ -47,7 +47,9 @@ def prepare_directories(teams: int) -> None:
     Path(f"{DATA_DIR}/export/ansible/checkers").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/elk").mkdir(parents=True, exist_ok=True)
     Path(f"{DATA_DIR}/export/ansible/engine").mkdir(parents=True, exist_ok=True)
-    Path(f"{DATA_DIR}/export/ansible/routers").mkdir(parents=True, exist_ok=True)
+    Path(f"{DATA_DIR}/export/ansible/routers/openvpn").mkdir(
+        parents=True, exist_ok=True
+    )
     for team in range(1, teams + 1):
         Path(f"{DATA_DIR}/export/portal/team{team}").mkdir(parents=True, exist_ok=True)
         Path(f"{DATA_DIR}/export/terraform/team{team}").mkdir(

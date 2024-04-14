@@ -14,3 +14,4 @@
       - bambi-wireguard-router
       - router_trafficcapture
       - bambi-arkime
+      - router-openvpn

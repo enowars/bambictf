@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+
+# FIP
 cat > /etc/netplan/60-floating-ip.yaml <<EOF
 network:
   version: 2
@@ -11,6 +13,8 @@ network:
 EOF
 netplan apply
 
+
+# Wireguard
 %{ for router_index, router in router_ips ~}
   %{ if router_index != index }
     rm "/etc/wireguard/router${router_index+1}_internal.conf"
@@ -28,6 +32,7 @@ sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
 
 systemctl enable --now "wg-quick@internal"
 systemctl enable --now "wg-quick@router"
+
 
 # Arkime
 # Start elasticsearch cluster
@@ -71,3 +76,14 @@ while ! curl -s --head --show-error --fail "http://10.13.0.${id}:9200/bambi-arki
 done
 
 docker compose up -d
+
+
+# OpenVPN
+prefix="/etc/openvpn/server/"
+for i in /etc/openvpn/server/*.conf;
+do
+  filename="$${i##$prefix}"
+  echo "local ${router_ips[index].ip_address}" >> "/etc/openvpn/server/$filename"
+  configname="$${filename%.conf}"
+  systemctl enable --now "openvpn-server@$configname"
+done
