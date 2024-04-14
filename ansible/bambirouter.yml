@@ -13,5 +13,4 @@
       - metricbeat
       - bambi-wireguard-router
       - router_trafficcapture
-      - teamvpn-configs
       - bambi-arkime

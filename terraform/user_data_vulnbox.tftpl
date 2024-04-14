@@ -18,3 +18,9 @@ for service in $(ls /services/); do
     fi
     docker compose up -d &
 done
+
+# OpenVPN
+cat > /etc/openvpn/server/team.conf <<EOF
+${openvpnconf}
+EOF
+systemctl enable --now openvpn-server@team

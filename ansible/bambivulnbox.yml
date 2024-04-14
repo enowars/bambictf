@@ -13,6 +13,8 @@
       - docker-block-external
       - enomoloch
       - bambixploit
+      - root-password-login
+      - vulnbox-openvpn
       - role: programs
         vars:
           program_list:

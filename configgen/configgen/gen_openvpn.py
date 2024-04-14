@@ -26,7 +26,6 @@ def gen_openvpn(teams: int, routers: int, dns: str) -> None:
         x, y = _get_team_octets(team)
         TEAM_SUBNET_PREFIX = f"10.{x}.{y}"
         server_config = f"""port {port}
-local 0.0.0.0
 proto udp
 dev team{team}
 dev-type tun
@@ -70,7 +69,7 @@ duplicate-cn
 """
         client_config = f"""proto udp
 dev tun
-remote router{(team - 1) % routers + 1}.{dns} {port}
+remote team{team}.{dns} {port}
 resolv-retry infinite
 nobind
 
@@ -97,7 +96,7 @@ pull
 {config.client_key}</key>
 """
         # Save to disk
-        Path(f"{DATA_DIR}/export/ansible/routers/openvpn/team{team}.conf").write_text(
+        Path(f"{DATA_DIR}/export/terraform/team{team}/team.conf").write_text(
             server_config
         )
         Path(f"{DATA_DIR}/export/portal/team{team}/client.ovpn").write_text(

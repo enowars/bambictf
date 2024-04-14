@@ -21,9 +21,7 @@ from configgen.util import (
 logger = logging.getLogger(__file__)
 
 
-def gen_wireguard_internal(
-    teams: int, checkers: int, routers: int
-) -> None:
+def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
     """
     Generates the internal wireguard config files as needed, reusing keys (if present)
     """

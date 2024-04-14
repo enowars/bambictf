@@ -36,6 +36,7 @@ resource "hcloud_server" "bambivulnbox" {
   user_data = templatefile(
     "user_data_vulnbox.tftpl", {
       wgconf      = file("../config/export/terraform/team${count.index + 1}/game.conf"),
+      openvpnconf = file("../config/export/terraform/team${count.index + 1}/team.conf"),
       index       = count.index,
       id          = "${count.index + 1}",
       router_ips  = hcloud_floating_ip.bambirouter_ip
