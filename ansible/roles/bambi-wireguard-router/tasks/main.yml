@@ -116,6 +116,26 @@
       destination_port: "1337"
       jump: ACCEPT
 
+  - name: allow enoctfportal traffic from vulnboxes
+    iptables:
+      chain: FORWARD
+      in_interface: router
+      out_interface: internal
+      destination: 192.168.1.0
+      protocol: tcp
+      destination_port: "5001"
+      jump: ACCEPT
+
+  - name: allow enoctfportal traffic from vpn connections
+    iptables:
+      chain: FORWARD
+      in_interface: team+
+      out_interface: internal
+      destination: 192.168.1.0
+      protocol: tcp
+      destination_port: "5001"
+      jump: ACCEPT
+
   - name: allow traffic from the internal network to teams
     iptables:
       chain: FORWARD
