@@ -115,6 +115,22 @@ def gen_wireguard_internal(teams: int, checkers: int, routers: int) -> None:
             router_config.peers.append(checker_peer)
         checker_configs.append(checker_config)
 
+    # Add internal router peers
+    for i in range(routers):
+        for j in range(routers):
+            if i == j:
+                continue
+            router_i = router_configs[i]
+            router_j = router_configs[j]
+            router_i.peers.append(
+                Peer(
+                    public_key=router_j.public_key,
+                    allowed_ips=[get_router_cidr_internal(j+1)],
+                    endpoint=f"[[ROUTER_ADDRESS_{router_j.router_id}]]:{WG_LISTEN_PORT_INTERNAL}",
+                    comment=f"router{router_j.router_id}",
+                )
+            )
+
     # Save all to disk
     for router_config in router_configs:
         Path(

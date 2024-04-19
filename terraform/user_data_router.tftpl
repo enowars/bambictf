@@ -36,21 +36,21 @@ systemctl enable --now "wg-quick@router"
 
 # Arkime
 # Start elasticsearch cluster
-sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[ROUTER\]\]#192.168.0.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
 sed -i -e "s#\[\[INITIAL_MASTER_NODES\]\]#${masters}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
 sed -i -e "s#\[\[SEED_HOSTS\]\]#${seeds}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
 cd /services/BambiArkimeElasticsearch/
 docker compose up -d
 
 # Start Arkime cluster
-sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkime/config.ini
-sed -i -e "s#\[\[ROUTER\]\]#10.13.0.${id}#g" /services/BambiArkime/docker-entrypoint.sh
+sed -i -e "s#\[\[ROUTER\]\]#192.168.0.${id}#g" /services/BambiArkime/config.ini
+sed -i -e "s#\[\[ROUTER\]\]#192.168.0.${id}#g" /services/BambiArkime/docker-entrypoint.sh
 cd /services/BambiArkime/
 docker compose build
 
 echo "Waiting for green elastic search";
 while : ; do
-  if health="$(curl -fsSL "http://10.13.0.${id}:9200/_cat/health?h=status")"; then
+  if health="$(curl -fsSL "http://192.168.0.${id}:9200/_cat/health?h=status")"; then
     health="$(echo "$health" | sed -r 's/^[[:space:]]+|[[:space:]]+$//g')"
     if [ "$health" = 'green' ]; then
       echo "ES is green!"
@@ -65,12 +65,12 @@ done
 # Router 1 initializes the Arkime cluster
 if [ ${id} -eq 1 ]
 then
-  docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://10.13.0.${id}:9200" init
+  docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://192.168.0.${id}:9200" init
   docker compose run --entrypoint="/opt/arkime/bin/arkime_add_user.sh" arkime admin "Admin" admin --admin
-  curl -X PUT "http://10.13.0.${id}:9200/bambi-arkime-init?pretty"
+  curl -X PUT "http://192.168.0.${id}:9200/bambi-arkime-init?pretty"
 fi
 
-while ! curl -s --head --show-error --fail "http://10.13.0.${id}:9200/bambi-arkime-init/"; do
+while ! curl -s --head --show-error --fail "http://192.168.0.${id}:9200/bambi-arkime-init/"; do
   echo "Waiting for marker index to exist...";
   sleep 3;
 done

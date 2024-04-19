@@ -9,3 +9,4 @@ services:
     - "/pcaps_arkime:/opt/arkime/raw"
     - ".:/BambiArkime:ro"
     - "./config.ini:/opt/arkime/etc/config.ini:ro"
+    network_mode: "host"

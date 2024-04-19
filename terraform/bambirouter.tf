@@ -11,7 +11,7 @@ variable "router_count" {
 }
 
 locals {
-  subnet  = "10.13.0.0/24"
+  subnet  = "192.168.0.0/24"
 }
 
 data "hcloud_image" "bambirouter" {

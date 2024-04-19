@@ -14,6 +14,7 @@ from configgen.util import (
     WireguardTeamConfig,
     create_config_file,
     get_router_cidr_game,
+    get_team_octets,
     get_vulnbox_cidr,
     get_wg,
 )
@@ -48,7 +49,7 @@ def gen_wireguard_game(teams: int, dns: Optional[str], routers: int) -> None:
     # Generate team configs and add the peers to router configs
     for team in range(1, teams + 1):
         private_key, public_key = get_wg(Path(f"wg_game/team{team}.key"))
-        x, y = (team // 250), (team % 250)
+        x, y = get_team_octets(team)
         router_index = (team - 1) % routers
         router_config = router_configs[router_index]
         if dns is not None:

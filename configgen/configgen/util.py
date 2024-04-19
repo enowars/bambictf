@@ -121,17 +121,17 @@ def get_wg(path: Path) -> Tuple[str, str]:
     return priv, exec_wg_pub(priv)
 
 
-def _get_team_octets(team_id: int) -> Tuple[int, int]:
-    return (team_id // 250), (team_id % 250)
+def get_team_octets(team_id: int) -> Tuple[int, int]:
+    return ((team_id - 1) // 250) + 1, ((team_id - 1) % 250 + 1)
 
 
 def get_vulnbox_cidr(team_id: int) -> str:
-    x, y = _get_team_octets(team_id)
+    x, y = get_team_octets(team_id)
     return TEAM_IP_PREFIX_TEMPLATE % (x, y) + "1/32"
 
 
 def get_vulnbox_ip(team_id: int) -> str:
-    x, y = _get_team_octets(team_id)
+    x, y = get_team_octets(team_id)
     return TEAM_IP_PREFIX_TEMPLATE % (x, y) + "1"
 
 
@@ -140,7 +140,7 @@ def get_router_index(routers: int, team_id: int) -> int:
 
 
 def get_team_cidr(team_id: int) -> str:
-    x, y = _get_team_octets(team_id)
+    x, y = get_team_octets(team_id)
     return f"10.{x}.{y}.0/24"
 
 

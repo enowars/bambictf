@@ -3,7 +3,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from configgen.util import DATA_DIR, _get_team_octets, run_subprocess
+from configgen.util import DATA_DIR, get_team_octets, run_subprocess
 
 logger = logging.getLogger(__file__)
 
@@ -23,7 +23,7 @@ def gen_openvpn(teams: int, routers: int, dns: str) -> None:
     for team in range(1, teams + 1):
         config = get_team_config(team)
         port = 30000 + team
-        x, y = _get_team_octets(team)
+        x, y = get_team_octets(team)
         TEAM_SUBNET_PREFIX = f"10.{x}.{y}"
         server_config = f"""port {port}
 proto udp
