@@ -8,7 +8,7 @@ RestartSec=1
 TimeoutStartSec=300
 WorkingDirectory=/pcaps
 
-ExecStart=/usr/bin/tcpdump -i router -G 30 -w '%%Y_%%m_%%d-%%H_%%M_%%S.pcap' -s 0 -z ./move_pcap.sh src net 10.0.0.0/16 and dst net 10.0.0.0/16
+ExecStart=/usr/bin/tcpdump -i router -G 30 -w '%%Y_%%m_%%d-%%H_%%M_%%S.pcap' -s 0 -z ./move_pcap.sh src net 10.1.0.0/16 and dst net 10.1.0.0/16
 
 [Install]
 WantedBy=multi-user.target
