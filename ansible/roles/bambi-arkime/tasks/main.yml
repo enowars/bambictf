@@ -10,6 +10,7 @@
 # TODO fixme @ldruschk
 - shell: iptables -A INPUT -i br-+ -p tcp -m tcp --dport 9200 -j ACCEPT
 - shell: iptables -A INPUT -i internal -p tcp -m tcp --dport 9300 -j ACCEPT
+- shell: iptables -A INPUT -i internal -p tcp -m tcp --dport 8005 -j ACCEPT
 
 - name: persist iptables config
   include_role:
