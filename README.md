@@ -16,9 +16,10 @@ This setup combines a lot of other services/repositories.
 - Moloch (Traffic Analysis): [EnoMoloch](https://github.com/enoflag/EnoMoloch)
 - ELK (Log Analysis): [EnoELK](https://github.com/enowars/EnoELK)
 
-## Usage
-
-1. Create `./ansible/config_bambi.yml`:
+## Usage (Docker)
+- Have at least one ssh key with the label `type=admin` in your project **(HETZNER's WEBSITE)**
+- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
+- Create `./ansible/config_bambi.yml`
 ```yaml
 vulnerable_services:
     WASP: git@github.com:enowars/service-wasp.git
@@ -31,45 +32,6 @@ github_ssh_keys:
     - ldruschk
     - MMunier
 ```
-2. Create `./terraform/terraform.tfvars`:
-```
-hcloud_token = "..."
-ovh_dyndns_password = "..."
-```
-3. Initialize terraform:
-```
-(cd terraform; terraform init)
-```
-4. Generate wireguard configs for the internal network
-```sh
-(cd ./config/internal_router; ./gen_keys.sh $CHECKERS_COUNT)
-```
-5. Generate wireguard configs for the game network
-```sh
-(cd ./config/wireguard_router; ./gen_keys.sh $TEAMS_COUNT)
-```
-6. Generate passwords for the vulnboxes:
-```sh
-(cd ./config/passwords; ./gen_passwords.sh $TEAMS_COUNT)
-```
-7. Create SSH keys for router -> moloch
-```sh
-(ssh-keygen -t ed25519 -f ./config/moloch_keys/moloch_key -C "tcpdump@router")
-```
-8. Build images
-```sh
-export HCLOUD_TOKEN="..."
-(cd packer; packer build bambichecker.json)
-(cd packer; packer build bambiengine.json)
-(cd packer; packer build bambirouter.json)
-(cd packer; packer build bambivulnbox.json)
-(cd packer; packer build bambielk.json)
-```
-
-## Docker
-- Have at least one ssh key with the label `type=admin` in your project **(HETZNER's WEBSITE)**
-- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
-- Create `./ansible/config_bambi.yml`
 - Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
 - Run the container (`docker compose up -d`)
 - Invoke a bash in the container (`docker compose exec bambictf bash`)
@@ -85,9 +47,7 @@ export HCLOUD_TOKEN="..."
     - `packer build bambichecker.json`
     - ...
 - Note down vulnbox snapshot id, pass to EnoCTFPortal (`curl -H "Authorization: Bearer $HCLOUD_TOKEN" 'https://api.hetzner.cloud/v1/images?type=snapshot'`)
-- Create `./terraform/terraform.tfvars`
-    - set `vpn_floating_ip_only = false`
-    - set `internal_floating_ip_only = false`
+- Create `./terraform/terraform.tfvars` (see `./terraform/terraform.tfvars.sample` for reference)
 - `cd /bambictf/terraform`
 - `terraform init`
 - `terraform apply`
