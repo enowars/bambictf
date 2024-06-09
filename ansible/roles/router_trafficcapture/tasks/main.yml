@@ -5,6 +5,7 @@
     state: directory
     owner: tcpdump
     group: tcpdump
+    mode: "0755"
 
 - name: Ensure /pcaps_arkime exists
   file:
@@ -12,6 +13,7 @@
     state: directory
     owner: tcpdump
     group: tcpdump
+    mode: "0755"
 
 - name: Copy move_pcap.sh
   copy:
@@ -19,7 +21,7 @@
     dest: /pcaps/move_pcap.sh
     owner: tcpdump
     group: tcpdump
-    mode: '0700'
+    mode: "0700"
 
 - name: Install tcpdump
   apt:
@@ -31,6 +33,7 @@
   copy:
     src: enorouterdump.service
     dest: /etc/systemd/system/enorouterdump.service
+    mode: "0644"
 
 - name: Disable tcpdump apparmor profile
   file:

@@ -3,6 +3,7 @@
   file:
     path: /services
     state: directory
+    mode: "0755"
 
 - name: Clean local services cache
   become: false
@@ -13,7 +14,7 @@
 
 - name: Clone services locally
   become: false
-  git:
+  git: # noqa: latest
     delegate_to: localhost
     repo: "{{ item.value }}"
     dest: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}

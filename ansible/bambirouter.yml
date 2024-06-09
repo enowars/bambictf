@@ -12,7 +12,10 @@
     - filebeat
     - journalbeat
     - metricbeat
-    - router_wireguard
+    - role: wireguard_configs
+      vars:
+        wireguard_configs_dir: routers
+    - router_iptables
     - router_trafficcapture
     - router_arkime
     - router_openvpn

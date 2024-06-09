@@ -2,5 +2,5 @@ allow_duplicates: true
 dependencies:
   - role: "programs"
     vars:
-      program_list:
+      programs_list:
         - iptables-persistent

@@ -11,7 +11,7 @@
     state: present
 
 - name: Clone EnoELK
-  git:
+  git: # noqa: latest
     repo: "https://github.com/enowars/EnoELK.git"
     dest: /services/EnoELK
 

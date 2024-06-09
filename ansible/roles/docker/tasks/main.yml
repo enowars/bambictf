@@ -2,6 +2,7 @@
 # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 - name: Install docker
   shell: |
+    set -e -o pipefail
     apt-get update -y
     apt-get install -y ca-certificates curl gnupg
     install -m 0755 -d /etc/apt/keyrings
@@ -21,3 +22,4 @@
   copy:
     src: daemon.json
     dest: /etc/docker/daemon.json
+    mode: "0644"

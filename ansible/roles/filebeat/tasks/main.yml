@@ -9,6 +9,7 @@
   get_url:
     url: "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.4.3-amd64.deb"
     dest: "/tmp/filebeat.deb"
+    mode: "0644"
   when: filebeat_check_deb.rc == 1
 
 - name: Install Filebeat
@@ -21,6 +22,7 @@
   template:
     src: "filebeat.yml.j2"
     dest: "/etc/filebeat/filebeat.yml"
+    mode: "0644"
 
 - name: Enable and start Filebeat
   service:

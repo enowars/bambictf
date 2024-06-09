@@ -3,6 +3,7 @@
   copy:
     src: "{{ playbook_dir }}/../config/export/ansible/routers/openvpn/"
     dest: /etc/openvpn/server
+    mode: "0644"
 
 - name: Allow openvpn input traffic
   iptables:

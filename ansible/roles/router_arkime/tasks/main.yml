@@ -26,11 +26,13 @@
   file:
     path: /services/BambiArkimeElasticsearch
     state: directory
+    mode: "0755"
 
 - name: Copy docker-compose.elasticsearch.yml
   copy:
     src: docker-compose.elasticsearch.yml
     dest: /services/BambiArkimeElasticsearch/docker-compose.yml
+    mode: "0644"
 
 - name: Pull ES
   docker_compose:
@@ -41,39 +43,43 @@
   file:
     path: /services/BambiArkime
     state: directory
+    mode: "0755"
 
 - name: Copy docker-compose.arkime.yml
   copy:
     src: docker-compose.arkime.yml
     dest: /services/BambiArkime/docker-compose.yml
+    mode: "0644"
 
 - name: Copy config.ini
   copy:
     src: config.ini
     dest: /services/BambiArkime/config.ini
+    mode: "0644"
 
 - name: Copy Dockerfile
   copy:
     src: Dockerfile
     dest: /services/BambiArkime/Dockerfile
+    mode: "0644"
 
 - name: Copy arkime-capture.sh
   copy:
     src: arkime-capture.sh
     dest: /services/BambiArkime/arkime-capture.sh
-    mode: "755"
+    mode: "0755"
 
 - name: Copy arkime-viewer.sh
   copy:
     src: arkime-viewer.sh
     dest: /services/BambiArkime/arkime-viewer.sh
-    mode: "755"
+    mode: "0755"
 
 - name: Copy docker-entrypoint.sh
   copy:
     src: docker-entrypoint.sh
     dest: /services/BambiArkime/docker-entrypoint.sh
-    mode: "755"
+    mode: "0755"
 # TODO once wait for elasticsearch green works
 # - name: build
 #   shell: "docker compose build"

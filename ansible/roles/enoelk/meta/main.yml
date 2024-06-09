@@ -2,5 +2,5 @@ dependencies:
   - role: "docker"
   - role: "programs"
     vars:
-      program_list:
+      programs_list:
         - git

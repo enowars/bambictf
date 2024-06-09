@@ -9,6 +9,7 @@
   get_url:
     url: "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.6.2-amd64.deb"
     dest: "/tmp/journalbeat.deb"
+    mode: "0644"
   when: journalbeat_check_deb.rc == 1
 
 - name: Install journalbeat
@@ -21,6 +22,7 @@
   template:
     src: journalbeat.yml.j2
     dest: /etc/journalbeat/journalbeat.yml
+    mode: "0644"
 
 - name: Enable and start journalbeat
   service:

@@ -3,5 +3,5 @@ dependencies:
   - role: "firewall"
   - role: "programs"
     vars:
-      program_list:
+      programs_list:
         - iptables-persistent

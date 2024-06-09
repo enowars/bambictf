@@ -5,7 +5,7 @@
     state: present
 
 - name: Clone EnoEngine
-  git:
+  git: # noqa: latest
     repo: "https://github.com/enowars/EnoEngine.git"
     dest: /services/EnoEngine
 
@@ -20,7 +20,7 @@
     project_src: /services/EnoEngine
 
 - name: Clone EnoCTFPortal (for adhoc testing and solutions)
-  git:
+  git: # noqa: latest
     repo: "https://github.com/enowars/EnoCTFPortal.git"
     dest: /services/EnoCTFPortal
 
@@ -28,6 +28,7 @@
   copy:
     src: docker-compose.yml
     dest: /services/EnoCTFPortal/
+    mode: "0644"
   changed_when: false
 
 - name: Start EnoCTFPortal

@@ -9,8 +9,10 @@
   ansible.builtin.file:
     path: /etc/bambixploit
     state: directory
+    mode: "0755"
 
 - name: Deploy bambixploit.json
   copy:
     src: bambixploit.json
     dest: /etc/bambixploit/bambixploit.json
+    mode: "0644"
