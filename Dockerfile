@@ -7,7 +7,7 @@ RUN apt-get install -y --no-install-recommends openssh-client rsync git less tmu
     software-properties-common gpg-agent pipx # for ansible and packer install
 
 # Poetry and Ansible
-RUN pipx install poetry && pipx install --include-deps ansible && pipx inject ansible ansible-lint --include-apps --include-deps
+RUN pipx install poetry && pipx install --include-deps ansible && pipx inject ansible ansible-lint --include-apps --include-deps && pipx inject ansible docker
 ENV PATH="/root/.local/bin:${PATH}"
 
 # Packer and Terraform
