@@ -16,7 +16,7 @@
       dest: /services/EnoELK
 
   - name: Pull ELK images
-    shell: docker-compose pull
+    shell: docker compose pull
     args:
       chdir: /services/EnoELK
 
@@ -29,4 +29,5 @@
       jump: ACCEPT
 
   - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+    include_role:
+      name: "iptables-persistent"

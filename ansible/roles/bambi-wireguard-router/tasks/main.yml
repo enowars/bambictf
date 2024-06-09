@@ -1,4 +1,9 @@
 ---
+  - name: Copy wg configs
+    copy:
+      src: "{{ playbook_dir }}/../config/export/ansible/routers/"
+      dest: /etc/wireguard/
+
   - name: allow wireguard input traffic (game)
     iptables:
       chain: INPUT
@@ -26,12 +31,6 @@
       chain: FORWARD
       ctstate: [RELATED, ESTABLISHED]
       jump: ACCEPT
-
-  - name: "Enable ipv4 forward"
-    sysctl:
-      name: net.ipv4.ip_forward
-      value: '1'
-      sysctl_set: yes
 
   - name: "Capture iptables-save output"
     shell: "iptables-save"
@@ -65,6 +64,12 @@
       in_interface: internal
       out_interface: internal
       jump: ACCEPT
+
+  # this is a pretty hacky workaround, but the execution of the iptables-module in ansible is just painfully slow
+  - name: "prevent masquerading for intra-team traffic part"
+    shell: "iptables -t nat -A POSTROUTING -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j RETURN"
+    when: '"-A POSTROUTING -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j RETURN" not in iptablessave.stdout'
+    with_sequence: start=1 end=255
 
   - name: masquerade outgoing traffic on the router interface
     iptables:
@@ -111,6 +116,26 @@
       destination_port: "1337"
       jump: ACCEPT
 
+  - name: allow enoctfportal traffic from vulnboxes
+    iptables:
+      chain: FORWARD
+      in_interface: router
+      out_interface: internal
+      destination: 192.168.1.0
+      protocol: tcp
+      destination_port: "5001"
+      jump: ACCEPT
+
+  - name: allow enoctfportal traffic from vpn connections
+    iptables:
+      chain: FORWARD
+      in_interface: team+
+      out_interface: internal
+      destination: 192.168.1.0
+      protocol: tcp
+      destination_port: "5001"
+      jump: ACCEPT
+
   - name: allow traffic from the internal network to teams
     iptables:
       chain: FORWARD
@@ -130,4 +155,5 @@
     with_sequence: start=1 end=255
 
   - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+    include_role:
+      name: "iptables-persistent"

@@ -1,17 +1,15 @@
-hetznerdns_zone  = "bambi.ovh"
-home_location    = "fsn1"
+hetznerdns_zone     = "bambi.ovh"
+subdomain           = "prod"
+home_location       = "fsn1"
 
-gateway_count = 2
+router_count  = 2
 checker_count = 1
 engine_count  = 1
 elk_count     = 1
-vulnbox_count = 0
+vulnbox_count = 2
 
-gateway_type = "cpx31"
-checker_type = "cpx31"
-engine_type  = "cpx31"
+router_type = "cx21"
+checker_type = "cx21"
+engine_type  = "cx21"
 elk_type     = "cpx31"
-vulnbox_type = "cpx21"
-
-vpn_floating_ip_only      = true
-internal_floating_ip_only = true
+vulnbox_type = "cpx31"

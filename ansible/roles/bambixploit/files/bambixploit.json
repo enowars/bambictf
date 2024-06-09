@@ -1,6 +1,6 @@
 {
     "flagRegex": "ENO[A-Za-z0-9+\/=]{48}",
-    "targetsUrl": "https://bambi7.enoflag.de/api/data/ips",
+    "targetsUrl": "http://10.0.13.37:5001/api/data/ips",
     "submissionAddress": "10.0.13.37",
     "submissionPort": 1337,
     "interval": 50

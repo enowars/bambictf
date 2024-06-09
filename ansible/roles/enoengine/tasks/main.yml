@@ -15,7 +15,7 @@
       chdir: /services/EnoEngine
 
   - name: Start EnoEngine Postgres
-    shell: "docker-compose up -d"
+    shell: "docker compose up -d"
     args:
       chdir: /services/EnoEngine
 
@@ -31,7 +31,7 @@
     changed_when: false
 
   - name: Start EnoCTFPortal
-    shell: "docker-compose up -d"
+    shell: "docker compose up -d"
     args:
       chdir: /services/EnoCTFPortal
 
@@ -60,7 +60,8 @@
       jump: ACCEPT
 
   - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+    include_role:
+      name: "iptables-persistent"
 
   - name: Create /services/data
     ansible.builtin.file:

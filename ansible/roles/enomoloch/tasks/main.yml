@@ -19,8 +19,8 @@
 
   - name: Disable tcpdump apparmor profile
     file:
-      path: /etc/apparmor.d/disable/usr.sbin.tcpdump
-      src: /etc/apparmor.d/usr.sbin.tcpdump
+      path: /etc/apparmor.d/disable/usr.bin.tcpdump
+      src: /etc/apparmor.d/usr.bin.tcpdump
       state: link
       force: yes
       follow: no
@@ -58,8 +58,10 @@
       chain: DOCKER-USER
       in_interface: game
       protocol: tcp
+      source: "10.13.0.0/24"
       destination_port: "8005"
       jump: DROP
 
   - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+    include_role:
+      name: "iptables-persistent"
