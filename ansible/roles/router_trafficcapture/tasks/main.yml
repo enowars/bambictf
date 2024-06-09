@@ -25,7 +25,7 @@
   apt:
     name: tcpdump
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Copy over the enorouterdump unit
   copy:
@@ -37,15 +37,15 @@
     path: /etc/apparmor.d/disable/usr.bin.tcpdump
     src: /etc/apparmor.d/usr.bin.tcpdump
     state: link
-    force: yes
-    follow: no
+    force: true
+    follow: false
 
 - name: Reload system daemon
   systemd:
     name: "enorouterdump" # ansible <2.4 always requires 'name'
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Enable enorouterdump
   service:
     name: enorouterdump
-    enabled: yes
+    enabled: true

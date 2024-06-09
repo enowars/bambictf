@@ -14,7 +14,7 @@
 - name: Install Metricbeat
   apt:
     deb: "/tmp/metricbeat.deb"
-  become: yes
+  become: true
   when: metricbeat_check_deb.rc == 1
 
 - name: Copy Metricbeat config
@@ -26,4 +26,4 @@
   service:
     name: metricbeat
     state: restarted
-    enabled: yes
+    enabled: true

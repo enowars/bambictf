@@ -1,7 +1,0 @@
-dependencies:
-- role: "wireguard"
-- role: "firewall"
-- role: "programs"
-  vars:
-    program_list:
-      - iptables-persistent

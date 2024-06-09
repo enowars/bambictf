@@ -1,0 +1,17 @@
+---
+- name: Copy team openvpn server configs
+  copy:
+    src: "{{ playbook_dir }}/../config/export/ansible/routers/openvpn/"
+    dest: /etc/openvpn/server
+
+- name: Allow openvpn input traffic
+  iptables:
+    chain: INPUT
+    in_interface: eth0
+    destination_port: "30001:32000"
+    protocol: udp
+    jump: ACCEPT
+
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"

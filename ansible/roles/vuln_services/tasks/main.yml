@@ -1,34 +1,34 @@
 ---
-  - name: Create /services
-    file:
-      path: /services
-      state: directory
+- name: Create /services
+  file:
+    path: /services
+    state: directory
 
-  - name: Clean local services cache
-    become: no
-    local_action:
-      module: file
-      path: ./services/{{ inventory_hostname }}/dockered_vulnerable_services
-      state: absent
+- name: Clean local services cache
+  become: false
+  file:
+    delegate_to: localhost
+    path: ./services/{{ inventory_hostname }}/dockered_vulnerable_services
+    state: absent
 
-  - name: Clone services locally
-    become: no
-    local_action:
-      module: git
-      repo: "{{ item.value }}"
-      dest: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}
-      key_file: "{{ playbook_dir }}/../id_ed25519"
-      accept_hostkey: yes
-    with_dict: "{{ vulnerable_services }}"
+- name: Clone services locally
+  become: false
+  git:
+    delegate_to: localhost
+    repo: "{{ item.value }}"
+    dest: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}
+    key_file: "{{ playbook_dir }}/../id_ed25519"
+    accept_hostkey: true
+  with_dict: "{{ vulnerable_services }}"
 
-  - name: Copy services to vulnbox
-    synchronize:
-      src: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}/service/
-      dest: /services/{{ item.key }}
-    with_dict: "{{ vulnerable_services }}"
+- name: Copy services to vulnbox
+  synchronize:
+    src: ./services/{{ inventory_hostname }}/dockered_vulnerable_services/{{ item.key }}/service/
+    dest: /services/{{ item.key }}
+  with_dict: "{{ vulnerable_services }}"
 
-  - name: pull/build service
-    shell: docker compose pull && docker compose build
-    args:
-      chdir: /services/{{ item.key }}
-    with_dict: "{{ vulnerable_services }}"
+- name: Pull/build service
+  shell: docker compose pull && docker compose build
+  args:
+    chdir: /services/{{ item.key }}
+  with_dict: "{{ vulnerable_services }}"

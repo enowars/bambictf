@@ -1,0 +1,159 @@
+---
+- name: Copy wg configs
+  copy:
+    src: "{{ playbook_dir }}/../config/export/ansible/routers/"
+    dest: /etc/wireguard/
+
+- name: Allow wireguard input traffic (game)
+  iptables:
+    chain: INPUT
+    in_interface: eth0
+    destination_port: "51820"
+    protocol: udp
+    jump: ACCEPT
+
+- name: Allow wireguard input traffic (internal)
+  iptables:
+    chain: INPUT
+    in_interface: eth0
+    destination_port: "51821"
+    protocol: udp
+    jump: ACCEPT
+
+- name: "Enable ipv4 forward"
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: true
+
+- name: Allow related/established forward traffic
+  iptables:
+    chain: FORWARD
+    ctstate: [RELATED, ESTABLISHED]
+    jump: ACCEPT
+
+- name: "Capture iptables-save output"
+  shell: "iptables-save"
+  register: iptablessave
+
+- name: "Insert limit bw internal"
+  shell: "iptables -I FORWARD -i router -o internal -m hashlimit --hashlimit-above 10mb/s --hashlimit-burst 20mb --hashlimit-mode srcip --hashlimit-name bwi --hashlimit-srcmask 24 -j DROP"
+  when: '"-A FORWARD -i router -o internal -m hashlimit --hashlimit-above 10mb/s --hashlimit-burst 20mb --hashlimit-mode srcip --hashlimit-name bwi --hashlimit-srcmask 24 -j DROP" not in iptablessave.stdout'
+
+- name: "Insert limit bw other"
+  shell: "iptables -I FORWARD -i router ! -o internal -m hashlimit --hashlimit-above 5mb/s --hashlimit-burst 10mb --hashlimit-mode srcip --hashlimit-name bw --hashlimit-srcmask 24 -j DROP"
+  when: '"-A FORWARD -i router ! -o internal -m hashlimit --hashlimit-above 5mb/s --hashlimit-burst 10mb --hashlimit-mode srcip --hashlimit-name bw --hashlimit-srcmask 24 -j DROP" not in iptablessave.stdout'
+
+- name: "Insert limit conn internal"
+  shell: "iptables -I FORWARD -i router -o internal -m conntrack --ctstate NEW -m hashlimit --hashlimit-above 2/sec --hashlimit-burst 10 --hashlimit-mode srcip,dstip --hashlimit-name subnewconns -j DROP"
+  when: '"-A FORWARD -i router -o internal -m conntrack --ctstate NEW -m hashlimit --hashlimit-above 2/sec --hashlimit-burst 10 --hashlimit-mode srcip,dstip --hashlimit-name subnewconns -j DROP" not in iptablessave.stdout'
+
+- name: "Insert limit conn other"
+  shell: "iptables -I FORWARD -i router ! -o internal -m conntrack --ctstate NEW -m hashlimit --hashlimit-above 50/sec --hashlimit-burst 100 --hashlimit-mode srcip,dstip --hashlimit-name newconns -j DROP"
+  when: '"-A FORWARD -i router ! -o internal -m conntrack --ctstate NEW -m hashlimit --hashlimit-above 50/sec --hashlimit-burst 100 --hashlimit-mode srcip,dstip --hashlimit-name newconns -j DROP" not in iptablessave.stdout'
+
+- name: Allow related/established forward traffic
+  iptables:
+    chain: FORWARD
+    ctstate: [RELATED, ESTABLISHED]
+    jump: ACCEPT
+
+- name: Allow all internal traffic
+  iptables:
+    chain: FORWARD
+    in_interface: internal
+    out_interface: internal
+    jump: ACCEPT
+
+# this is a pretty hacky workaround, but the execution of the iptables-module in ansible is just painfully slow
+- name: Prevent masquerading for intra-team traffic part
+  shell: "iptables -t nat -A POSTROUTING -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j RETURN"
+  when: '"-A POSTROUTING -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j RETURN" not in iptablessave.stdout'
+  with_sequence: start=1 end=255
+
+- name: Masquerade outgoing traffic on the router interface
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: router
+    jump: MASQUERADE
+
+- name: DNAT the flag submission IP to the engine
+  iptables:
+    table: nat
+    chain: PREROUTING
+    destination: 10.0.13.37
+    jump: DNAT
+    to_destination: 192.168.1.0
+
+- name: Allow pinging the flag submission endpoint
+  iptables:
+    chain: FORWARD
+    in_interface: router
+    out_interface: internal
+    destination: 192.168.1.0
+    protocol: icmp
+    icmp_type: "8"
+    jump: ACCEPT
+
+- name: Allow flag submission traffic from vulnboxes
+  iptables:
+    chain: FORWARD
+    in_interface: router
+    out_interface: internal
+    destination: 192.168.1.0
+    protocol: tcp
+    destination_port: "1337"
+    jump: ACCEPT
+
+- name: Allow flag submission traffic from vpn connections
+  iptables:
+    chain: FORWARD
+    in_interface: team+
+    out_interface: internal
+    destination: 192.168.1.0
+    protocol: tcp
+    destination_port: "1337"
+    jump: ACCEPT
+
+- name: Allow enoctfportal traffic from vulnboxes
+  iptables:
+    chain: FORWARD
+    in_interface: router
+    out_interface: internal
+    destination: 192.168.1.0
+    protocol: tcp
+    destination_port: "5001"
+    jump: ACCEPT
+
+- name: Allow enoctfportal traffic from vpn connections
+  iptables:
+    chain: FORWARD
+    in_interface: team+
+    out_interface: internal
+    destination: 192.168.1.0
+    protocol: tcp
+    destination_port: "5001"
+    jump: ACCEPT
+
+- name: Allow traffic from the internal network to teams
+  iptables:
+    chain: FORWARD
+    in_interface: internal
+    out_interface: router
+    jump: ACCEPT
+
+# this is a pretty hacky workaround, but the execution of the iptables-module in ansible is just painfully slow
+- name: Allow intra-team traffic part 1
+  shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j ACCEPT"
+  when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout'
+  with_sequence: start=1 end=255
+
+- name: Allow intra-team traffic part 2
+  shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o team+ -j ACCEPT"
+  when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout'
+  with_sequence: start=1 end=255
+
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"
