@@ -96,7 +96,7 @@ pull
 {config.client_key}</key>
 """
         # Save to disk
-        Path(f"{DATA_DIR}/export/ansible/routers/openvpn/team{team}.conf").write_text(
+        Path(f"{DATA_DIR}/export/ansible/routers/openvpn/router{(team - 1) % routers + 1}_team{team}.conf").write_text(
             server_config
         )
         Path(f"{DATA_DIR}/export/portal/team{team}/client.ovpn").write_text(
