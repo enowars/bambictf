@@ -17,6 +17,7 @@
     apt-get -y update
 
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  executable: /usr/bin/bash
 
 - name: Copy daemon.json
   copy:
