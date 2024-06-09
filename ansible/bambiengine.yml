@@ -1,18 +1,19 @@
 ---
-  - hosts: all
-    become: yes
-    become_method: sudo
-    vars_files:
-      - config_bambi.yml
-      - static.yml
+- name: Bambi Engine
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  vars_files:
+    - config_bambi.yml
+    - static.yml
 
-    roles:
-      - base
-      - enoengine
-      - role: wireguard_configs
-        vars:
-          config_dir: engine
-      - filebeat
-      - journalbeat
-      - metricbeat
-      - docker-block-external
+  roles:
+    - base
+    - enoengine
+    - role: wireguard_configs
+      vars:
+        wireguard_configs_dir: engine
+    - filebeat
+    - journalbeat
+    - metricbeat
+    - docker_block_external

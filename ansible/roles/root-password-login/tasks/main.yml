@@ -1,8 +1,0 @@
----
-- name: Configure sshd to allow root login with password
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^PermitRootLogin'
-    line: "PermitRootLogin yes"
-    state: present
-    backup: yes

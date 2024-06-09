@@ -1,0 +1,24 @@
+---
+# note that this is Hetzner Cloud specific and does not work if the external interface is not eth0
+- name: "Allow related/established traffic from the external interface to allow the containers to access the internet"
+  iptables:
+    chain: DOCKER-USER
+    ctstate: [RELATED, ESTABLISHED]
+    in_interface: eth0
+    jump: ACCEPT
+
+- name: "Prevent access to docker services from the external interface"
+  iptables:
+    chain: DOCKER-USER
+    in_interface: eth0
+    jump: DROP
+
+- name: "Delete RETURN rule in DOCKER-USER"
+  iptables:
+    chain: DOCKER-USER
+    jump: RETURN
+    state: absent
+
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"

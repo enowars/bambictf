@@ -1,18 +1,19 @@
 ---
-  - hosts: all
-    become: yes
-    become_method: sudo
-    vars_files:
-      - config_bambi.yml
-      - static.yml
+- name: Bambi Checker
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  vars_files:
+    - config_bambi.yml
+    - static.yml
 
-    roles:
-      - base
-      - role: wireguard_configs
-        vars:
-          config_dir: checkers
-      - filebeat
-      - journalbeat
-      - metricbeat
-      - vuln_checkers
-      - docker-block-external
+  roles:
+    - base
+    - role: wireguard_configs
+      vars:
+        wireguard_configs_dir: checkers
+    - filebeat
+    - journalbeat
+    - metricbeat
+    - vuln_checkers
+    - docker_block_external

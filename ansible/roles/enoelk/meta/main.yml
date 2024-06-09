@@ -1,6 +1,6 @@
-dependencies: 
-- role: "docker"
-- role: "programs"
-  vars:
-    program_list:
-      - git
+dependencies:
+  - role: "docker"
+  - role: "programs"
+    vars:
+      programs_list:
+        - git

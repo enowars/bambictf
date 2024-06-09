@@ -1,0 +1,17 @@
+services:
+  elasticsearch:
+    restart: unless-stopped
+    image: elasticsearch:8.11.1
+    environment:
+      - xpack.security.enabled=false
+      - node.name=[[ROUTER]]
+      - cluster.name=bambiarkime
+      - cluster.initial_master_nodes=[[INITIAL_MASTER_NODES]]
+      - discovery.seed_hosts=[[SEED_HOSTS]]
+      - network.publish_host=[[ROUTER]]
+      - http.publish_host=[[ROUTER]]
+      - transport.publish_host=[[ROUTER]]
+    ports:
+      - 9200:9200
+      - 9300:9300
+    network_mode: host
