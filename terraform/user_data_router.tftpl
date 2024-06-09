@@ -80,7 +80,7 @@ docker compose up -d
 
 # OpenVPN
 prefix="/etc/openvpn/server/"
-for i in /etc/openvpn/server/router${router_index+1}_*.conf;
+for i in /etc/openvpn/server/router${index+1}_*.conf;
 do
   filename="$${i##$prefix}"
   echo "local ${router_ips[index].ip_address}" >> "/etc/openvpn/server/$filename"
