@@ -32,12 +32,6 @@
       ctstate: [RELATED, ESTABLISHED]
       jump: ACCEPT
 
-  - name: "Enable ipv4 forward"
-    sysctl:
-      name: net.ipv4.ip_forward
-      value: '1'
-      sysctl_set: yes
-
   - name: "Capture iptables-save output"
     shell: "iptables-save"
     register: iptablessave
@@ -70,6 +64,12 @@
       in_interface: internal
       out_interface: internal
       jump: ACCEPT
+
+  # this is a pretty hacky workaround, but the execution of the iptables-module in ansible is just painfully slow
+  - name: "prevent masquerading for intra-team traffic part"
+    shell: "iptables -t nat -A POSTROUTING -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j RETURN"
+    when: '"-A POSTROUTING -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j RETURN" not in iptablessave.stdout'
+    with_sequence: start=1 end=255
 
   - name: masquerade outgoing traffic on the router interface
     iptables:

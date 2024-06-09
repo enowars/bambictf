@@ -58,6 +58,7 @@
       chain: DOCKER-USER
       in_interface: game
       protocol: tcp
+      source: "10.13.0.0/24"
       destination_port: "8005"
       jump: DROP
 

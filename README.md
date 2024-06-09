@@ -16,6 +16,12 @@ This setup combines a lot of other services/repositories.
 - Moloch (Traffic Analysis): [EnoMoloch](https://github.com/enoflag/EnoMoloch)
 - ELK (Log Analysis): [EnoELK](https://github.com/enowars/EnoELK)
 
+## Notable Limits
+Due to implementation details, currently you have to be aware of the following limits:
+- number of teams: 250
+- number of routers: 255
+- ...
+
 ## Usage (Docker)
 - Have at least one ssh key with the label `type=admin` in your project **(HETZNER's WEBSITE)**
 - Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
