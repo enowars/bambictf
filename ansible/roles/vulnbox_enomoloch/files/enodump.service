@@ -1,7 +1,7 @@
 [Unit]
 Description=enodump packet capture
-Requires=docker.service
-After=docker.service containerd.service
+Requires=docker.service wg-quick@game.service
+After=docker.service containerd.service wg-quick@game.service
 
 [Service]
 Restart=always
