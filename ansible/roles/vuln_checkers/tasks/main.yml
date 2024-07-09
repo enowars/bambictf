@@ -7,21 +7,20 @@
 
 - name: Clean local checker services cache
   file:
-    delegate_to: localhost
-    module: file
     path: ./services/{{ inventory_hostname }}/{{ item.key }}
     state: absent
   with_dict: "{{ vulnerable_services }}"
+  delegate_to: localhost
 
 - name: Clone checkers services locally
   become: false
   git: # noqa: latest
-    delegate_to: localhost
     repo: "{{ item.value }}"
     dest: ./services/{{ inventory_hostname }}/{{ item.key }}
     accept_hostkey: true
     key_file: "{{ playbook_dir }}/../id_ed25519"
   with_dict: "{{ vulnerable_services }}"
+  delegate_to: localhost
 
 - name: Copy checkers to gameserver
   synchronize:

@@ -15,9 +15,9 @@
     chdir: /services/EnoEngine
 
 - name: Start EnoEngine Postgres
-  docker_compose:
-    state: present
-    project_src: /services/EnoEngine
+  shell: "docker compose up -d" # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoEngine
 
 - name: Clone EnoCTFPortal (for adhoc testing and solutions)
   git: # noqa: latest
@@ -32,9 +32,9 @@
   changed_when: false
 
 - name: Start EnoCTFPortal
-  docker_compose:
-    state: present
-    project_src: /services/EnoCTFPortal
+  shell: "docker compose up -d" # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoCTFPortal
 
 - name: Allow flag submission traffic
   iptables:

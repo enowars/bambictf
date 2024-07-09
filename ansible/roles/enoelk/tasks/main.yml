@@ -16,9 +16,9 @@
     dest: /services/EnoELK
 
 - name: Pull ELK images
-  docker_compose:
-    pull: true
-    project_src: /services/EnoELK
+  shell: docker compose pull # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoELK
 
 - name: Allow wireguard input traffic (internal)
   iptables:

@@ -35,9 +35,9 @@
     mode: "0644"
 
 - name: Pull ES
-  docker_compose:
-    pull: true
-    project_src: /services/BambiArkimeElasticsearch
+  shell: docker compose pull # noqa: command-instead-of-shell
+  args:
+    chdir: /services/BambiArkimeElasticsearch
 
 - name: Create /services/BambiArkime
   file:
