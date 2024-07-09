@@ -10,7 +10,6 @@ on:
   pull_request:
     branches:
       - main
-      - configcleanup
   workflow_dispatch:
 
 jobs:
@@ -44,7 +43,7 @@ jobs:
         run: docker load --input /tmp/bambictf.tar
       - name: start docker compose setup
         run: docker compose up -d
-      - name: generate config files
+      - name: run ansible-lint
         run: docker compose exec -T bambictf sh -c 'cd ansible && ansible-lint'
 
   configgen:
