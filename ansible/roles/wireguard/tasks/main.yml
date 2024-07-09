@@ -1,6 +1,6 @@
 ---
-  - name: Ensure wg directory exists
-    file:
-      path: /etc/wireguard
-      state: directory
-      mode: "700"
+- name: Ensure wg directory exists
+  file:
+    path: /etc/wireguard
+    state: directory
+    mode: "700"

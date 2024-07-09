@@ -1,0 +1,7 @@
+---
+- name: Pull authkeys from github
+  authorized_key:
+    user: root
+    state: present
+    key: "https://github.com/{{ item }}.keys"
+  with_items: "{{ github_ssh_keys }}"

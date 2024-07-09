@@ -1,0 +1,87 @@
+---
+- name: Allow wireguard input traffic (internal)
+  iptables:
+    chain: INPUT
+    in_interface: eth0
+    destination_port: "51821"
+    protocol: udp
+    jump: ACCEPT
+
+# TODO fixme @ldruschk
+- shell: iptables -A INPUT -i br-+ -p tcp -m tcp --dport 9200 -j ACCEPT # noqa: command-instead-of-shell
+- shell: iptables -A INPUT -i internal -p tcp -m tcp --dport 9300 -j ACCEPT # noqa: command-instead-of-shell
+- shell: iptables -A INPUT -i internal -p tcp -m tcp --dport 8005 -j ACCEPT # noqa: command-instead-of-shell
+
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"
+
+- name: Increase max_map_count
+  sysctl:
+    name: vm.max_map_count
+    value: "262144"
+    sysctl_set: true
+
+- name: Create /services/BambiArkimeElasticsearch
+  file:
+    path: /services/BambiArkimeElasticsearch
+    state: directory
+    mode: "0755"
+
+- name: Copy docker-compose.elasticsearch.yml
+  copy:
+    src: docker-compose.elasticsearch.yml
+    dest: /services/BambiArkimeElasticsearch/docker-compose.yml
+    mode: "0644"
+
+- name: Pull ES
+  shell: docker compose pull # noqa: command-instead-of-shell
+  args:
+    chdir: /services/BambiArkimeElasticsearch
+
+- name: Create /services/BambiArkime
+  file:
+    path: /services/BambiArkime
+    state: directory
+    mode: "0755"
+
+- name: Copy docker-compose.arkime.yml
+  copy:
+    src: docker-compose.arkime.yml
+    dest: /services/BambiArkime/docker-compose.yml
+    mode: "0644"
+
+- name: Copy config.ini
+  copy:
+    src: config.ini
+    dest: /services/BambiArkime/config.ini
+    mode: "0644"
+
+- name: Copy Dockerfile
+  copy:
+    src: Dockerfile
+    dest: /services/BambiArkime/Dockerfile
+    mode: "0644"
+
+- name: Copy arkime-capture.sh
+  copy:
+    src: arkime-capture.sh
+    dest: /services/BambiArkime/arkime-capture.sh
+    mode: "0755"
+
+- name: Copy arkime-viewer.sh
+  copy:
+    src: arkime-viewer.sh
+    dest: /services/BambiArkime/arkime-viewer.sh
+    mode: "0755"
+
+- name: Copy docker-entrypoint.sh
+  copy:
+    src: docker-entrypoint.sh
+    dest: /services/BambiArkime/docker-entrypoint.sh
+    mode: "0755"
+# TODO once wait for elasticsearch green works
+# - name: build
+#   shell: "docker compose build"
+#   args:
+#     chdir: /services/BambiArkime

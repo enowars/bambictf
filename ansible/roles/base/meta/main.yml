@@ -1,5 +1,5 @@
 dependencies:
-- role: "bambi-ssh-keys"
-- role: "firewall"
-- role: "tmux"
-- role: "wireguard"
+  - role: "ssh_keys"
+  - role: "firewall"
+  - role: "tmux"
+  - role: "wireguard"

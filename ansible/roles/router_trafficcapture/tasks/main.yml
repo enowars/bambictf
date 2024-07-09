@@ -5,6 +5,7 @@
     state: directory
     owner: tcpdump
     group: tcpdump
+    mode: "0755"
 
 - name: Ensure /pcaps_arkime exists
   file:
@@ -12,6 +13,7 @@
     state: directory
     owner: tcpdump
     group: tcpdump
+    mode: "0755"
 
 - name: Copy move_pcap.sh
   copy:
@@ -19,33 +21,34 @@
     dest: /pcaps/move_pcap.sh
     owner: tcpdump
     group: tcpdump
-    mode: '0700'
+    mode: "0700"
 
 - name: Install tcpdump
   apt:
     name: tcpdump
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Copy over the enorouterdump unit
   copy:
     src: enorouterdump.service
     dest: /etc/systemd/system/enorouterdump.service
+    mode: "0644"
 
 - name: Disable tcpdump apparmor profile
   file:
     path: /etc/apparmor.d/disable/usr.bin.tcpdump
     src: /etc/apparmor.d/usr.bin.tcpdump
     state: link
-    force: yes
-    follow: no
+    force: true
+    follow: false
 
 - name: Reload system daemon
   systemd:
     name: "enorouterdump" # ansible <2.4 always requires 'name'
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Enable enorouterdump
   service:
     name: enorouterdump
-    enabled: yes
+    enabled: true

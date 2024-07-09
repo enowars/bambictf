@@ -1,35 +1,35 @@
 ---
-  - name: Create /services
-    file:
-      path: /services
-      state: directory
+- name: Create /services
+  file:
+    path: /services
+    state: directory
+    mode: "0755"
 
-  - name: Clean local checker services cache
-    become: no
-    local_action:
-      module: file
-      path: ./services/{{ inventory_hostname }}/{{ item.key }}
-      state: absent
-    with_dict: "{{ vulnerable_services }}"
+- name: Clean local checker services cache
+  file:
+    path: ./services/{{ inventory_hostname }}/{{ item.key }}
+    state: absent
+  with_dict: "{{ vulnerable_services }}"
+  delegate_to: localhost
 
-  - name: Clone checkers services locally
-    become: no
-    local_action:
-      module: git
-      repo: "{{ item.value }}"
-      dest: ./services/{{ inventory_hostname }}/{{ item.key }}
-      accept_hostkey: yes
-      key_file: "{{ playbook_dir }}/../id_ed25519"
-    with_dict: "{{ vulnerable_services }}"
+- name: Clone checkers services locally
+  become: false
+  git: # noqa: latest
+    repo: "{{ item.value }}"
+    dest: ./services/{{ inventory_hostname }}/{{ item.key }}
+    accept_hostkey: true
+    key_file: "{{ playbook_dir }}/../id_ed25519"
+  with_dict: "{{ vulnerable_services }}"
+  delegate_to: localhost
 
-  - name: Copy checkers to gameserver
-    synchronize:
-      src: ./services/{{ inventory_hostname }}/{{ item.key }}/checker/
-      dest: /services/checker_{{ item.key }}
-    with_dict: "{{ vulnerable_services }}"
+- name: Copy checkers to gameserver
+  synchronize:
+    src: ./services/{{ inventory_hostname }}/{{ item.key }}/checker/
+    dest: /services/checker_{{ item.key }}
+  with_dict: "{{ vulnerable_services }}"
 
-  - name: pull/build service
-    shell: docker compose pull && docker compose build
-    args:
-      chdir: /services/checker_{{ item.key }}
-    with_dict: "{{ vulnerable_services }}"
+- name: Pull/build service
+  shell: docker compose pull && docker compose build
+  args:
+    chdir: /services/checker_{{ item.key }}
+  with_dict: "{{ vulnerable_services }}"

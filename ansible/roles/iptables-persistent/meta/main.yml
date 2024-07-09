@@ -1,6 +1,0 @@
-allow_duplicates: true
-dependencies:
-- role: "programs"
-  vars:
-    program_list:
-      - iptables-persistent

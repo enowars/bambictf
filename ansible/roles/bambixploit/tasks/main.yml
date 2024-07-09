@@ -1,16 +1,18 @@
 ---
-  - name: Install bambixploit
-    get_url:
-      url: "https://github.com/enowars/bambiXploit-dotnet/releases/download/v0.0.10/bambixploit-linux-x64"
-      dest: /usr/local/bin/bambixploit
-      mode: 0755
+- name: Install bambixploit
+  get_url:
+    url: "https://github.com/enowars/bambiXploit-dotnet/releases/download/v0.0.10/bambixploit-linux-x64"
+    dest: /usr/local/bin/bambixploit
+    mode: "0755"
 
-  - name: Create /etc/bambixploit
-    ansible.builtin.file:
-      path: /etc/bambixploit
-      state: directory
+- name: Create /etc/bambixploit
+  ansible.builtin.file:
+    path: /etc/bambixploit
+    state: directory
+    mode: "0755"
 
-  - name: Deploy bambixploit.json
-    copy:
-      src: bambixploit.json
-      dest: /etc/bambixploit/bambixploit.json
+- name: Deploy bambixploit.json
+  copy:
+    src: bambixploit.json
+    dest: /etc/bambixploit/bambixploit.json
+    mode: "0644"

@@ -1,17 +1,21 @@
 ---
-  - hosts: all
-    become: yes
-    become_method: sudo
-    vars_files:
-      - config_bambi.yml
-      - static.yml
+- name: Bambi Router
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  vars_files:
+    - config_bambi.yml
+    - static.yml
 
-    roles:
-      - base
-      - filebeat
-      - journalbeat
-      - metricbeat
-      - bambi-wireguard-router
-      - router_trafficcapture
-      - bambi-arkime
-      - router-openvpn
+  roles:
+    - base
+    - filebeat
+    - journalbeat
+    - metricbeat
+    - role: wireguard_configs
+      vars:
+        wireguard_configs_dir: routers
+    - router_iptables
+    - router_trafficcapture
+    - router_arkime
+    - router_openvpn
