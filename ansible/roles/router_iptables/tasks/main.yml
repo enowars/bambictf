@@ -139,15 +139,18 @@
     jump: ACCEPT
 
 # this is a pretty hacky workaround, but the execution of the iptables-module in ansible is just painfully slow
-- name: Allow intra-team traffic part 1
-  shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -j ACCEPT"
-  when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout'
+- name: Allow intra-team traffic part 1 (time-based)
+  shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o router -m time --datestart {{ vulnbox_access_time }} -j ACCEPT"
+  # when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout' # TODO: this is broken, needs to be revisited
   with_sequence: start=1 end=255
 
-- name: Allow intra-team traffic part 2
-  shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o team+ -j ACCEPT"
-  when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout'
+- name: Allow intra-team traffic part 2 (time-based)
+  shell: "iptables -A FORWARD -s 10.1.{{ item }}.0/24 -d 10.1.{{ item }}.0/24 -o team+ -m time --datestart {{ vulnbox_access_time }} -j ACCEPT"
+  # when: '"-A FORWARD -s 10.1."+item+".0/24 -d 10.1."+item+".0/24 -o router -j ACCEPT" not in iptablessave.stdout' # TODO: this is broken, needs to be revisited
   with_sequence: start=1 end=255
+
+- name: Open game network (time-based)
+  shell: "iptables -A FORWARD -o router -m time --datestart {{ network_open_time }} --datestop {{ network_close_time }} -j ACCEPT"
 
 - name: Persist iptables config
   include_role:
