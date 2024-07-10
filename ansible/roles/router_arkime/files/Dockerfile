@@ -1,4 +1,4 @@
-FROM ghcr.io/enoflag/enoarkime:5.1.0
+FROM ghcr.io/enoflag/enoarkime:5.3.0
 
 COPY arkime-viewer.sh arkime-viewer.sh
 COPY arkime-capture.sh arkime-capture.sh

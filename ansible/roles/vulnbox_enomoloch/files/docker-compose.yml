@@ -1,7 +1,7 @@
 version: '3'
 services:
   moloch:
-    image: ghcr.io/enoflag/enoarkime:5.1.0
+    image: ghcr.io/enoflag/enoarkime:5.3.0
     ports:
       - 8005:8005
     volumes:
