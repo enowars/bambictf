@@ -1,10 +1,12 @@
 [Unit]
 Description=enodump packet capture
-Requires=docker.service wg-quick@game.service
+Requires=docker.service
 After=docker.service containerd.service wg-quick@game.service
+StartLimitIntervalSec=0
 
 [Service]
 Restart=always
+RestartSec=3
 TimeoutStartSec=300
 WorkingDirectory=/pcaps
 
