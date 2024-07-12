@@ -1,13 +1,13 @@
 variable "vulnbox_type" {
-  type      = string
-  default   = "cpx21"
-  nullable  = false
+  type     = string
+  default  = "cpx21"
+  nullable = false
 }
 
 variable "vulnbox_count" {
-  type      = number
-  default   = 0
-  nullable  = false
+  type     = number
+  default  = 0
+  nullable = false
 }
 
 data "hcloud_image" "bambivulnbox" {
@@ -38,7 +38,9 @@ resource "hcloud_server" "bambivulnbox" {
       wgconf      = file("../config/export/terraform/team${count.index + 1}/game.conf"),
       index       = count.index,
       id          = "${count.index + 1}",
-      router_ips  = hcloud_floating_ip.bambirouter_ip
+      router_ips  = hcloud_floating_ip.bambirouter_ip,
+      proxy_count = var.proxy_count,
+      proxy_url   = "proxy${local.subdomain}.${var.hetznerdns_zone}",
     }
   )
 }

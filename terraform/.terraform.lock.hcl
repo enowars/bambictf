@@ -38,3 +38,24 @@ provider "registry.terraform.io/timohirt/hetznerdns" {
     "zh:db998fe3bdcd4902e99fa470bb3f355883170cf4c711c8da0b5f1f4510f1be41",
   ]
 }
+
+provider "registry.terraform.io/vancluever/acme" {
+  version     = "2.24.2"
+  constraints = "2.24.2"
+  hashes = [
+    "h1:zxpXpKMgBbhBocwRNRBVmGUZKLFEeDAxrKxEOsALGHk=",
+    "zh:079162e3cb8e3e1e24ae5cf099f09a545b47e5acfd405d1ac2a478cdfc27a0e1",
+    "zh:263e8e027a655452420ff621362fbcd8b7f765120adec2881d5a3c906555de16",
+    "zh:2ef4e642f6f106925112726a7c5eb862578406e6aa52e9623ef56d0207ab8121",
+    "zh:346729435b3be07830973e5b9173dba43add86589fe5a25c13d029d940b935de",
+    "zh:5ebc3eaaf33ebaaa7b68499a65978f46413c4d377c1b5e2ba143392664fab231",
+    "zh:75f74966e7ca1ed328b217e95e59a2c54135bcea0f4ec8e4202cef89c2ba4996",
+    "zh:8041807080b0134517d2d346fdd72d7b67a6673ede6b99bc7f6eb8c148449285",
+    "zh:904352a3ddbe530934dfa03da54c1a76b96f059a21f77008031e754db51fe0fb",
+    "zh:92d47ca9ec6c77b688a6e45ff509b287f2333399d2ecb5907d4ec109466857a1",
+    "zh:a9b7bc9334c069dcafd98037f5317a93d269d67e792f45d5879f9afc7bb65ca7",
+    "zh:b38ce8512d14a6f4073a41442c3c6b88b91e4419dc030d63633215c2e14cd8c9",
+    "zh:c8dc7893fcd9b233cc17acc0ee0f37d9873b93a441f6e1af1c1042c67fb81ab8",
+    "zh:db66259c5bdb8a11e7b3796358d182a2a00ce557ffaeae31f8be784806f6e273",
+  ]
+}

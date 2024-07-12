@@ -1,13 +1,13 @@
 variable "checker_type" {
-  type      = string
-  default   = "cpx31"
-  nullable  = false
+  type     = string
+  default  = "cpx31"
+  nullable = false
 }
 
 variable "checker_count" {
-  type      = number
-  default   = 0
-  nullable  = false
+  type     = number
+  default  = 0
+  nullable = false
 }
 
 data "hcloud_image" "bambichecker" {
@@ -39,6 +39,8 @@ resource "hcloud_server" "bambichecker" {
       router_ips  = hcloud_floating_ip.bambirouter_ip,
       elk         = hcloud_floating_ip.bambielk_ip.ip_address,
       engine      = hcloud_floating_ip.bambiengine_ip.ip_address,
+      proxy_count = var.proxy_count,
+      proxy_url   = "proxy${local.subdomain}.${var.hetznerdns_zone}",
     }
   )
 }

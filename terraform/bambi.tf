@@ -5,9 +5,14 @@ terraform {
       version = "2.2.0"
     }
     hcloud = {
-      source = "hetznercloud/hcloud"
+      source  = "hetznercloud/hcloud"
       version = "1.35.2"
     }
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "2.39.2"
+    }
+
   }
   required_version = ">= 1.0"
 }
@@ -24,19 +29,19 @@ variable "HETZNERDNS_TOKEN" {
 }
 
 variable "home_location" {
-  type      = string
-  nullable  = false
-  default   = "fsn1"
+  type     = string
+  nullable = false
+  default  = "fsn1"
 }
 
 variable "hetznerdns_zone" {
-  type      = string
-  default   = null
+  type    = string
+  default = null
 }
 
 variable "subdomain" {
-  type      = string
-  default   = null
+  type    = string
+  default = null
 }
 
 locals {
