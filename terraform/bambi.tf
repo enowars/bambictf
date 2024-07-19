@@ -8,10 +8,6 @@ terraform {
       source  = "hetznercloud/hcloud"
       version = "1.35.2"
     }
-    digitalocean = {
-      source = "digitalocean/digitalocean"
-      version = "2.39.2"
-    }
   }
   required_version = ">= 1.0"
 }
