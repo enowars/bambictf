@@ -81,10 +81,20 @@
     jump: DNAT
     to_destination: 192.168.1.0
 
-- name: Allow pinging the flag submission endpoint
+- name: Allow pinging the flag submission endpoint from vulnboxes
   iptables:
     chain: FORWARD
     in_interface: router
+    out_interface: internal
+    destination: 192.168.1.0
+    protocol: icmp
+    icmp_type: "8"
+    jump: ACCEPT
+
+- name: Allow pinging the flag submission endpoint from vpn connections
+  iptables:
+    chain: FORWARD
+    in_interface: team+
     out_interface: internal
     destination: 192.168.1.0
     protocol: icmp
