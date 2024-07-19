@@ -23,7 +23,7 @@ data "hcloud_image" "bambielk" {
 
 resource "hcloud_floating_ip" "bambielk_ip" {
   type          = "ipv4"
-  name          = "elk"
+  name          = "elk${local.subdomain}"
   home_location = var.home_location
 }
 

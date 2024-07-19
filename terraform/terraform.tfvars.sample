@@ -8,7 +8,7 @@ engine_count  = 1
 elk_count     = 1
 vulnbox_count = 2
 
-gateway_type = "cx21"
+router_type = "cx21"
 checker_type = "cx21"
 engine_type  = "cx21"
 elk_type     = "cpx31"

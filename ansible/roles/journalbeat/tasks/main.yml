@@ -1,29 +1,31 @@
 ---
-  - name: Check if journalbeat is installed
-    command: dpkg-query -W journalbeat
-    register: journalbeat_check_deb
-    failed_when: journalbeat_check_deb.rc > 1
-    changed_when: journalbeat_check_deb.rc == 1
+- name: Check if journalbeat is installed
+  command: dpkg-query -W journalbeat
+  register: journalbeat_check_deb
+  failed_when: journalbeat_check_deb.rc > 1
+  changed_when: journalbeat_check_deb.rc == 1
 
-  - name: Download journalbeat
-    get_url: 
-      url: "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.6.2-amd64.deb"
-      dest: "/tmp/journalbeat.deb"
-    when: journalbeat_check_deb.rc == 1
+- name: Download journalbeat
+  get_url:
+    url: "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-7.6.2-amd64.deb"
+    dest: "/tmp/journalbeat.deb"
+    mode: "0644"
+  when: journalbeat_check_deb.rc == 1
 
-  - name: Install journalbeat
-    apt:
-      deb: "/tmp/journalbeat.deb"
-    become: yes
-    when: journalbeat_check_deb.rc == 1
+- name: Install journalbeat
+  apt:
+    deb: "/tmp/journalbeat.deb"
+  become: true
+  when: journalbeat_check_deb.rc == 1
 
-  - name: Sync journalbeat config
-    template:
-      src: journalbeat.yml.j2
-      dest: /etc/journalbeat/journalbeat.yml
-  
-  - name: Enable and start journalbeat
-    service:
-      name: journalbeat
-      state: restarted
-      enabled: yes
+- name: Sync journalbeat config
+  template:
+    src: journalbeat.yml.j2
+    dest: /etc/journalbeat/journalbeat.yml
+    mode: "0644"
+
+- name: Enable and start journalbeat
+  service:
+    name: journalbeat
+    state: restarted
+    enabled: true

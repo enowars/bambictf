@@ -23,7 +23,7 @@ data "hcloud_image" "bambiengine" {
 
 resource "hcloud_floating_ip" "bambiengine_ip" {
   type          = "ipv4"
-  name          = "engine"
+  name          = "engine${local.subdomain}"
   home_location = var.home_location
 }
 

@@ -23,7 +23,7 @@ data "hcloud_image" "bambirouter" {
 resource "hcloud_floating_ip" "bambirouter_ip" {
   count         = var.router_count
   type          = "ipv4"
-  name          = "router${count.index + 1}"
+  name          = "router${count.index + 1}${local.subdomain}"
   home_location = var.home_location
 }
 

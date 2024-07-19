@@ -1,4 +1,4 @@
-FROM ubuntu:23.10
+FROM ubuntu:24.04
 
 # Core deps
 RUN apt-get update
@@ -7,7 +7,7 @@ RUN apt-get install -y --no-install-recommends openssh-client rsync git less tmu
     software-properties-common gpg-agent pipx # for ansible and packer install
 
 # Poetry and Ansible
-RUN pipx install poetry && pipx install --include-deps ansible
+RUN pipx install poetry && pipx install --include-deps ansible && pipx inject ansible ansible-lint --include-apps --include-deps
 ENV PATH="/root/.local/bin:${PATH}"
 
 # Packer and Terraform

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  moloch:
+    restart: unless-stopped
+    image: ghcr.io/enoflag/enoarkime:5.3.0
+    ports:
+      - 8005:8005
+    volumes:
+      - "/pcaps:/opt/arkime/raw"
+  elasticsearch:
+    restart: unless-stopped
+    image: elasticsearch:7.14.2
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - ingest.geoip.downloader.enabled=false

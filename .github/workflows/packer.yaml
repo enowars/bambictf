@@ -28,6 +28,24 @@ jobs:
           name: bambictf
           path: /tmp/bambictf.tar
 
+  ansible-lint:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: bambictf
+          path: /tmp
+      - name: Load Docker image
+        run: docker load --input /tmp/bambictf.tar
+      - name: start docker compose setup
+        run: docker compose up -d
+      - name: run ansible-lint
+        run: docker compose exec -T bambictf sh -c 'cd ansible && ansible-lint'
+
   configgen:
     runs-on: ubuntu-latest
     needs: docker-build
@@ -62,7 +80,14 @@ jobs:
       # fail-fast needs to be disabled, otherwise packer processes may be ungracefully killed and leave stale builder VMs
       fail-fast: false
       matrix:
-        image: ["bambichecker", "bambielk", "bambiengine", "bambirouter", "bambivulnbox"]
+        image:
+          [
+            "bambichecker",
+            "bambielk",
+            "bambiengine",
+            "bambirouter",
+            "bambivulnbox",
+          ]
     runs-on: ubuntu-latest
     needs: configgen
     steps:
@@ -135,3 +160,22 @@ jobs:
         run: docker compose exec -T bambictf sh -c 'cd terraform ; terraform init'
       - name: perform terraform apply
         run: docker compose exec -T bambictf sh -c 'cd terraform ; terraform plan'
+
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    needs: terraform-apply
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: bambictf
+          path: /tmp
+      - name: Load Docker image
+        run: docker load --input /tmp/bambictf.tar
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push image to GitHub Container Registry
+        run: docker image push ghcr.io/enowars/bambictf:latest

@@ -1,13 +1,13 @@
 variable "checker_type" {
-  type      = string
-  default   = "cpx31"
-  nullable  = false
+  type     = string
+  default  = "cpx31"
+  nullable = false
 }
 
 variable "checker_count" {
-  type      = number
-  default   = 0
-  nullable  = false
+  type     = number
+  default  = 0
+  nullable = false
 }
 
 data "hcloud_image" "bambichecker" {

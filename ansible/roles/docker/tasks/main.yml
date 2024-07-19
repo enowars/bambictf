@@ -1,7 +1,10 @@
 ---
-  # https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
-  - name: Install docker
-    shell: |
+# https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+- name: Install docker
+  shell:
+    executable: /usr/bin/bash
+    cmd: |
+      set -e -o pipefail
       apt-get update -y
       apt-get install -y ca-certificates curl gnupg
       install -m 0755 -d /etc/apt/keyrings
@@ -17,7 +20,8 @@
 
       apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-  - name: Copy daemon.json
-    copy:
-      src: daemon.json
-      dest: /etc/docker/daemon.json
+- name: Copy daemon.json
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    mode: "0644"
