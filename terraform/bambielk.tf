@@ -17,7 +17,7 @@ variable "elk_count" {
 data "hcloud_image" "bambielk" {
   count         = var.elk_count > 0 ? 1 : 0
   with_selector = var.elk_count > 0 ? "type=bambielk" : null
-  name          = var.elk_count > 0 ? null : "debian-10"
+  name          = var.elk_count > 0 ? null : "debian-12"
   most_recent   = true
 }
 
@@ -44,7 +44,7 @@ resource "hetznerdns_record" "bambielk_dns" {
 
 resource "hcloud_server" "bambielk" {
   count       = var.elk_count
-  name        = "bambielk"
+  name        = "elk${local.subdomain}"
   image       = data.hcloud_image.bambielk[0].id
   location    = var.home_location
   server_type = var.elk_type

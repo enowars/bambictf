@@ -12,7 +12,7 @@ variable "vulnbox_count" {
 
 data "hcloud_image" "bambivulnbox" {
   with_selector = var.vulnbox_count > 0 ? "type=bambivulnbox" : null
-  name          = var.vulnbox_count > 0 ? null : "debian-10"
+  name          = var.vulnbox_count > 0 ? null : "debian-12"
   most_recent   = true
 }
 
@@ -26,7 +26,7 @@ resource "hetznerdns_record" "bambivulnbox_dns" {
 }
 
 resource "hcloud_server" "bambivulnbox" {
-  name        = "vulnbox${count.index + 1}"
+  name        = "vulnbox${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambivulnbox.id
   location    = var.home_location
   server_type = var.vulnbox_type

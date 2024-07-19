@@ -12,7 +12,7 @@ variable "checker_count" {
 
 data "hcloud_image" "bambichecker" {
   with_selector = var.checker_count > 0 ? "type=bambichecker" : null
-  name          = var.checker_count > 0 ? null : "debian-10"
+  name          = var.checker_count > 0 ? null : "debian-12"
   most_recent   = true
 }
 
@@ -27,7 +27,7 @@ resource "hetznerdns_record" "bambchecker_dns" {
 
 resource "hcloud_server" "bambichecker" {
   count       = var.checker_count
-  name        = "checker${count.index + 1}"
+  name        = "checker${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambichecker.id
   location    = var.home_location
   server_type = var.checker_type

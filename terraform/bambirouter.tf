@@ -16,7 +16,7 @@ locals {
 
 data "hcloud_image" "bambirouter" {
   with_selector = var.router_count > 0 ? "type=bambirouter" : null
-  name          = var.router_count > 0 ? null : "debian-10"
+  name          = var.router_count > 0 ? null : "debian-12"
   most_recent   = true
 }
 
@@ -44,7 +44,7 @@ resource "hetznerdns_record" "bambirouter_dns" {
 
 resource "hcloud_server" "bambirouter" {
   count       = var.router_count
-  name        = "router${count.index + 1}"
+  name        = "router${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambirouter.id
   location    = var.home_location
   server_type = var.router_type
