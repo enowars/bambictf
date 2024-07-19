@@ -39,6 +39,11 @@
     mode: "0644"
   changed_when: false
 
+- name: Pull EnoMoloch images
+  shell: docker compose pull # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoMoloch
+
 - name: Reload system daemon
   systemd:
     name: "enodump" # ansible <2.4 always requires 'name'
