@@ -1,14 +1,60 @@
+terraform {
+  required_providers {
+    hetznerdns = {
+      source  = "timohirt/hetznerdns"
+      version = "2.2.0"
+    }
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "2.39.2"
+    }
+
+  }
+  required_version = ">= 1.0"
+}
+
 variable "DO_TOKEN" {
-  type = string
+  type      = string
+  nullable  = false
+  sensitive = true
+}
+
+variable "HETZNERDNS_TOKEN" {
+  type      = string
+  nullable  = false
+  sensitive = true
 }
 
 variable "proxy_count" {
   type    = number
-  default = 0
+  default = 1
+}
+
+variable "hetznerdns_zone" {
+  type    = string
+  default = null
+}
+
+variable "subdomain" {
+  type    = string
+  default = null
+}
+
+locals {
+  subdomain = var.subdomain != null ? ".${var.subdomain}" : ""
 }
 
 provider "digitalocean" {
   token = var.DO_TOKEN
+}
+
+provider "hetznerdns" {
+  apitoken = var.HETZNERDNS_TOKEN
+}
+
+data "hetznerdns_zone" "zone" {
+  count = var.hetznerdns_zone != null ? 1 : 0
+  name  = var.hetznerdns_zone
 }
 
 data "digitalocean_ssh_keys" "keys" {

@@ -50,7 +50,7 @@
     state: directory
     owner: tcpdump
     group: tcpdump
-    mode: "0644"
+    mode: "0755" # 0644 is not enough
 
 - name: Enable and start enodump
   service:

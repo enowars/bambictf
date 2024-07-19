@@ -5,5 +5,7 @@ services:
     - HCLOUD_TOKEN=${HCLOUD_TOKEN}                # for packer
     - TF_VAR_HCLOUD_TOKEN=${HCLOUD_TOKEN}         # for terraform
     - TF_VAR_HETZNERDNS_TOKEN=${HETZNERDNS_TOKEN} # for terraform
+    - TF_VAR_DO_TOKEN=${DO_TOKEN}                 # for terraform (optional)
+    - DO_TOKEN=${DO_TOKEN}                        # for packer/ansible (optional)
     volumes:
     - ".:/bambictf"

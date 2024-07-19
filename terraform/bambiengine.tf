@@ -23,7 +23,7 @@ data "hcloud_image" "bambiengine" {
 
 resource "hcloud_floating_ip" "bambiengine_ip" {
   type          = "ipv4"
-  name          = "engine"
+  name          = "engine${local.subdomain}"
   home_location = var.home_location
 }
 
@@ -44,7 +44,7 @@ resource "hetznerdns_record" "bambiengine_dns" {
 
 resource "hcloud_server" "bambiengine" {
   count       = var.engine_count
-  name        = "engine"
+  name        = "engine${local.subdomain}"
   image       = data.hcloud_image.bambiengine[0].id
   location    = var.home_location
   server_type = var.engine_type

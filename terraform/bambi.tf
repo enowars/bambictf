@@ -12,7 +12,6 @@ terraform {
       source = "digitalocean/digitalocean"
       version = "2.39.2"
     }
-
   }
   required_version = ">= 1.0"
 }

@@ -27,7 +27,7 @@ resource "hetznerdns_record" "bambchecker_dns" {
 
 resource "hcloud_server" "bambichecker" {
   count       = var.checker_count
-  name        = "checker${count.index + 1}"
+  name        = "checker${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambichecker.id
   location    = var.home_location
   server_type = var.checker_type
@@ -39,8 +39,6 @@ resource "hcloud_server" "bambichecker" {
       router_ips  = hcloud_floating_ip.bambirouter_ip,
       elk         = hcloud_floating_ip.bambielk_ip.ip_address,
       engine      = hcloud_floating_ip.bambiengine_ip.ip_address,
-      proxy_count = var.proxy_count,
-      proxy_url   = "proxy${local.subdomain}.${var.hetznerdns_zone}",
     }
   )
 }

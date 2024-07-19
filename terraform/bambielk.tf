@@ -23,7 +23,7 @@ data "hcloud_image" "bambielk" {
 
 resource "hcloud_floating_ip" "bambielk_ip" {
   type          = "ipv4"
-  name          = "elk"
+  name          = "elk${local.subdomain}"
   home_location = var.home_location
 }
 
@@ -44,7 +44,7 @@ resource "hetznerdns_record" "bambielk_dns" {
 
 resource "hcloud_server" "bambielk" {
   count       = var.elk_count
-  name        = "bambielk"
+  name        = "elk${local.subdomain}"
   image       = data.hcloud_image.bambielk[0].id
   location    = var.home_location
   server_type = var.elk_type

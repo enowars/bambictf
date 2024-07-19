@@ -1,20 +1,6 @@
 #!/bin/bash
 set -e
 
-%{ if proxy_count > 0 ~}
-cat <<EOF > ~/.docker/config.json
-{
- "proxies": {
-   "default": {
-     "httpProxy": "${proxy_url}",
-     "httpsProxy": "${proxy_url}",
-     "noProxy": "localhost,127.0.0.0/8"
-   }
- }
-}
-EOF
-%{ endif }
-
 # Network
 mv "/etc/wireguard/checker${id}.conf" "/etc/wireguard/internal.conf"
 sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine}#g" "/etc/wireguard/internal.conf"

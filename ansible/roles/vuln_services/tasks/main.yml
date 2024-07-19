@@ -5,6 +5,25 @@
     state: directory
     mode: "0755"
 
+- name: Configure docker http proxy
+  shell: |
+    echo '{
+      "proxies": {
+        "http-proxy": "http://proxy.prod.bambi.ovh:3128",
+        "https-proxy": "http://proxy.prod.bambi.ovh:3128"
+      },
+      "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "300m",
+          "max-file": "3"
+        },
+        "default-address-pools": [{
+          "base": "172.17.0.0/16",
+          "size": 24
+        }]
+    }' > /etc/docker/daemon.json
+    systemctl restart docker
+
 - name: Clean local services cache
   become: false
   file:
