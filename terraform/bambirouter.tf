@@ -16,7 +16,7 @@ locals {
 
 data "hcloud_image" "bambirouter" {
   with_selector = var.router_count > 0 ? "type=bambirouter" : null
-  name          = var.router_count > 0 ? null : "debian-10"
+  name          = var.router_count > 0 ? null : "debian-12"
   most_recent   = true
 }
 

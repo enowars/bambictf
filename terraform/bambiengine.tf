@@ -17,7 +17,7 @@ variable "engine_count" {
 data "hcloud_image" "bambiengine" {
   count         = var.engine_count > 0 ? 1 : 0
   with_selector = var.engine_count > 0 ? "type=bambiengine" : null
-  name          = var.engine_count > 0 ? null : "debian-10"
+  name          = var.engine_count > 0 ? null : "debian-12"
   most_recent   = true
 }
 
