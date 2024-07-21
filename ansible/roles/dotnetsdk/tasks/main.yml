@@ -1,31 +1,6 @@
 ---
-  - name: Check if dotnet-sdk is installed
-    command: dpkg-query -W dotnet-sdk
-    register: dotnet_sdk_deb
-    failed_when: dotnet_sdk_deb.rc > 1
-    changed_when: dotnet_sdk_deb.rc == 1
-
-  # - name: Download Microsoft PGP key
-  #   get_url:
-  #     url: "https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb"
-  #     dest: "/tmp/packages-microsoft-prod.deb"
-  #   when: dotnet_sdk_deb.rc == 1
-
-  # - name: Install Microsoft PGP key
-  #   apt:
-  #     deb: "/tmp/packages-microsoft-prod.deb"
-  #   become: yes
-  #   when: dotnet_sdk_deb.rc == 1
-
-  # - name: Install dotnet deps
-  #   apt:
-  #     name: "apt-transport-https"
-  #     state: present
-  #   when: dotnet_sdk_deb.rc == 1
-
-  - name: Install dotnet sdk
-    apt:
-      name: "dotnet-sdk-6.0"
-      state: present
-      update_cache: yes
-    when: dotnet_sdk_deb.rc == 1
+- name: Install dotnet sdk
+  apt:
+    name: "dotnet-sdk-6.0"
+    state: present
+    cache_valid_time: 250

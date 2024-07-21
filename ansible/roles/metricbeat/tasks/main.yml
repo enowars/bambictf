@@ -9,21 +9,23 @@
   get_url:
     url: "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.4.3-amd64.deb"
     dest: "/tmp/metricbeat.deb"
+    mode: "0644"
   when: metricbeat_check_deb.rc == 1
 
 - name: Install Metricbeat
   apt:
     deb: "/tmp/metricbeat.deb"
-  become: yes
+  become: true
   when: metricbeat_check_deb.rc == 1
 
 - name: Copy Metricbeat config
   template:
     src: metricbeat.yml.j2
     dest: /etc/metricbeat/metricbeat.yml
+    mode: "0644"
 
 - name: Enable and start Metricbeat
   service:
     name: metricbeat
     state: restarted
-    enabled: yes
+    enabled: true

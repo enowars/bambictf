@@ -6,6 +6,7 @@ config*.yml
 *.tfvars
 .terraform
 *.tfstate
+*.tfstate.lock.info
 *.backup
 .vagrant
 .retry
@@ -16,3 +17,6 @@ config*.yml
 id_ed25519
 .secrets
 ctf*json
+*.pyc
+/docker-compose.override.yml
+.vscode/

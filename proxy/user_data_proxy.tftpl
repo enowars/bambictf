@@ -1,0 +1,15 @@
+#!/bin/bash
+
+apt install -y squid
+
+cat << EOF > /etc/squid/conf.d/hetzner_whitelist.conf
+${file("squid_acl.txt")}
+
+http_access allow hetzner
+EOF
+
+curl https://github.com/ldruschk.keys >> /root/.ssh/authorized_keys
+curl https://github.com/Trolldemorted.keys >> /root/.ssh/authorized_keys
+curl https://github.com/MMunier.keys >> /root/.ssh/authorized_keys
+
+systemctl restart squid

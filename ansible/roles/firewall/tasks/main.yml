@@ -1,107 +1,120 @@
 ---
-  - name: allow all loopback traffic
-    iptables:
-      chain: INPUT
-      in_interface: lo
-      jump: ACCEPT
+- name: Allow all loopback traffic
+  iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
 
-  - name: allow related/established input traffic
-    iptables:
-      chain: INPUT
-      ctstate: [RELATED, ESTABLISHED]
-      jump: ACCEPT
+- name: Allow related/established input traffic
+  iptables:
+    chain: INPUT
+    ctstate: [RELATED, ESTABLISHED]
+    jump: ACCEPT
 
-  - name: allow SSH traffic
-    iptables:
-      chain: INPUT
-      protocol: tcp
-      destination_port: "22"
-      ctstate: NEW
-      syn: match
-      jump: ACCEPT
+- name: Allow SSH traffic
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "22"
+    ctstate: NEW
+    syn: match
+    jump: ACCEPT
 
-  - name: allow ICMP ping requests
-    iptables:
-      chain: INPUT
-      protocol: icmp
-      icmp_type: "8"
-      jump: ACCEPT
+- name: Allow ICMP ping requests
+  iptables:
+    chain: INPUT
+    protocol: icmp
+    icmp_type: "8"
+    jump: ACCEPT
 
-  - name: drop all input by default
-    iptables:
-      chain: INPUT
-      policy: DROP
+- name: Drop all input by default
+  iptables:
+    chain: INPUT
+    policy: DROP
 
-  - name: drop all forward by default
-    iptables:
-      chain: FORWARD
-      policy: DROP
+- name: Drop all forward by default
+  iptables:
+    chain: FORWARD
+    policy: DROP
 
-  - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+- name: Allow IPv6 loopback traffic
+  iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+    ip_version: ipv6
 
-  - name: allow IPv6 loopback traffic
-    iptables:
-      chain: INPUT
-      in_interface: lo
-      jump: ACCEPT
-      ip_version: ipv6
+- name: Allow IPv6 related/established input traffic
+  iptables:
+    chain: INPUT
+    ctstate: [RELATED, ESTABLISHED]
+    jump: ACCEPT
+    ip_version: ipv6
 
-  - name: allow IPv6 related/established input traffic
-    iptables:
-      chain: INPUT
-      ctstate: [RELATED, ESTABLISHED]
-      jump: ACCEPT
-      ip_version: ipv6
+- name: Allow SSH traffic
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "22"
+    ctstate: NEW
+    syn: match
+    jump: ACCEPT
+    ip_version: ipv6
 
-  - name: allow SSH traffic
-    iptables:
-      chain: INPUT
-      protocol: tcp
-      destination_port: "22"
-      ctstate: NEW
-      syn: match
-      jump: ACCEPT
-      ip_version: ipv6
+- name: Permit needed ICMPv6 packet types (IPv6)
+  iptables:
+    chain: INPUT
+    protocol: ipv6-icmp
+    icmp_type: "{{ item }}"
+    jump: ACCEPT
+    ip_version: ipv6
+  loop:
+    [
+      "1",
+      "2",
+      "3",
+      "4",
+      "133",
+      "134",
+      "135",
+      "136",
+      "137",
+      "141",
+      "142",
+      "148",
+      "149",
+    ]
 
-  - name: permit needed ICMPv6 packet types (IPv6)
-    iptables:
-      chain: INPUT
-      protocol: ipv6-icmp
-      icmp_type: "{{ item }}"
-      jump: ACCEPT
-      ip_version: ipv6
-    loop: ["1", "2", "3", "4", "133", "134", "135", "136", "137", "141", "142", "148", "149"]
+- name: Permit needed ICMPv6 packet types from local addresses (IPv6)
+  iptables:
+    chain: INPUT
+    protocol: ipv6-icmp
+    icmp_type: "{{ item }}"
+    source: fe80::/10
+    jump: ACCEPT
+    ip_version: ipv6
+  loop: ["130", "131", "132", "143", "151", "152", "153"]
 
-  - name: permit needed ICMPv6 packet types from local addresses (IPv6)
-    iptables:
-      chain: INPUT
-      protocol: ipv6-icmp
-      icmp_type: "{{ item }}"
-      source: fe80::/10
-      jump: ACCEPT
-      ip_version: ipv6
-    loop: ["130", "131", "132", "143", "151", "152", "153"]
+- name: Allow ICMPv6 ping requests (IPv6)
+  iptables:
+    chain: INPUT
+    protocol: ipv6-icmp
+    icmp_type: "128"
+    jump: ACCEPT
+    ip_version: ipv6
 
-  - name: allow ICMPv6 ping requests (IPv6)
-    iptables:
-      chain: INPUT
-      protocol: ipv6-icmp
-      icmp_type: "128"
-      jump: ACCEPT
-      ip_version: ipv6
+- name: Disable IPv6 input
+  iptables:
+    chain: INPUT
+    policy: DROP
+    ip_version: ipv6
 
-  - name: disable IPv6 input
-    iptables:
-      chain: INPUT
-      policy: DROP
-      ip_version: ipv6
+- name: Disable IPv6 forward
+  iptables:
+    chain: FORWARD
+    policy: DROP
+    ip_version: ipv6
 
-  - name: disable IPv6 forward
-    iptables:
-      chain: FORWARD
-      policy: DROP
-      ip_version: ipv6
-
-  - name: persist ip6tables config
-    shell: "ip6tables-save > /etc/iptables/rules.v6"
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"

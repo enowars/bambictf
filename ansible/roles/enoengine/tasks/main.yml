@@ -1,69 +1,71 @@
 ---
-  - name: Install docker dependencies
-    apt:
-      name: ["git"]
-      state: present
+- name: Install docker dependencies
+  apt:
+    name: ["git"]
+    state: present
 
-  - name: Clone EnoEngine
-    git:
-      repo: "https://github.com/enowars/EnoEngine.git"
-      dest: /services/EnoEngine
+- name: Clone EnoEngine
+  git: # noqa: latest
+    repo: "https://github.com/enowars/EnoEngine.git"
+    dest: /services/EnoEngine
 
-  - name: Build EnoEngine
-    shell: "dotnet build"
-    args:
-      chdir: /services/EnoEngine
+- name: Build EnoEngine
+  shell: "dotnet build" # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoEngine
 
-  - name: Start EnoEngine Postgres
-    shell: "docker-compose up -d"
-    args:
-      chdir: /services/EnoEngine
+- name: Start EnoEngine Postgres
+  shell: "docker compose up -d" # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoEngine
 
-  - name: Clone EnoCTFPortal (for adhoc testing and solutions)
-    git:
-      repo: "https://github.com/enowars/EnoCTFPortal.git"
-      dest: /services/EnoCTFPortal
+- name: Clone EnoCTFPortal (for adhoc testing and solutions)
+  git: # noqa: latest
+    repo: "https://github.com/enowars/EnoCTFPortal.git"
+    dest: /services/EnoCTFPortal
 
-  - name: Copy EnoCTFPortal docker-compose.yml
-    copy:
-      src: docker-compose.yml
-      dest: /services/EnoCTFPortal/
-    changed_when: false
+- name: Copy EnoCTFPortal docker-compose.yml
+  copy:
+    src: docker-compose.yml
+    dest: /services/EnoCTFPortal/
+    mode: "0644"
+  changed_when: false
 
-  - name: Start EnoCTFPortal
-    shell: "docker-compose up -d"
-    args:
-      chdir: /services/EnoCTFPortal
+- name: Start EnoCTFPortal
+  shell: "docker compose up -d" # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoCTFPortal
 
-  - name: Allow flag submission traffic
-    iptables:
-      chain: INPUT
-      in_interface: internal
-      protocol: tcp
-      destination_port: "1337"
-      jump: ACCEPT
+- name: Allow flag submission traffic
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: tcp
+    destination_port: "1337"
+    jump: ACCEPT
 
-  - name: Allow EnoCTFPortal traffic
-    iptables:
-      chain: INPUT
-      in_interface: internal
-      protocol: tcp
-      destination_port: "5001"
-      jump: ACCEPT
+- name: Allow EnoCTFPortal traffic
+  iptables:
+    chain: INPUT
+    in_interface: internal
+    protocol: tcp
+    destination_port: "5001"
+    jump: ACCEPT
 
-  - name: allow wireguard input traffic (internal)
-    iptables:
-      chain: INPUT
-      in_interface: eth0
-      destination_port: "51821"
-      protocol: udp
-      jump: ACCEPT
+- name: Allow wireguard input traffic (internal)
+  iptables:
+    chain: INPUT
+    in_interface: eth0
+    destination_port: "51821"
+    protocol: udp
+    jump: ACCEPT
 
-  - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"
 
-  - name: Create /services/data
-    ansible.builtin.file:
-      path: /services/data
-      state: directory
-      mode: '0755'
+- name: Create /services/data
+  ansible.builtin.file:
+    path: /services/data
+    state: directory
+    mode: "0755"

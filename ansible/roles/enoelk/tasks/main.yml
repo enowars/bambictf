@@ -1,32 +1,33 @@
 ---
-  - name: Increase max_map_count
-    sysctl:
-      name: vm.max_map_count
-      value: "262144"
-      sysctl_set: yes
+- name: Increase max_map_count
+  sysctl:
+    name: vm.max_map_count
+    value: "262144"
+    sysctl_set: true
 
-  - name: Install git dependency
-    apt:
-      name: ["git"]
-      state: present
+- name: Install git dependency
+  apt:
+    name: ["git"]
+    state: present
 
-  - name: Clone EnoELK
-    git:
-      repo: "https://github.com/enowars/EnoELK.git"
-      dest: /services/EnoELK
+- name: Clone EnoELK
+  git: # noqa: latest
+    repo: "https://github.com/enowars/EnoELK.git"
+    dest: /services/EnoELK
 
-  - name: Pull ELK images
-    shell: docker-compose pull
-    args:
-      chdir: /services/EnoELK
+- name: Pull ELK images
+  shell: docker compose pull # noqa: command-instead-of-shell
+  args:
+    chdir: /services/EnoELK
 
-  - name: allow wireguard input traffic (internal)
-    iptables:
-      chain: INPUT
-      in_interface: eth0
-      destination_port: "51821"
-      protocol: udp
-      jump: ACCEPT
+- name: Allow wireguard input traffic (internal)
+  iptables:
+    chain: INPUT
+    in_interface: eth0
+    destination_port: "51821"
+    protocol: udp
+    jump: ACCEPT
 
-  - name: persist iptables config
-    shell: "iptables-save > /etc/iptables/rules.v4"
+- name: Persist iptables config
+  include_role:
+    name: "iptables_persistent"

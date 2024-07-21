@@ -1,0 +1,33 @@
+name: Docker Publish Latest
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - main
+      - master
+
+env:
+  IMAGE_NAME: bambictf
+
+jobs:
+  # Push image to GitHub Packages.
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to GitHub Container Registry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:latest
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          docker image build -t $IMAGE_ID .
+          docker image push $IMAGE_ID

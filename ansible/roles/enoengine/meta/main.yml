@@ -1,3 +1,7 @@
 dependencies:
-- role: "dotnetsdk"
-- role: "docker"
+  - role: "dotnetsdk"
+  - role: "docker"
+  - role: "programs"
+    vars:
+      programs_list:
+        - git

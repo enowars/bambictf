@@ -1,16 +1,6 @@
 ---
-  - name: Update and upgrade apt packages
-    apt:
-      upgrade: "yes"
-      update_cache: yes
-
-  - name: Install wg
-    apt:
-      name: wireguard
-      state: present
-
-  - name: Ensure wg directory exists
-    file:
-      path: /etc/wireguard
-      state: directory
-      mode: "700"
+- name: Ensure wg directory exists
+  file:
+    path: /etc/wireguard
+    state: directory
+    mode: "700"

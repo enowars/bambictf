@@ -1,9 +1,0 @@
----
-  - hosts: all
-    become: yes
-    become_method: sudo
-    vars_files:
-      - config_bambi.yml
-
-    roles:
-      - bambi-openvpn-team-server

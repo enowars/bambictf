@@ -1,0 +1,5 @@
+dependencies:
+  - role: "programs"
+    vars:
+      programs_list:
+        - tmux

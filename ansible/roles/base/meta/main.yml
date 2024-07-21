@@ -1,0 +1,5 @@
+dependencies:
+  - role: "ssh_keys"
+  - role: "firewall"
+  - role: "tmux"
+  - role: "wireguard"

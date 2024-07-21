@@ -1,22 +1,19 @@
 ---
-  - hosts: all
-    become: yes
-    become_method: sudo
-    vars_files:
-      - config_bambi.yml
-      - static.yml
+- name: Bambi ELK
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  vars_files:
+    - config_bambi.yml
+    - static.yml
 
-    roles:
-      - bambi-ssh-keys
-      - firewall
-      - wireguard
-      - enoelk
-      - docker-block-external
-      - filebeat
-      - journalbeat
-      - metricbeat
-      - role: programs
-        vars:
-          program_list:
-            - "tmux"
-            - "git"
+  roles:
+    - base
+    - enoelk
+    - docker_block_external
+    - role: wireguard_configs
+      vars:
+        wireguard_configs_dir: elk
+    - filebeat
+    - journalbeat
+    - metricbeat

@@ -4,10 +4,10 @@
             "type": "ansible",
             "playbook_file": "../ansible/bambichecker.yml",
             "host_alias": "packer-checker",
-            "extra_arguments": [
-                "--extra-vars",
-                "ansible_python_interpreter=/usr/bin/python3"
-            ]
+            "ansible_env_vars": [
+                "ANSIBLE_PIPELINING=True"
+            ],
+            "extra_arguments": [ "--scp-extra-args", "'-O'" ]
         }
     ],
     "builders": [
@@ -15,13 +15,13 @@
             "type": "hcloud",
             "image": "ubuntu-22.04",
             "location": "fsn1",
-            "server_type": "cx11",
+            "server_type": "cx22",
             "ssh_username": "root",
             "snapshot_name": "bambichecker-{{timestamp}}",
             "snapshot_labels": {
                 "type": "bambichecker"
             },
-            "user_data": "#!/bin/sh\necho PubkeyAcceptedKeyTypes=+ssh-rsa >> /etc/ssh/sshd_config; service ssh reload"
+            "temporary_key_pair_type": "ecdsa"
         }
     ]
 }

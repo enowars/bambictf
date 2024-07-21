@@ -1,0 +1,89 @@
+#!/bin/bash
+set -e
+
+
+# FIP
+cat > /etc/netplan/60-floating-ip.yaml <<EOF
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+      - ${router_ips[index].ip_address}/32
+EOF
+netplan apply
+
+
+# Wireguard
+%{ for router_index, router in router_ips ~}
+  %{ if router_index != index }
+    rm "/etc/wireguard/router${router_index+1}_internal.conf"
+    rm "/etc/wireguard/router${router_index+1}_game.conf"
+    sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/router${id}_internal.conf"
+    sed -i -e "s#\[\[ROUTER_ADDRESS_${router_index+1}\]\]#${router.ip_address}#g" "/etc/wireguard/router${id}_game.conf"
+  %{ endif }
+%{ endfor ~}
+
+mv "/etc/wireguard/router${id}_internal.conf" "/etc/wireguard/internal.conf"
+mv "/etc/wireguard/router${id}_game.conf" "/etc/wireguard/router.conf"
+
+sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine}#g" "/etc/wireguard/internal.conf"
+sed -i -e "s#\[\[ELK_ADDRESS\]\]#${elk}#g" "/etc/wireguard/internal.conf"
+
+systemctl enable --now "wg-quick@internal"
+systemctl enable --now "wg-quick@router"
+
+
+# Arkime
+# Start elasticsearch cluster
+sed -i -e "s#\[\[ROUTER\]\]#192.168.0.${id}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[INITIAL_MASTER_NODES\]\]#${masters}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+sed -i -e "s#\[\[SEED_HOSTS\]\]#${seeds}#g" /services/BambiArkimeElasticsearch/docker-compose.yml
+cd /services/BambiArkimeElasticsearch/
+docker compose up -d
+
+# Start Arkime cluster
+sed -i -e "s#\[\[ROUTER\]\]#192.168.0.${id}#g" /services/BambiArkime/config.ini
+sed -i -e "s#\[\[ROUTER\]\]#192.168.0.${id}#g" /services/BambiArkime/docker-entrypoint.sh
+cd /services/BambiArkime/
+docker compose build
+
+echo "Waiting for green elastic search";
+while : ; do
+  if health="$(curl -fsSL "http://192.168.0.${id}:9200/_cat/health?h=status")"; then
+    health="$(echo "$health" | sed -r 's/^[[:space:]]+|[[:space:]]+$//g')"
+    if [ "$health" = 'green' ]; then
+      echo "ES is green!"
+      break
+    fi
+    echo "ES is still $health"
+    sleep 3;
+  fi
+  sleep 1;
+done
+
+# Router 1 initializes the Arkime cluster
+if [ ${id} -eq 1 ]
+then
+  docker compose run --entrypoint="/opt/arkime/db/db.pl" arkime "http://192.168.0.${id}:9200" init
+  docker compose run --entrypoint="/opt/arkime/bin/arkime_add_user.sh" arkime admin "Admin" admin --admin
+  curl -X PUT "http://192.168.0.${id}:9200/bambi-arkime-init?pretty"
+fi
+
+while ! curl -s --head --show-error --fail "http://192.168.0.${id}:9200/bambi-arkime-init/"; do
+  echo "Waiting for marker index to exist...";
+  sleep 3;
+done
+
+docker compose up -d
+
+
+# OpenVPN
+prefix="/etc/openvpn/server/"
+for i in /etc/openvpn/server/router${index+1}_*.conf;
+do
+  filename="$${i##$prefix}"
+  echo "local ${router_ips[index].ip_address}" >> "/etc/openvpn/server/$filename"
+  configname="$${filename%.conf}"
+  systemctl enable --now "openvpn-server@$configname"
+done

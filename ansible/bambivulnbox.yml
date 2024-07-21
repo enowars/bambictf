@@ -1,29 +1,25 @@
 ---
-  - hosts: all
-    become: yes
-    become_method: sudo
-    vars_files:
-      - config_bambi.yml
-      - static.yml
+- name: Bambi Vulnbox
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
+  vars_files:
+    - config_bambi.yml
+    - static.yml
 
-    roles:
-      - docker
-      - vuln_services
-      - bambi-ssh-keys
-      - firewall
-      - docker-block-external
-      - wireguard
-      - enomoloch
-      - bambixploit
-      - role: programs
-        vars:
-          program_list:
-            - tmux
-            - unzip
-            - git
-            - python3-pip
-      - role: pip-packages
-        vars:
-          pip_list:
-            - pwntools
-      - bambi-openvpn-team-server
+  roles:
+    - base
+    - docker
+    - vuln_services
+    - docker_block_external
+    - vulnbox_enomoloch
+    - bambixploit
+    - root_password_login
+    - role: programs
+      vars:
+        programs_list:
+          - unzip
+    - role: pip_packages
+      vars:
+        pip_packages_list:
+          - pwntools
