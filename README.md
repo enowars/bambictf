@@ -4,16 +4,14 @@ This is the setup used in our BambiCTF and ENOWARS competitions.
 
 It uses ansible and packer to prepare images for Hetzner Cloud and terraform to create the infrastructure.
 
-The Vagrantfile in the `ansible/` folder is used for local testing only (to ensure your ansible playbook does not contain any syntax errors before running them with packer on a paid VM).
-
 ## Related Repositories
 
 This setup combines a lot of other services/repositories.
 
 - Engine: [EnoEngine](https://github.com/enowars/enoengine)
-- Checker Library: [enochecker](https://github.com/enowars/enochecker)
-- Registration Page/Scoreboard: [EnoLandingPage](https://github.com/enowars/EnoLandingPage)
-- Moloch (Traffic Analysis): [EnoMoloch](https://github.com/enoflag/EnoMoloch)
+- Checker Library: [enochecker3](https://github.com/enowars/enochecker3)
+- Registration Page/Scoreboard: [EnoCTFPortal](https://github.com/enowars/EnoCTFPortal)
+- Arkime (Traffic Analysis): [EnoArkime](https://github.com/enoflag/EnoArkime)
 - ELK (Log Analysis): [EnoELK](https://github.com/enowars/EnoELK)
 
 ## Notable Limits
