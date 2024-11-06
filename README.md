@@ -35,6 +35,9 @@ github_ssh_keys:
     - domenukk
     - ldruschk
     - MMunier
+vulnbox_access_time: "2024-07-09T20:00:00"
+network_open_time: "2024-07-09T21:00:00"
+network_close_time: "2024-07-09T22:00:00"
 ```
 - Obtain a private ssh ed25519 key that can clone your repositories (`cp ~/.ssh/id_ed25519 .`)
 - Run the container (`docker compose up -d`)
