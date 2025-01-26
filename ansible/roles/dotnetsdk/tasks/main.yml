@@ -1,6 +1,6 @@
 ---
 - name: Install dotnet sdk
   apt:
-    name: "dotnet-sdk-6.0"
+    name: "dotnet-sdk-8.0"
     state: present
     cache_valid_time: 250

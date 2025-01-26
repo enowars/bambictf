@@ -35,6 +35,14 @@
     dest: /etc/systemd/system/enorouterdump.service
     mode: "0644"
 
+- name: Ensure /etc/apparmor.d/disable exists
+  file:
+    path: /etc/apparmor.d/disable
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
 - name: Disable tcpdump apparmor profile
   file:
     path: /etc/apparmor.d/disable/usr.bin.tcpdump
