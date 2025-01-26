@@ -18,6 +18,14 @@
     mode: "0644"
   changed_when: false
 
+- name: Ensure /etc/apparmor.d/disable exists
+  file:
+    path: /etc/apparmor.d/disable
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
 - name: Disable tcpdump apparmor profile
   file:
     path: /etc/apparmor.d/disable/usr.bin.tcpdump

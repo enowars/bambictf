@@ -8,8 +8,8 @@ engine_count  = 1
 elk_count     = 1
 vulnbox_count = 2
 
-router_type = "cx21"
-checker_type = "cx21"
-engine_type  = "cx21"
+router_type = "cx22"
+checker_type = "cx22"
+engine_type  = "cx22"
 elk_type     = "cpx31"
 vulnbox_type = "cpx31"
