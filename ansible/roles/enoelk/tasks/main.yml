@@ -5,15 +5,11 @@
     value: "262144"
     sysctl_set: true
 
-- name: Install git dependency
-  apt:
-    name: ["git"]
-    state: present
-
-- name: Clone EnoELK
-  git: # noqa: latest
-    repo: "https://github.com/enowars/EnoELK.git"
-    dest: /services/EnoELK
+- name: Copy EnoELK
+  copy:
+    src: EnoELK/
+    dest: /services/EnoELK/
+    mode: preserve
 
 - name: Pull ELK images
   shell: docker compose pull # noqa: command-instead-of-shell

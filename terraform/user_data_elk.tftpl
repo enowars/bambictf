@@ -19,8 +19,8 @@ sed -i -e "s#\[\[ENGINE_ADDRESS\]\]#${engine}#g" "/etc/wireguard/internal.conf"
 %{ endfor ~}
 systemctl enable --now "wg-quick@internal"
 
-# Checkers
-for service in $(ls /services/); do
-    cd "/services/$service"
-    docker compose up -d &
-done
+cd /services/EnoELK
+docker compose up -d elasticsearch kibana
+chown -R 1000:1000 ./data/elasticsearch/
+docker compose up init
+docker compose up -d logstash
