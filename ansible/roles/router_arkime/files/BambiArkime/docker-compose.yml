@@ -1,0 +1,13 @@
+services:
+  arkime:
+    image: ghcr.io/enoflag/enoarkime:5.3.0
+    restart: unless-stopped
+    ports:
+      - 8005:8005
+    volumes:
+      - /pcaps_arkime:/opt/arkime/raw
+      - ./arkime-capture.sh:/EnoArkime/arkime-capture.sh:ro
+      - ./arkime-viewer.sh:/EnoArkime/arkime-viewer.sh:ro
+      - ./docker-entrypoint.sh:/EnoArkime/docker-entrypoint.sh:ro
+      - ./config.ini:/opt/arkime/etc/config.ini:ro
+    network_mode: host

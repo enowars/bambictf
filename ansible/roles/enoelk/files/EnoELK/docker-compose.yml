@@ -1,0 +1,42 @@
+version: "3"
+services:
+  elasticsearch:
+    image: elasticsearch:8.4.3
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:8.4.3
+    restart: unless-stopped
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.security.enabled=false
+  logstash:
+    image: logstash:8.4.3
+    restart: unless-stopped
+    links:
+      - elasticsearch
+    volumes:
+      - ./config-dir:/config-dir:ro
+    command: logstash --path.settings=/config-dir
+    ports:
+      - "5044:5044"
+      - "5045:5045"
+  init:
+    image: ubuntu
+    restart: "no"
+    entrypoint: /bin/sh
+    volumes:
+      - /usr/share/metricbeat/:/usr/share/metricbeat/:ro
+      - /usr/bin/metricbeat:/usr/bin/metricbeat:ro
+      - /etc/metricbeat/metricbeat.yml:/etc/metricbeat/metricbeat.yml:ro
+      - .:/EnoELK:ro
+    command:
+      - /EnoELK/setup.sh

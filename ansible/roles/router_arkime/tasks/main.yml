@@ -22,66 +22,24 @@
     value: "262144"
     sysctl_set: true
 
-- name: Create /services/BambiArkimeElasticsearch
-  file:
-    path: /services/BambiArkimeElasticsearch
-    state: directory
-    mode: "0755"
-
-- name: Copy docker-compose.elasticsearch.yml
+- name: Copy BambiArkimeElasticsearch
   copy:
-    src: docker-compose.elasticsearch.yml
-    dest: /services/BambiArkimeElasticsearch/docker-compose.yml
-    mode: "0644"
+    src: BambiArkimeElasticsearch/
+    dest: /services/BambiArkimeElasticsearch/
+    mode: preserve
 
-- name: Pull ES
+- name: Pull BambiArkimeElasticsearch
   shell: docker compose pull # noqa: command-instead-of-shell
   args:
     chdir: /services/BambiArkimeElasticsearch
 
-- name: Create /services/BambiArkime
-  file:
-    path: /services/BambiArkime
-    state: directory
-    mode: "0755"
-
-- name: Copy docker-compose.arkime.yml
+- name: Copy BambiArkime
   copy:
-    src: docker-compose.arkime.yml
-    dest: /services/BambiArkime/docker-compose.yml
-    mode: "0644"
+    src: BambiArkime/
+    dest: /services/BambiArkime/
+    mode: preserve
 
-- name: Copy config.ini
-  copy:
-    src: config.ini
-    dest: /services/BambiArkime/config.ini
-    mode: "0644"
-
-- name: Copy Dockerfile
-  copy:
-    src: Dockerfile
-    dest: /services/BambiArkime/Dockerfile
-    mode: "0644"
-
-- name: Copy arkime-capture.sh
-  copy:
-    src: arkime-capture.sh
-    dest: /services/BambiArkime/arkime-capture.sh
-    mode: "0755"
-
-- name: Copy arkime-viewer.sh
-  copy:
-    src: arkime-viewer.sh
-    dest: /services/BambiArkime/arkime-viewer.sh
-    mode: "0755"
-
-- name: Copy docker-entrypoint.sh
-  copy:
-    src: docker-entrypoint.sh
-    dest: /services/BambiArkime/docker-entrypoint.sh
-    mode: "0755"
-# TODO once wait for elasticsearch green works
-# - name: build
-#   shell: "docker compose build"
-#   args:
-#     chdir: /services/BambiArkime
+- name: Pull BambiArkime
+  shell: docker compose pull # noqa: command-instead-of-shell
+  args:
+    chdir: /services/BambiArkime
