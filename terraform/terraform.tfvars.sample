@@ -1,6 +1,6 @@
 hetznerdns_zone     = "bambi.ovh"
 subdomain           = "prod"
-home_location       = "fsn1"
+home_location       = null # "fsn1"
 
 router_count  = 2
 checker_count = 1
