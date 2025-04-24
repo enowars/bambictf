@@ -57,7 +57,13 @@ wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/sh
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install packer
 ```
-    - Install ansible: `apt install ansible`
+    - Install ansible:
+```
+# https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
+add-apt-repository --yes --update ppa:ansible/ansible
+apt install software-properties-common
+apt install ansible
+```
     - Install hcloud packer plugin: `packer plugins install github.com/hetznercloud/hcloud # https://github.com/hetznercloud/packer-plugin-hcloud/tree/main/docs`
     - Install ansible packer plugin: `packer plugins install github.com/hashicorp/ansible # https://developer.hashicorp.com/packer/integrations/hashicorp/ansible`
     - `cd /bambictf/packer`
