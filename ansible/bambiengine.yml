@@ -17,3 +17,10 @@
     - journalbeat
     - metricbeat
     - docker_block_external
+    - role: programs
+      vars:
+        programs_list:
+          - tcpdump
+          - ncdu
+          - iftop
+          - tmux

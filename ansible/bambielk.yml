@@ -17,3 +17,10 @@
     - filebeat
     - journalbeat
     - metricbeat
+    - role: programs
+      vars:
+        programs_list:
+          - tcpdump
+          - ncdu
+          - iftop
+          - tmux
