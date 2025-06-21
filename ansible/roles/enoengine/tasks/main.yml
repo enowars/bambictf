@@ -69,3 +69,24 @@
     path: /services/data
     state: directory
     mode: "0755"
+
+- name: Create logrotate rule for EnoEngine
+  copy:
+    dest: /etc/logrotate.d/enoengine
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      /services/data/EnoLauncher.log
+      /services/data/EnoEngine.log
+      /services/data/EnoLauncher.statistics.log
+      /services/data/EnoEngine.statistics.log
+      /services/data/EnoFlagSink.statistics.log
+       {
+          size 100M
+          rotate 10
+          missingok
+          notifempty
+          compress
+          copytruncate
+      }
