@@ -19,3 +19,10 @@
     - router_trafficcapture
     - router_arkime
     - router_openvpn
+    - role: programs
+      vars:
+        programs_list:
+          - tcpdump
+          - ncdu
+          - iftop
+          - tmux
