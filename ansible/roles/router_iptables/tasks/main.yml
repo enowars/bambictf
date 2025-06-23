@@ -101,6 +101,7 @@
 
 - name: Insert FW_TEAM_NO_MASQ into POSTROUTING
   iptables:
+    table: nat
     chain: POSTROUTING
     out_interface: router
     jump: FW_TEAM_NO_MASQ
