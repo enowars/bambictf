@@ -84,9 +84,33 @@
       /services/data/EnoFlagSink.statistics.log
        {
           size 100M
-          rotate 10
+          rotate 24
           missingok
           notifempty
           compress
           copytruncate
       }
+
+- name: Create /etc/systemd/system/logrotate.timer.d
+  ansible.builtin.file:
+    path: /etc/systemd/system/logrotate.timer.d
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Override logrotate timer
+  copy:
+    dest: /etc/systemd/system/logrotate.timer.d/override.conf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Timer]
+      OnCalendar=hourly
+
+- name: Reload and restart logrotate.timer
+  ansible.builtin.systemd_service:
+    state: restarted
+    daemon_reload: true
+    name: logrotate.timer
