@@ -50,6 +50,22 @@ network_close_time: "2024-07-09T22:00:00"
 - Ship everything to the EnoCTFPortal:
     - `cp -r ./export/portal /services/EnoCTFPortal/data/teamdata` (or whereever it is)
 - Builds VMs
+    - Install newest packer version (on the host or container?):
+```
+# https://developer.hashicorp.com/packer/install
+wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install packer
+```
+    - Install ansible:
+```
+# https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
+add-apt-repository --yes --update ppa:ansible/ansible
+apt install software-properties-common
+apt install ansible
+```
+    - Install hcloud packer plugin: `packer plugins install github.com/hetznercloud/hcloud # https://github.com/hetznercloud/packer-plugin-hcloud/tree/main/docs`
+    - Install ansible packer plugin: `packer plugins install github.com/hashicorp/ansible # https://developer.hashicorp.com/packer/integrations/hashicorp/ansible`
     - `cd /bambictf/packer`
     - `packer build bambichecker.json`
     - ...
