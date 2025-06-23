@@ -106,3 +106,4 @@
     state: restarted
     daemon_reload: true
     name: logrotate.timer
+

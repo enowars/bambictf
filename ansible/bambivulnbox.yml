@@ -19,6 +19,10 @@
       vars:
         programs_list:
           - unzip
+          - tcpdump
+          - ncdu
+          - iftop
+          - tmux
     - role: pip_packages
       vars:
         pip_packages_list:
