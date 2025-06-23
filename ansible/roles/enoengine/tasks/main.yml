@@ -91,6 +91,14 @@
           copytruncate
       }
 
+- name: Create /etc/systemd/system/logrotate.timer.d
+  ansible.builtin.file:
+    path: /etc/systemd/system/logrotate.timer.d
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
 - name: Override logrotate timer
   copy:
     dest: /etc/systemd/system/logrotate.timer.d/override.conf
