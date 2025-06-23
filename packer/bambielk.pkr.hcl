@@ -7,9 +7,8 @@ packer {
   }
 }
 
-variable "snapshot_timestamp" {
-  type    = string
-  default = timestamp()
+locals {
+  snapshot_timestamp = timestamp()
 }
 
 source "hcloud" "bambielk" {
@@ -17,7 +16,7 @@ source "hcloud" "bambielk" {
   location                = "fsn1"
   server_type             = "cx22"
   ssh_username            = "root"
-  snapshot_name           = "bambielk-${var.snapshot_timestamp}"
+  snapshot_name           = "bambielk-${local.snapshot_timestamp}"
   snapshot_labels = {
     type = "bambielk"
   }
