@@ -84,7 +84,7 @@
       /services/data/EnoFlagSink.statistics.log
        {
           size 100M
-          rotate 10
+          rotate 24
           missingok
           notifempty
           compress
