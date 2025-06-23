@@ -114,7 +114,7 @@ jobs:
       - name: prepare ansible config
         run: docker compose exec -T bambictf sh -c 'cp ansible/config_bambi.yml.sample ansible/config_bambi.yml'
       - name: build packer image
-        run: docker compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.json'
+        run: docker compose exec -T bambictf sh -c 'cd packer; packer build ${{ matrix.image }}.hcl'
 
   terraform-apply:
     runs-on: ubuntu-latest
