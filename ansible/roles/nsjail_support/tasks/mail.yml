@@ -1,0 +1,26 @@
+---
+- name: Deploy nsjail AppArmor profile
+  ansible.builtin.copy:
+    dest: /etc/apparmor.d/nsjail
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      #include <tunables/global>
+
+      profile nsjail /**/nsjail flags=(unconfined) {
+        userns,
+      }
+  register: nsjail_profile
+
+- name: Load nsjail AppArmor profile
+  become: true
+  ansible.builtin.command:
+    cmd: apparmor_parser -r /etc/apparmor.d/nsjail
+  when: nsjail_profile.changed
+
+- name: Reload AppArmor service
+  ansible.builtin.service:
+    name: apparmor
+    state: reloaded
+  when: nsjail_profile.changed
