@@ -21,8 +21,13 @@ Due to implementation details, currently you have to be aware of the following l
 - ...
 
 ## Usage (Docker)
+- [Optional] create a puppetmaster-VM on Hetzner, for shared working/debugging and run everything there
 - Have at least one ssh key with the label `type=admin` in your project **(HETZNER's WEBSITE)**
-- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN`
+- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN` in `Dockerfile` by including the lines
+```
+  ENV HETZNERDNS_TOKEN="..."
+  ENV HCLOUD_TOKEN="..."
+```
 - Create `./ansible/config_bambi.yml`
 ```yaml
 vulnerable_services:
@@ -46,13 +51,16 @@ network_close_time: "2024-07-09T22:00:00"
 - Build configs
     - `cd /bambictf/configgen`
     - `poetry install` (once)
-    - `poetry run configgen --teams 4 --routers 2 --dns test.bambi.ovh`
+    - `poetry run configgen --teams 6 --routers 2 --checkers 3 --dns test.bambi.ovh`
 - Ship everything to the EnoCTFPortal:
     - `cp -r ./export/portal /services/EnoCTFPortal/data/teamdata` (or whereever it is)
 - Builds VMs
     - `cd /bambictf/packer`
     - `packer build bambichecker.json`
-    - ...
+    - `packer build bambielk.json`
+    - `packer build bambiengine.json`
+    - `packer build bambirouter.json`
+    - `packer build bambivulnbox.json`
 - Note down vulnbox snapshot id, pass to EnoCTFPortal (`curl -H "Authorization: Bearer $HCLOUD_TOKEN" 'https://api.hetzner.cloud/v1/images?type=snapshot'`)
 - Create `./terraform/terraform.tfvars` (see `./terraform/terraform.tfvars.sample` for reference)
 - `cd /bambictf/terraform`
@@ -60,6 +68,7 @@ network_close_time: "2024-07-09T22:00:00"
 - `terraform apply`
 
 ## Open game network
+The time set in `./ansible/config_bambi.yml` should take care. Otherwise call
 - `iptables -A FORWARD -o router -j ACCEPT` (on *every* gateway)
 
 ## Emergency Port Forwards
@@ -72,3 +81,10 @@ on every router
 
 ## Rsync stuff
 - `while true; do rsync /services/data/*.json benni@bambi.enoflag.de:/services/EnoCTFPortal_bambi7/scoreboard; sleep 5; done` TODO ask Lucas about loops and stuff
+
+## Running the actual CTF
+* terraform easily takes 30-60 minutes
+* build more configs than you actually expect, to have a safeguard
+* to add a new team during the CTF
+  * increase teamcount in terraform and run `terraform apply`
+  * add new team on EnoEngine `ctf.json`, and reapply config (see there)
