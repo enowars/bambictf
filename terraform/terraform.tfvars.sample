@@ -1,15 +1,42 @@
 hetznerdns_zone     = "bambi.ovh"
-subdomain           = "prod"
-home_location       = null # "fsn1"
+subdomain           = "test"
+home_location       = "fsn1"
 
 router_count  = 2
-checker_count = 1
+checker_count = 8
 engine_count  = 1
 elk_count     = 1
-vulnbox_count = 2
+vulnbox_count = 9
 
 router_type = "cx22"
-checker_type = "cx22"
-engine_type  = "cx22"
-elk_type     = "cpx31"
-vulnbox_type = "cpx31"
+checker_type = "cx32"
+engine_type  = "cx32"
+elk_type     = "cx42"
+vulnbox_type = "cx42"
+
+
+# Assign locations to the VMs (0-indexed). 
+# If an index is not set, the default "home_location" is used
+router_locations = {
+  "0" = "fsn1",
+  "1" = "nbg1"
+}
+checker_locations = {
+  "0" = "fsn1",
+  "1" = "nbg1",
+  "2" = "hel1",
+  "3" = "ash",
+  "4" = "hil",
+  "5" = "sin",
+  "6" = "fsn1",
+  "7" = "nbg1",
+}
+engine_locations = {
+  "0" = "fsn1"
+}
+elk_locations = {
+  "0" = "fsn1"
+}
+vulnbox_locations = {
+  "0" = "fsn1"
+}

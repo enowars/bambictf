@@ -39,6 +39,27 @@ variable "subdomain" {
   default = null
 }
 
+
+variable "router_locations" {
+  type = map(string)
+}
+
+variable "checker_locations" {
+  type = map(string)
+}
+
+variable "engine_locations" {
+  type = map(string)
+}
+
+variable "elk_locations" {
+  type = map(string)
+}
+
+variable "vulnbox_locations" {
+  type = map(string)
+}
+
 locals {
   subdomain = var.subdomain != null ? ".${var.subdomain}" : ""
 }

@@ -46,7 +46,7 @@ resource "hcloud_server" "bambiengine" {
   count       = var.engine_count
   name        = "engine${local.subdomain}"
   image       = data.hcloud_image.bambiengine[0].id
-  location    = var.home_location
+  location    = try(var.engine_locations[count.index], var.home_location)
   server_type = var.engine_type
   ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
 

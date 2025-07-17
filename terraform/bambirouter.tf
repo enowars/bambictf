@@ -46,7 +46,7 @@ resource "hcloud_server" "bambirouter" {
   count       = var.router_count
   name        = "router${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambirouter.id
-  location    = var.home_location
+  location    = try(var.router_locations[count.index], var.home_location)
   server_type = var.router_type
   ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
 
