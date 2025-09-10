@@ -85,6 +85,8 @@ on every router
 ## Running the actual CTF
 * terraform easily takes 30-60 minutes
 * build more configs than you actually expect, to have a safeguard
+* use AT LEAST 8 routers
+* use one checker-VM per service
 * to add a new team during the CTF
   * increase teamcount in terraform and run `terraform apply`
   * add new team on EnoEngine `ctf.json`, and reapply config (see there)
