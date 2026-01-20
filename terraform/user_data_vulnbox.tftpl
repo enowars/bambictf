@@ -14,7 +14,7 @@ systemctl enable --now "wg-quick@game"
 for service in $(ls /services/); do
     cd "/services/$service"
     if [ -f "/services/$service/setup.sh" ]; then
-        /services/$service/setup.sh 2
+        /services/$service/setup.sh $(grep -oP '(\d+)' /etc/hostname) # Assumes that vulnboxes have e.g. "vulnbox10" in /etc/hostname
     fi
     docker compose up -d &
 done
