@@ -29,7 +29,7 @@ resource "hcloud_server" "bambichecker" {
   count       = var.checker_count
   name        = "checker${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambichecker.id
-  location    = var.home_location
+  location    = try(var.checker_locations[count.index], var.home_location)
   server_type = var.checker_type
   ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
 
