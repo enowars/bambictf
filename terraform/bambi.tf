@@ -1,12 +1,9 @@
 terraform {
   required_providers {
-    hetznerdns = {
-      source  = "timohirt/hetznerdns"
-      version = "2.2.0"
-    }
     hcloud = {
-      source  = "hetznercloud/hcloud"
-      version = "1.35.2"
+      source                = "hetznercloud/hcloud"
+      version               = "~> 1.55"
+      configuration_aliases = [hcloud.dns]
     }
   }
   required_version = ">= 1.0"
@@ -18,9 +15,10 @@ variable "HCLOUD_TOKEN" {
   sensitive = true
 }
 
-variable "HETZNERDNS_TOKEN" {
+variable "HCLOUD_DNS_TOKEN" {
   type      = string
   sensitive = true
+  default   = null
 }
 
 variable "home_location" {
@@ -47,13 +45,15 @@ provider "hcloud" {
   token = var.HCLOUD_TOKEN
 }
 
-provider "hetznerdns" {
-  apitoken = var.HETZNERDNS_TOKEN
+provider "hcloud" {
+  alias = "dns"
+  token = coalesce(var.HCLOUD_DNS_TOKEN, var.HCLOUD_TOKEN)
 }
 
-data "hetznerdns_zone" "zone" {
-  count = var.hetznerdns_zone != null ? 1 : 0
-  name  = var.hetznerdns_zone
+data "hcloud_zone" "zone" {
+  provider = hcloud.dns
+  count    = var.hetznerdns_zone != null ? 1 : 0
+  name     = var.hetznerdns_zone
 }
 
 data "hcloud_ssh_keys" "all_keys" {

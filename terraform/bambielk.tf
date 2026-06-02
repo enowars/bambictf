@@ -33,13 +33,14 @@ resource "hcloud_floating_ip_assignment" "bambielk_ipa" {
   server_id       = hcloud_server.bambielk[0].id
 }
 
-resource "hetznerdns_record" "bambielk_dns" {
-  count   = var.hetznerdns_zone != null ? var.elk_count : 0
-  zone_id = data.hetznerdns_zone.zone[0].id
-  name    = "elk${local.subdomain}"
-  value   = hcloud_server.bambielk[0].ipv4_address
-  type    = "A"
-  ttl     = 60
+resource "hcloud_zone_rrset" "bambielk_dns" {
+  provider = hcloud.dns
+  count    = var.hetznerdns_zone != null ? var.elk_count : 0
+  zone     = data.hcloud_zone.zone[0].name
+  name     = "elk${local.subdomain}"
+  type     = "A"
+  ttl      = 60
+  records  = [{ value = hcloud_server.bambielk[0].ipv4_address }]
 }
 
 resource "hcloud_server" "bambielk" {
