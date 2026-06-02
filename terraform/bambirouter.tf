@@ -33,13 +33,14 @@ resource "hcloud_floating_ip_assignment" "bambirouter_ipa" {
   server_id      = hcloud_server.bambirouter[count.index].id
 }
 
-resource "hetznerdns_record" "bambirouter_dns" {
-  count   = var.hetznerdns_zone != null ? var.router_count : 0
-  zone_id = data.hetznerdns_zone.zone[0].id
-  name    = "router${count.index + 1}${local.subdomain}"
-  value   = hcloud_floating_ip.bambirouter_ip[count.index].ip_address
-  type    = "A"
-  ttl     = 60
+resource "hcloud_zone_rrset" "bambirouter_dns" {
+  provider = hcloud.dns
+  count    = var.hetznerdns_zone != null ? var.router_count : 0
+  zone     = data.hcloud_zone.zone[0].name
+  name     = "router${count.index + 1}${local.subdomain}"
+  type     = "A"
+  ttl      = 60
+  records  = [{ value = hcloud_floating_ip.bambirouter_ip[count.index].ip_address }]
 }
 
 resource "hcloud_server" "bambirouter" {
