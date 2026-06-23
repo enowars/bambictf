@@ -79,6 +79,14 @@
     destination_port: "8005"
     jump: DROP
 
+- name: "Block access to moloch from docker containers"
+  iptables:
+    chain: DOCKER-USER
+    protocol: tcp
+    source: "172.17.0.0/16"
+    destination_port: "8005"
+    jump: DROP
+
 - name: Persist iptables config
   include_role:
     name: "iptables_persistent"
