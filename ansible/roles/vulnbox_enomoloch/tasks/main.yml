@@ -82,8 +82,16 @@
 - name: "Block access to moloch from docker containers"
   iptables:
     chain: DOCKER-USER
+    in_interface: docker0
     protocol: tcp
-    source: "172.17.0.0/16"
+    destination_port: "8005"
+    jump: DROP
+
+- name: "Block access to moloch from docker bridges"
+  iptables:
+    chain: DOCKER-USER
+    in_interface: br-+
+    protocol: tcp
     destination_port: "8005"
     jump: DROP
 
