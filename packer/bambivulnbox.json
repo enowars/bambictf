@@ -15,7 +15,7 @@
             "type": "hcloud",
             "image": "ubuntu-24.04",
             "location": "fsn1",
-            "server_type": "cx32",
+            "server_type": "cx33",
             "ssh_username": "root",
             "snapshot_name": "bambivulnbox-{{timestamp}}",
             "snapshot_labels": {
