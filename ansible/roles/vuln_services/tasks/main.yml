@@ -29,7 +29,7 @@
   with_dict: "{{ vulnerable_services }}"
 
 - name: Pull/build service
-  shell: docker compose pull && docker compose build
+  shell: docker compose pull --ignore-buildable && docker compose build
   args:
     chdir: /services/{{ item.key }}
   with_dict: "{{ vulnerable_services }}"
