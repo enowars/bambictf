@@ -15,6 +15,7 @@
     - role: wireguard_configs
       vars:
         wireguard_configs_dir: routers
+    - router_sysctl
     - router_iptables
     - router_trafficcapture
     - router_arkime
