@@ -1,4 +1,10 @@
 {
+	"mtu": 1420,
+	"default-network-opts": {
+		"bridge": {
+			"com.docker.network.driver.mtu": "1420"
+		}
+  	},
 	"log-driver": "json-file",
 	"log-opts": {
 		"max-size": "300m",
