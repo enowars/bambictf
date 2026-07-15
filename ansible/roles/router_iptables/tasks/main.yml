@@ -162,6 +162,11 @@
 - name: Open game network (time-based)
   shell: "iptables -A FORWARD -o router -m time --datestart {{ network_open_time }} --datestop {{ network_close_time }} -j ACCEPT"
 
+# IP Packets can have different TTL based on origin. Checker traffic is partially fingerprintable without this normalization
+- name: Normalize TTL toward vulnboxes
+  shell: "iptables -t mangle -A POSTROUTING -d 10.1.0.0/16 -m ttl --ttl-gt 60 -j TTL --ttl-set 60"
+  when: '"-A POSTROUTING -d 10.1.0.0/16 -m ttl --ttl-gt 60 -j TTL --ttl-set 60" not in iptablessave.stdout'
+
 - name: Persist iptables config
   include_role:
     name: "iptables_persistent"
