@@ -28,7 +28,7 @@ resource "hetznerdns_record" "bambivulnbox_dns" {
 resource "hcloud_server" "bambivulnbox" {
   name        = "vulnbox${count.index + 1}${local.subdomain}"
   image       = data.hcloud_image.bambivulnbox.id
-  location    = var.home_location
+  location    = try(var.vulnbox_locations[count.index], var.home_location)
   server_type = var.vulnbox_type
   count       = var.vulnbox_count
   ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id

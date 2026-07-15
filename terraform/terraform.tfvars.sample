@@ -13,3 +13,30 @@ checker_type = "cx22"
 engine_type  = "cx22"
 elk_type     = "cpx31"
 vulnbox_type = "cpx31"
+
+
+# Assign locations to the VMs (0-indexed). 
+# If an index is not set, the default "home_location" is used
+router_locations = {
+  "0" = "fsn1",
+  "1" = "nbg1"
+}
+checker_locations = {
+  "0" = "fsn1",
+  "1" = "nbg1",
+  "2" = "hel1",
+  "3" = "ash",
+  "4" = "hil",
+  "5" = "sin",
+  "6" = "fsn1",
+  "7" = "nbg1",
+}
+engine_locations = {
+  "0" = "fsn1"
+}
+elk_locations = {
+  "0" = "fsn1"
+}
+vulnbox_locations = {
+  "0" = "fsn1"
+}

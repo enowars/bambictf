@@ -46,7 +46,7 @@ resource "hcloud_server" "bambielk" {
   count       = var.elk_count
   name        = "elk${local.subdomain}"
   image       = data.hcloud_image.bambielk[0].id
-  location    = var.home_location
+  location    = try(var.elk_locations[count.index], var.home_location)
   server_type = var.elk_type
   ssh_keys    = data.hcloud_ssh_keys.all_keys.*.id
 
