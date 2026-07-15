@@ -23,9 +23,9 @@ Due to implementation details, currently you have to be aware of the following l
 ## Usage (Docker)
 - [Optional] create a puppetmaster-VM on Hetzner, for shared working/debugging and run everything there
 - Have at least one ssh key with the label `type=admin` in your project **(HETZNER's WEBSITE)**
-- Set `HCLOUD_TOKEN` and `HETZNERDNS_TOKEN` in `Dockerfile` by including the lines
+- Set `HCLOUD_TOKEN` and `HCLOUD_DNS_TOKEN` in `Dockerfile` by including the lines
 ```
-  ENV HETZNERDNS_TOKEN="..."
+  ENV HCLOUD_DNS_TOKEN="..."
   ENV HCLOUD_TOKEN="..."
 ```
 - Create `./ansible/config_bambi.yml`
@@ -90,3 +90,8 @@ on every router
 * to add a new team during the CTF
   * increase teamcount in terraform and run `terraform apply`
   * add new team on EnoEngine `ctf.json`, and reapply config (see there)
+
+## Deprecated components
+The following components still reference the legacy `HETZNERDNS_TOKEN` environment variable and may not work correctly with the new Hetzner Cloud DNS provider. They are considered deprecated and are not fixed by this change:
+- `proxy/proxy.tf`
+- `clean_records.py`
