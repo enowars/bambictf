@@ -33,13 +33,14 @@ resource "hcloud_floating_ip_assignment" "bambiengine_ipa" {
   server_id       = hcloud_server.bambiengine[0].id
 }
 
-resource "hetznerdns_record" "bambiengine_dns" {
-  count   = var.hetznerdns_zone != null ? var.engine_count : 0
-  zone_id = data.hetznerdns_zone.zone[0].id
-  name    = "engine${local.subdomain}"
-  value   = hcloud_floating_ip.bambiengine_ip.ip_address
-  type    = "A"
-  ttl     = 60
+resource "hcloud_zone_rrset" "bambiengine_dns" {
+  provider = hcloud.dns
+  count    = var.hetznerdns_zone != null ? var.engine_count : 0
+  zone     = data.hcloud_zone.zone[0].name
+  name     = "engine${local.subdomain}"
+  type     = "A"
+  ttl      = 60
+  records  = [{ value = hcloud_floating_ip.bambiengine_ip.ip_address }]
 }
 
 resource "hcloud_server" "bambiengine" {

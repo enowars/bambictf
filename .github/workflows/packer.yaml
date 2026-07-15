@@ -154,7 +154,7 @@ jobs:
       - name: start docker compose setup
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-          HETZNERDNS_TOKEN: ${{ secrets.HETZNERDNS_TOKEN }}
+          HCLOUD_DNS_TOKEN: ${{ secrets.HETZNERDNS_TOKEN }}
         run: docker compose up -d
       - name: perform terraform init
         run: docker compose exec -T bambictf sh -c 'cd terraform ; terraform init'

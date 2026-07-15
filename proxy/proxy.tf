@@ -1,11 +1,11 @@
 terraform {
   required_providers {
-    hetznerdns = {
-      source  = "timohirt/hetznerdns"
-      version = "2.2.0"
+    hcloud = {
+      source  = "hetznercloud/hcloud"
+      version = "~> 1.55"
     }
     digitalocean = {
-      source = "digitalocean/digitalocean"
+      source  = "digitalocean/digitalocean"
       version = "2.39.2"
     }
 
@@ -19,10 +19,11 @@ variable "DO_TOKEN" {
   sensitive = true
 }
 
-variable "HETZNERDNS_TOKEN" {
+variable "HCLOUD_DNS_TOKEN" {
   type      = string
-  nullable  = false
+  nullable  = true
   sensitive = true
+  default   = null
 }
 
 variable "proxy_count" {
@@ -48,11 +49,11 @@ provider "digitalocean" {
   token = var.DO_TOKEN
 }
 
-provider "hetznerdns" {
-  apitoken = var.HETZNERDNS_TOKEN
+provider "hcloud" {
+  token = var.HCLOUD_DNS_TOKEN
 }
 
-data "hetznerdns_zone" "zone" {
+data "hcloud_zone" "zone" {
   count = var.hetznerdns_zone != null ? 1 : 0
   name  = var.hetznerdns_zone
 }
@@ -66,29 +67,29 @@ data "digitalocean_ssh_keys" "keys" {
 
 # Create a new Web Droplet in the nyc2 region
 resource "digitalocean_droplet" "proxy" {
-  count    = var.proxy_count
-  image    = "ubuntu-24-04-x64"
-  name     = "proxy${count.index + 1}"
-  region   = "fra1"
-  size     = "s-1vcpu-512mb-10gb"
-  ssh_keys = [for k in data.digitalocean_ssh_keys.keys.ssh_keys : k.id]
+  count     = var.proxy_count
+  image     = "ubuntu-24-04-x64"
+  name      = "proxy${count.index + 1}"
+  region    = "fra1"
+  size      = "s-1vcpu-512mb-10gb"
+  ssh_keys  = [for k in data.digitalocean_ssh_keys.keys.ssh_keys : k.id]
   user_data = templatefile("user_data_proxy.tftpl", {})
 }
 
-resource "hetznerdns_record" "proxy_dns" {
-  count   = var.proxy_count
-  zone_id = data.hetznerdns_zone.zone[0].id
+resource "hcloud_zone_rrset" "proxy_dns" {
+  count   = var.hetznerdns_zone != null ? var.proxy_count : 0
+  zone    = data.hcloud_zone.zone[0].name
   name    = "proxy${count.index + 1}${local.subdomain}"
-  value   = digitalocean_droplet.proxy[count.index].ipv4_address
   type    = "A"
   ttl     = 60
+  records = [{ value = digitalocean_droplet.proxy[count.index].ipv4_address }]
 }
 
-resource "hetznerdns_record" "proxy_rr_dns" {
-  count   = var.proxy_count
-  zone_id = data.hetznerdns_zone.zone[0].id
+resource "hcloud_zone_rrset" "proxy_rr_dns" {
+  count   = var.hetznerdns_zone != null ? 1 : 0
+  zone    = data.hcloud_zone.zone[0].name
   name    = "proxy${local.subdomain}"
-  value   = digitalocean_droplet.proxy[count.index].ipv4_address
   type    = "A"
   ttl     = 60
+  records = [for d in digitalocean_droplet.proxy : { value = d.ipv4_address }]
 }
