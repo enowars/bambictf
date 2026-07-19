@@ -15,6 +15,7 @@
     - vulnbox_enomoloch
     - bambixploit
     - root_password_login
+    - nsjail_support
     - role: programs
       vars:
         programs_list:
